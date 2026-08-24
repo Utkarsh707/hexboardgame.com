@@ -7,6 +7,18 @@ import { sound } from './audio.js';
 import { PLAYERS, BOARD_PRESETS } from './boards.js';
 
 export function initGameUI() {
+    // Controls & Select Elements
+    const selectGameMode = document.getElementById('select-game-mode');
+    const selectBoardPreset = document.getElementById('select-board-preset');
+    const selectGameModeMobile = document.getElementById('select-game-mode-mobile');
+    const selectBoardPresetMobile = document.getElementById('select-board-preset-mobile');
+
+    // Always reset UI dropdowns to Stage 1 (Classic) & VS CPU on fresh page load/refresh
+    if (selectBoardPreset) selectBoardPreset.value = 'classic';
+    if (selectBoardPresetMobile) selectBoardPresetMobile.value = 'classic';
+    if (selectGameMode) selectGameMode.value = 'pve';
+    if (selectGameModeMobile) selectGameModeMobile.value = 'pve';
+
     const game = new HexxagonGame({
         presetId: 'classic',
         gameMode: 'pve-medium'
@@ -18,6 +30,8 @@ export function initGameUI() {
     const scoreRuby = document.getElementById('score-ruby');
     const scorePearl = document.getElementById('score-pearl');
     const scoreEmerald = document.getElementById('score-emerald');
+    const scoreRubyMobile = document.getElementById('score-ruby-mobile');
+    const scorePearlMobile = document.getElementById('score-pearl-mobile');
     const cardRuby = document.getElementById('card-player-ruby');
     const cardPearl = document.getElementById('card-player-pearl');
     const cardEmerald = document.getElementById('card-player-emerald');
@@ -34,11 +48,7 @@ export function initGameUI() {
     const labelPlayerPearl = document.getElementById('label-player-pearl');
     const hudMoveCount = document.getElementById('hud-move-count');
 
-    // Controls
-    const selectGameMode = document.getElementById('select-game-mode');
-    const selectBoardPreset = document.getElementById('select-board-preset');
-    const selectGameModeMobile = document.getElementById('select-game-mode-mobile');
-    const selectBoardPresetMobile = document.getElementById('select-board-preset-mobile');
+    // Controls Buttons
     const btnRestartGame = document.getElementById('btn-restart-game');
     const btnHudUndo = document.getElementById('btn-hud-undo');
     const btnHudUndoMobile = document.getElementById('btn-hud-undo-mobile');
@@ -96,7 +106,9 @@ export function initGameUI() {
     // Event: Score Change
     game.on('scoreChange', ({ scores }) => {
         if (scoreRuby) scoreRuby.textContent = scores.ruby || 0;
+        if (scoreRubyMobile) scoreRubyMobile.textContent = scores.ruby || 0;
         if (scorePearl) scorePearl.textContent = scores.pearl || 0;
+        if (scorePearlMobile) scorePearlMobile.textContent = scores.pearl || 0;
         if (scoreEmerald && scores.emerald !== undefined) {
             scoreEmerald.textContent = scores.emerald || 0;
         }
@@ -270,7 +282,7 @@ export function initGameUI() {
     });
 
     // Unified Mode & Preset Handlers (Desktop & Mobile Sync)
-    function handleModeChange(mode) {
+    function handleModeChange(mode, playSound = true) {
         if (selectGameMode) selectGameMode.value = mode;
         if (selectGameModeMobile) selectGameModeMobile.value = mode;
 
@@ -287,12 +299,12 @@ export function initGameUI() {
         if (mode === 'trio') {
             cardEmerald?.classList.remove('hidden');
             cardEmerald?.classList.add('flex');
-            handlePresetChange('trio');
+            handlePresetChange('trio', playSound);
         } else {
             cardEmerald?.classList.add('hidden');
             cardEmerald?.classList.remove('flex');
             if (game.presetId === 'trio') {
-                handlePresetChange('classic');
+                handlePresetChange('classic', playSound);
             }
         }
 
@@ -300,10 +312,10 @@ export function initGameUI() {
             labelPlayerPearl.textContent = mode === 'pvp' ? 'Player 2' : (mode === 'trio' ? 'Player 2' : 'AI // PEARL');
         }
 
-        sound.playSelect();
+        if (playSound) sound.playSelect();
     }
 
-    function handlePresetChange(preset) {
+    function handlePresetChange(preset, playSound = true) {
         if (selectBoardPreset) selectBoardPreset.value = preset;
         if (selectBoardPresetMobile) selectBoardPresetMobile.value = preset;
 
@@ -322,8 +334,12 @@ export function initGameUI() {
 
         game.setPreset(preset);
         syncDifficultyLock(0);
-        sound.playSelect();
+        if (playSound) sound.playSelect();
     }
+
+    // Initial silent sync on startup / page refresh
+    handlePresetChange('classic', false);
+    handleModeChange('pve', false);
 
     selectGameMode?.addEventListener('change', (e) => handleModeChange(e.target.value));
     selectGameModeMobile?.addEventListener('change', (e) => handleModeChange(e.target.value));
