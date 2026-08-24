@@ -156,29 +156,38 @@ export class HexxagonGame {
 
         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
         defs.innerHTML = `
-            <!-- Ruby Radial Gradient -->
-            <radialGradient id="grad-ruby" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#ff8fab"/>
-                <stop offset="45%" stop-color="#ff2d60"/>
-                <stop offset="100%" stop-color="#8a0026"/>
+            <!-- 3D Ruby Radial Gradient -->
+            <radialGradient id="grad-ruby" cx="30%" cy="26%" r="72%">
+                <stop offset="0%" stop-color="#ff7b96"/>
+                <stop offset="22%" stop-color="#ff0844"/>
+                <stop offset="60%" stop-color="#ba002c"/>
+                <stop offset="90%" stop-color="#5a0014"/>
+                <stop offset="100%" stop-color="#240008"/>
             </radialGradient>
-            <!-- Pearl Radial Gradient -->
-            <radialGradient id="grad-pearl" cx="35%" cy="30%" r="70%">
+            <!-- 3D Pearl Radial Gradient -->
+            <radialGradient id="grad-pearl" cx="30%" cy="26%" r="72%">
                 <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="40%" stop-color="#00e5ff"/>
-                <stop offset="100%" stop-color="#005b82"/>
+                <stop offset="25%" stop-color="#f2f7fc"/>
+                <stop offset="60%" stop-color="#c5d1d9"/>
+                <stop offset="85%" stop-color="#607d8b"/>
+                <stop offset="100%" stop-color="#263238"/>
             </radialGradient>
-            <!-- Emerald Radial Gradient -->
-            <radialGradient id="grad-emerald" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#b9f6ca"/>
-                <stop offset="40%" stop-color="#10b981"/>
-                <stop offset="100%" stop-color="#064e3b"/>
+            <!-- 3D Emerald Radial Gradient -->
+            <radialGradient id="grad-emerald" cx="30%" cy="26%" r="72%">
+                <stop offset="0%" stop-color="#a7f3d0"/>
+                <stop offset="22%" stop-color="#00e676"/>
+                <stop offset="60%" stop-color="#059669"/>
+                <stop offset="90%" stop-color="#064e3b"/>
+                <stop offset="100%" stop-color="#022c22"/>
             </radialGradient>
         `;
         this.svgContainer.appendChild(defs);
 
         const cellsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         cellsGroup.setAttribute('id', 'hex-cells-group');
+
+        const specialGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        specialGroup.setAttribute('id', 'hex-special-group');
 
         const piecesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         piecesGroup.setAttribute('id', 'hex-pieces-group');
@@ -212,6 +221,32 @@ export class HexxagonGame {
             this.cellElements.set(key, polygon);
             cellsGroup.appendChild(polygon);
 
+            // Render Special Power Tile Overlays (Portal / Supernova)
+            const specialTile = this.state.specialTiles?.[key];
+            if (specialTile) {
+                if (specialTile.type === 'portal') {
+                    polygon.classList.add('hex-cell-portal-base');
+                    const portalEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    portalEl.setAttribute('class', 'pointer-events-none');
+                    portalEl.innerHTML = `
+                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.44}" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-dasharray="4,3" opacity="0.85"></circle>
+                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.28}" fill="rgba(147, 51, 234, 0.35)" stroke="#e9d5ff" stroke-width="1.2"></circle>
+                        <text x="${x}" y="${y + 5}" text-anchor="middle" font-size="${this.cellSize * 0.36}" fill="#ffffff">🌀</text>
+                    `;
+                    specialGroup.appendChild(portalEl);
+                } else if (specialTile.type === 'supernova') {
+                    polygon.classList.add('hex-cell-supernova-base');
+                    const supernovaEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    supernovaEl.setAttribute('class', 'pointer-events-none');
+                    supernovaEl.innerHTML = `
+                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.44}" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="3,2" opacity="0.85"></circle>
+                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.28}" fill="rgba(217, 119, 6, 0.4)" stroke="#fde68a" stroke-width="1.2"></circle>
+                        <text x="${x}" y="${y + 5}" text-anchor="middle" font-size="${this.cellSize * 0.36}" fill="#ffffff">💥</text>
+                    `;
+                    specialGroup.appendChild(supernovaEl);
+                }
+            }
+
             // Render Piece if present
             const pieceOwner = this.state.board[key];
             if (pieceOwner) {
@@ -222,6 +257,7 @@ export class HexxagonGame {
         });
 
         this.svgContainer.appendChild(cellsGroup);
+        this.svgContainer.appendChild(specialGroup);
         this.svgContainer.appendChild(piecesGroup);
         this.svgContainer.appendChild(movesGroup);
 
@@ -235,23 +271,51 @@ export class HexxagonGame {
         group.setAttribute('class', 'hex-piece');
         group.style.cursor = (owner === this.getCurrentPlayer() && !this.isAiTurn) ? 'pointer' : 'default';
 
+        // 1. Soft Ambient Drop Shadow
+        const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        shadow.setAttribute('cx', x);
+        shadow.setAttribute('cy', y + this.cellSize * 0.40);
+        shadow.setAttribute('rx', this.cellSize * 0.44);
+        shadow.setAttribute('ry', this.cellSize * 0.16);
+        shadow.setAttribute('fill', 'rgba(0, 0, 0, 0.55)');
+
+        // 2. 3D Spherical Crystal Gem Body
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('cx', x);
         circle.setAttribute('cy', y);
-        circle.setAttribute('r', this.cellSize * 0.58);
+        circle.setAttribute('r', this.cellSize * 0.54);
         circle.setAttribute('fill', `url(#grad-${owner})`);
-        circle.setAttribute('stroke', 'rgba(255, 255, 255, 0.45)');
-        circle.setAttribute('stroke-width', '1.5');
+        circle.setAttribute('stroke', 'rgba(255, 255, 255, 0.4)');
+        circle.setAttribute('stroke-width', '1.2');
 
-        // Specular highlight gleam
-        const gleam = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        gleam.setAttribute('cx', x - this.cellSize * 0.18);
-        gleam.setAttribute('cy', y - this.cellSize * 0.18);
-        gleam.setAttribute('r', this.cellSize * 0.18);
-        gleam.setAttribute('fill', 'rgba(255, 255, 255, 0.7)');
+        // 3. Specular Curved Glass Highlight
+        const glossCrescent = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        glossCrescent.setAttribute('cx', x - this.cellSize * 0.16);
+        glossCrescent.setAttribute('cy', y - this.cellSize * 0.16);
+        glossCrescent.setAttribute('rx', this.cellSize * 0.24);
+        glossCrescent.setAttribute('ry', this.cellSize * 0.13);
+        glossCrescent.setAttribute('transform', `rotate(-28 ${x - this.cellSize * 0.16} ${y - this.cellSize * 0.16})`);
+        glossCrescent.setAttribute('fill', 'rgba(255, 255, 255, 0.72)');
 
+        const glossDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        glossDot.setAttribute('cx', x - this.cellSize * 0.22);
+        glossDot.setAttribute('cy', y - this.cellSize * 0.22);
+        glossDot.setAttribute('r', this.cellSize * 0.07);
+        glossDot.setAttribute('fill', 'rgba(255, 255, 255, 0.95)');
+
+        // 4. Subtle Bottom Ambient Light Reflection
+        const bottomRim = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        bottomRim.setAttribute('cx', x);
+        bottomRim.setAttribute('cy', y + this.cellSize * 0.36);
+        bottomRim.setAttribute('rx', this.cellSize * 0.24);
+        bottomRim.setAttribute('ry', this.cellSize * 0.08);
+        bottomRim.setAttribute('fill', 'rgba(255, 255, 255, 0.22)');
+
+        group.appendChild(shadow);
         group.appendChild(circle);
-        group.appendChild(gleam);
+        group.appendChild(bottomRim);
+        group.appendChild(glossCrescent);
+        group.appendChild(glossDot);
 
         group.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -375,35 +439,48 @@ export class HexxagonGame {
 
         if (!this.selectedCell) return;
 
-        // Render target dots/markers
+        // Render Hexxagon-style Target Move Rings
         this.validMoves.forEach(move => {
             const { x, y } = HexMath.hexToPixel(move.to.q, move.to.r, this.cellSize, this.originX, this.originY);
+            const isClone = move.type === 'clone';
+            const color = isClone ? '#00e676' : '#ffab00';
+            const fillColor = isClone ? 'rgba(0, 230, 118, 0.22)' : 'rgba(255, 171, 0, 0.22)';
 
-            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            circle.setAttribute('cx', x);
-            circle.setAttribute('cy', y);
-            circle.setAttribute('r', move.type === 'clone' ? this.cellSize * 0.28 : this.cellSize * 0.22);
-            circle.setAttribute('fill', move.type === 'clone' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(245, 158, 11, 0.9)');
-            circle.setAttribute('stroke', '#ffffff');
-            circle.setAttribute('stroke-width', '1.5');
-            circle.style.cursor = 'pointer';
+            const markerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            markerGroup.style.cursor = 'pointer';
 
-            if (move.type === 'clone') {
-                circle.classList.add('hex-cell-clone-target');
-            } else {
-                circle.classList.add('hex-cell-jump-target');
-            }
+            // Outer pulse ring
+            const outerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            outerCircle.setAttribute('cx', x);
+            outerCircle.setAttribute('cy', y);
+            outerCircle.setAttribute('r', this.cellSize * 0.38);
+            outerCircle.setAttribute('fill', fillColor);
+            outerCircle.setAttribute('stroke', color);
+            outerCircle.setAttribute('stroke-width', '2');
+            outerCircle.setAttribute('class', isClone ? 'hex-cell-clone-target' : 'hex-cell-jump-target');
 
-            // Hover preview ONLY on the tiles and balls affected by this specific candidate move
-            circle.addEventListener('mouseenter', () => this.previewCaptures(move.toKey));
-            circle.addEventListener('mouseleave', () => this.clearCapturePreviews());
+            // Inner core dot
+            const innerDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            innerDot.setAttribute('cx', x);
+            innerDot.setAttribute('cy', y);
+            innerDot.setAttribute('r', isClone ? this.cellSize * 0.16 : this.cellSize * 0.12);
+            innerDot.setAttribute('fill', color);
+            innerDot.setAttribute('stroke', '#ffffff');
+            innerDot.setAttribute('stroke-width', '1.2');
 
-            circle.addEventListener('click', (e) => {
+            markerGroup.appendChild(outerCircle);
+            markerGroup.appendChild(innerDot);
+
+            // Hover preview ONLY on the tiles affected by this specific candidate move
+            markerGroup.addEventListener('mouseenter', () => this.previewCaptures(move.toKey));
+            markerGroup.addEventListener('mouseleave', () => this.clearCapturePreviews());
+
+            markerGroup.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.executeMove(move);
             });
 
-            movesGroup.appendChild(circle);
+            movesGroup.appendChild(markerGroup);
         });
     }
 
