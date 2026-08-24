@@ -80,6 +80,7 @@ export class HexxagonGame {
         this.history = [];
         this.selectedCell = null;
         this.validMoves = [];
+        this.lastMove = null;
         this.isGameOver = false;
         this.isAiTurn = false;
 
@@ -128,8 +129,8 @@ export class HexxagonGame {
         this.emit('turnChange', {
             currentPlayer: currentTurn,
             playerInfo: PLAYERS[currentTurn],
-            isAi: this.isCurrentPlayerAi(),
-            moveCount: this.state.moveCount
+            moveCount: this.state.moveCount,
+            isAi: this.isCurrentPlayerAi()
         });
     }
 
@@ -186,9 +187,6 @@ export class HexxagonGame {
         const cellsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         cellsGroup.setAttribute('id', 'hex-cells-group');
 
-        const specialGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        specialGroup.setAttribute('id', 'hex-special-group');
-
         const piecesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         piecesGroup.setAttribute('id', 'hex-pieces-group');
 
@@ -208,6 +206,17 @@ export class HexxagonGame {
             polygon.setAttribute('role', 'button');
             polygon.setAttribute('aria-label', `Hex cell ${key}`);
 
+            // Last Move Visual Highlights
+            if (this.lastMove) {
+                if (key === this.lastMove.toKey) {
+                    polygon.classList.add('hex-cell-last-dest');
+                    const playerColor = PLAYERS[this.lastMove.player]?.color || '#00e5ff';
+                    polygon.style.stroke = playerColor;
+                } else if (this.lastMove.type === 'jump' && key === this.lastMove.fromKey) {
+                    polygon.classList.add('hex-cell-last-origin');
+                }
+            }
+
             polygon.addEventListener('click', () => this.handleCellClick(key));
             polygon.addEventListener('mouseenter', () => this.previewCaptures(key));
             polygon.addEventListener('mouseleave', () => this.clearCapturePreviews());
@@ -221,32 +230,6 @@ export class HexxagonGame {
             this.cellElements.set(key, polygon);
             cellsGroup.appendChild(polygon);
 
-            // Render Special Power Tile Overlays (Portal / Supernova)
-            const specialTile = this.state.specialTiles?.[key];
-            if (specialTile) {
-                if (specialTile.type === 'portal') {
-                    polygon.classList.add('hex-cell-portal-base');
-                    const portalEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                    portalEl.setAttribute('class', 'pointer-events-none');
-                    portalEl.innerHTML = `
-                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.44}" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-dasharray="4,3" opacity="0.85"></circle>
-                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.28}" fill="rgba(147, 51, 234, 0.35)" stroke="#e9d5ff" stroke-width="1.2"></circle>
-                        <text x="${x}" y="${y + 5}" text-anchor="middle" font-size="${this.cellSize * 0.36}" fill="#ffffff">🌀</text>
-                    `;
-                    specialGroup.appendChild(portalEl);
-                } else if (specialTile.type === 'supernova') {
-                    polygon.classList.add('hex-cell-supernova-base');
-                    const supernovaEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                    supernovaEl.setAttribute('class', 'pointer-events-none');
-                    supernovaEl.innerHTML = `
-                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.44}" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="3,2" opacity="0.85"></circle>
-                        <circle cx="${x}" cy="${y}" r="${this.cellSize * 0.28}" fill="rgba(217, 119, 6, 0.4)" stroke="#fde68a" stroke-width="1.2"></circle>
-                        <text x="${x}" y="${y + 5}" text-anchor="middle" font-size="${this.cellSize * 0.36}" fill="#ffffff">💥</text>
-                    `;
-                    specialGroup.appendChild(supernovaEl);
-                }
-            }
-
             // Render Piece if present
             const pieceOwner = this.state.board[key];
             if (pieceOwner) {
@@ -257,7 +240,6 @@ export class HexxagonGame {
         });
 
         this.svgContainer.appendChild(cellsGroup);
-        this.svgContainer.appendChild(specialGroup);
         this.svgContainer.appendChild(piecesGroup);
         this.svgContainer.appendChild(movesGroup);
 
@@ -517,6 +499,13 @@ export class HexxagonGame {
         }
 
         // Apply Move State
+        this.lastMove = {
+            fromKey: move.fromKey,
+            toKey: move.toKey,
+            type: move.type,
+            player
+        };
+
         this.state = HexxagonAI.applyMove(this.state, move, player);
         this.state.moveCount++;
         this.renderBoard();
@@ -535,8 +524,10 @@ export class HexxagonGame {
                     if (this.particleEngine) {
                         this.particleEngine.createSparks(pos.x, pos.y, PLAYERS[player].color, 6, 0.8);
                     }
-                }, idx * 50);
+                }, idx * 60);
             });
+            // Ensure conversions are visually shown before turn advances
+            await new Promise(resolve => setTimeout(resolve, Math.min(500, move.captures.length * 60 + 180)));
         }
 
         this.emit('moveMade', { move, player });
@@ -603,11 +594,57 @@ export class HexxagonGame {
             try {
                 const bestMove = await this.ai.getBestMove(this.state, this.getCurrentPlayer(), this.state.players);
                 this.emit('aiThinking', false);
-                this.isAiTurn = false;
 
                 if (bestMove) {
+                    // 1. Visually highlight which piece the CPU picked
+                    this.selectedCell = bestMove.fromKey;
+                    sound.playSelect();
+                    this.updateHighlights();
+
+                    // 2. Render CPU target ring indicator so user sees where CPU is moving
+                    const movesGroup = document.getElementById('hex-moves-group');
+                    if (movesGroup) {
+                        movesGroup.innerHTML = '';
+                        const { x, y } = HexMath.hexToPixel(bestMove.to.q, bestMove.to.r, this.cellSize, this.originX, this.originY);
+                        const isClone = bestMove.type === 'clone';
+                        const color = isClone ? '#00e676' : '#ffab00';
+                        
+                        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        ring.setAttribute('cx', x);
+                        ring.setAttribute('cy', y);
+                        ring.setAttribute('r', this.cellSize * 0.38);
+                        ring.setAttribute('fill', isClone ? 'rgba(0, 230, 118, 0.25)' : 'rgba(255, 171, 0, 0.25)');
+                        ring.setAttribute('stroke', color);
+                        ring.setAttribute('stroke-width', '2.5');
+                        ring.setAttribute('class', isClone ? 'hex-cell-clone-target' : 'hex-cell-jump-target');
+                        movesGroup.appendChild(ring);
+                    }
+
+                    // 3. Highlight all affected opponent pieces & tiles that will be converted
+                    if (bestMove.captures && bestMove.captures.length > 0) {
+                        for (let i = 0; i < bestMove.captures.length; i++) {
+                            const capKey = bestMove.captures[i];
+                            const pieceEl = this.pieceElements.get(capKey);
+                            if (pieceEl) {
+                                pieceEl.classList.add('piece-capture-threat');
+                                this.activeThreatPieceElements.push(pieceEl);
+                            }
+                            const cellEl = this.cellElements.get(capKey);
+                            if (cellEl) {
+                                cellEl.classList.add('hex-cell-capture-threat');
+                                this.activeThreatCellElements.push(cellEl);
+                            }
+                        }
+                    }
+
+                    // 4. Clear 550ms visual window so user clearly sees the AI move intention & affected balls
+                    await new Promise(resolve => setTimeout(resolve, 550));
+
+                    this.clearCapturePreviews();
+                    this.isAiTurn = false;
                     await this.executeMove(bestMove);
                 } else {
+                    this.isAiTurn = false;
                     await this.advanceTurn();
                 }
             } catch (err) {

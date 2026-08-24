@@ -149,6 +149,18 @@
   filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.8));
 }
 
+.hex-cell-last-dest {
+  stroke: #00e5ff !important;
+  stroke-width: 2.2 !important;
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.5));
+}
+
+.hex-cell-last-origin {
+  stroke: #64748b !important;
+  stroke-width: 1.8 !important;
+  stroke-dasharray: 4, 3;
+}
+
 /* Move Marker Pulse Animations */
 @keyframes pulse-clone {
   0%, 100% {
@@ -230,32 +242,30 @@
   transform-origin: center;
 }
 
-/* Subtle Target Threat Highlight on Affected Opponent Tiles & Pieces */
-@keyframes subtle-threat-piece {
-
-  0%,
-  100% {
-    stroke: #ff2d60;
-    stroke-width: 2.8px;
-    opacity: 0.85;
+/* Target Threat Highlight on Affected Opponent Tiles & Pieces */
+@keyframes piece-threat-pulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px #ff0844) brightness(1.2);
   }
-
-  50% {
-    stroke: #ffffff;
-    stroke-width: 3.2px;
-    opacity: 1;
+  100% {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 18px #ffffff) brightness(1.7);
   }
 }
 
-.piece-capture-threat circle:nth-of-type(2) {
-  animation: subtle-threat-piece 0.9s infinite ease-in-out !important;
+.piece-capture-threat {
+  animation: piece-threat-pulse 0.6s infinite alternate ease-in-out !important;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .hex-cell-capture-threat {
-  stroke: #ff2d60 !important;
-  stroke-width: 2.4px !important;
-  fill: rgba(255, 45, 96, 0.22) !important;
-  transition: fill 0.1s ease, stroke 0.1s ease;
+  stroke: #ff0844 !important;
+  stroke-width: 2.8px !important;
+  fill: rgba(255, 8, 68, 0.35) !important;
+  filter: drop-shadow(0 0 10px rgba(255, 8, 68, 0.75));
+  transition: fill 0.12s ease, stroke 0.12s ease;
 }
 
 /* Custom Scrollbar */
