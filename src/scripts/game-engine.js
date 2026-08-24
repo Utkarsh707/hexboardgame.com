@@ -19,7 +19,7 @@ export class HexxagonGame {
 
         this.presetId = options.presetId || 'classic';
         this.gameMode = options.gameMode || 'pve-medium';
-        
+
         this.state = null;
         this.history = [];
         this.selectedCell = null;
@@ -589,7 +589,7 @@ export class HexxagonGame {
     handleGameOver() {
         this.isGameOver = true;
         const scores = this.calculateScores();
-        
+
         let maxScore = -1;
         let winner = null;
         let isTie = false;
@@ -641,7 +641,7 @@ export class HexxagonGame {
             stats.highScorePearl = Math.max(stats.highScorePearl || 0, scores.pearl || 0);
 
             localStorage.setItem('hexxagon_stats_v2', JSON.stringify(stats));
-        } catch (e) {}
+        } catch (e) { }
     }
 
     undo() {

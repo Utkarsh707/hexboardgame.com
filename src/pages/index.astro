@@ -7,6 +7,7 @@ import KeyboardShortcutsModal from '../components/KeyboardShortcutsModal.astro';
 import GameOverModal from '../components/GameOverModal.astro';
 import RulesSection from '../components/RulesSection.astro';
 import StrategyGuide from '../components/StrategyGuide.astro';
+import AdSlot from '../components/AdSlot.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 ---
@@ -359,8 +360,10 @@ import '../styles/global.css';
 
   </main>
 
-  <!-- Below-the-fold Extended Guides & Rules -->
-  <section id="rules-and-guides" class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-slate-800/80">
+  <!-- Below-the-fold Extended Guides & Ad Section -->
+  <section id="rules-and-guides" class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 border-t border-slate-800/80">
+    <!-- Non-Intrusive Google AdSense Placement -->
+    <AdSlot className="max-w-3xl mx-auto" />
     <RulesSection />
     <StrategyGuide />
   </section>

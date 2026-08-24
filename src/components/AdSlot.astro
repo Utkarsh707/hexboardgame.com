@@ -1,0 +1,65 @@
+---
+interface Props {
+  slotId?: string;
+  adClient?: string;
+  format?: 'auto' | 'horizontal' | 'rectangle';
+  className?: string;
+}
+
+const {
+  slotId = '0000000000',
+  adClient = 'ca-pub-XXXXXXXXXXXXXXXX',
+  format = 'auto',
+  className = ''
+} = Astro.props;
+---
+
+<!-- ==========================================================================
+     GOOGLE ADSENSE COMPLIANT AD CONTAINER
+     - Pre-allocated dimensions to guarantee CLS = 0 (Cumulative Layout Shift)
+     - Safe padding & clear labeling per Google Ad Placement Policies
+     ========================================================================== -->
+<div class={`w-full flex flex-col items-center justify-center my-3 sm:my-4 ${className}`}>
+  
+  <!-- Mandatory AdSense Labeling -->
+  <span class="text-[8px] font-mono uppercase tracking-widest text-slate-500 mb-1 select-none">
+    ADVERTISEMENT
+  </span>
+
+  <!-- Reserved Ad Container Box -->
+  <div class="w-full max-w-[728px] min-h-[90px] rounded-xl bg-[#04060e]/80 border border-slate-800/60 flex items-center justify-center overflow-hidden relative shadow-inner">
+    
+    <!-- Google AdSense Tag -->
+    <ins
+      class="adsbygoogle w-full block text-center"
+      style="display:block"
+      data-ad-client={adClient}
+      data-ad-slot={slotId}
+      data-ad-format={format}
+      data-full-width-responsive="true"
+    ></ins>
+
+    <!-- Ad Placeholder / Fallback visual when no ad is served -->
+    <div class="ad-placeholder-preview absolute inset-0 pointer-events-none flex flex-col items-center justify-center text-slate-600 text-xs font-mono select-none">
+      <span class="text-[10px] text-slate-500 font-bold">SPONSORED AD SPACE</span>
+      <span class="text-[9px] text-slate-600">728×90 / Responsive Leaderboard</span>
+    </div>
+
+  </div>
+</div>
+
+<script is:inline>
+  // Safe async ad push guard
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  } catch (e) {
+    // AdBlock or script blocked
+  }
+</script>
+
+<style>
+  /* Automatically hide placeholder when an active ad iframe loads */
+  .adsbygoogle[data-ad-status="filled"] + .ad-placeholder-preview {
+    display: none !important;
+  }
+</style>

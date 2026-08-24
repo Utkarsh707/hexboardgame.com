@@ -210,7 +210,7 @@ export function initGameUI() {
 
     function syncDifficultyLock(moveCount) {
         const isGameStarted = moveCount > 0 && !game.isGameOver;
-        
+
         diffButtons.forEach(btn => {
             if (isGameStarted) {
                 btn.disabled = true;
@@ -246,7 +246,7 @@ export function initGameUI() {
         }
 
         currentDifficulty = diff;
-        
+
         if (labelCurrentDiff) {
             const labels = {
                 easy: 'EASY (NOVICE)',
