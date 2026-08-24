@@ -6,57 +6,57 @@
   class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 backdrop:backdrop-blur-md max-w-md w-[calc(100vw-1rem)]"
   aria-labelledby="game-over-title"
 >
-  <div class="vercel-card rounded-2xl p-5 sm:p-8 border border-zinc-800 shadow-2xl text-zinc-100 flex flex-col items-center text-center gap-4 sm:gap-6 relative overflow-hidden max-h-[88vh] overflow-y-auto">
+  <div class="nes-card rounded-2xl p-5 sm:p-7 border border-cyan-400/40 shadow-[0_0_50px_rgba(0,0,0,0.95)] text-slate-100 flex flex-col items-center text-center gap-4 sm:gap-5 relative overflow-hidden max-h-[88vh] overflow-y-auto">
     
     <!-- Ambient Win Glow -->
-    <div id="game-over-glow" class="absolute inset-0 pointer-events-none opacity-20 bg-gradient-to-b from-[#ff2d60]/40 to-transparent"></div>
+    <div id="game-over-glow" class="absolute inset-0 pointer-events-none opacity-25 bg-gradient-to-b from-[#00e5ff]/30 via-transparent to-[#ff2d60]/30"></div>
 
     <!-- Trophy / Badge Icon -->
-    <div id="game-over-icon" class="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-3xl shadow-xl">
+    <div id="game-over-icon" class="w-16 h-16 rounded-2xl bg-[#090d1a] border-2 border-cyan-400/50 flex items-center justify-center text-3xl shadow-[0_0_25px_rgba(0,229,255,0.3)]">
       🏆
     </div>
 
     <!-- Title & Subtitle -->
     <div class="flex flex-col gap-1">
-      <h2 id="game-over-title" class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+      <h2 id="game-over-title" class="text-xl sm:text-2xl font-black tracking-tight text-white font-['Outfit'] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
         Match Concluded
       </h2>
-      <p id="game-over-subtitle" class="text-xs text-zinc-400">
-        All playable spaces occupied.
+      <p id="game-over-subtitle" class="text-xs text-slate-400 font-mono">
+        All playable territory claimed.
       </p>
     </div>
 
     <!-- Final Score Display -->
-    <div class="w-full grid grid-cols-2 gap-3 p-4 rounded-xl bg-zinc-950/80 border border-zinc-850">
+    <div class="w-full grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#050814] border border-cyan-500/30">
       <div class="flex flex-col items-center">
-        <span class="text-xs font-mono uppercase text-[#ff2d60]">Rubies</span>
-        <span id="final-score-ruby" class="text-3xl font-bold font-mono text-[#ff2d60] tabular-nums mt-0.5">0</span>
+        <span class="text-[9px] font-['Press_Start_2P'] uppercase text-[#ff2d60]">RUBIES</span>
+        <span id="final-score-ruby" class="text-3xl font-black font-mono text-[#ff2d60] tabular-nums mt-1 drop-shadow-[0_0_8px_rgba(255,45,96,0.6)]">0</span>
       </div>
-      <div class="flex flex-col items-center">
-        <span class="text-xs font-mono uppercase text-[#00e5ff]">Pearls</span>
-        <span id="final-score-pearl" class="text-3xl font-bold font-mono text-[#00e5ff] tabular-nums mt-0.5">0</span>
+      <div class="flex flex-col items-center border-l border-cyan-500/20">
+        <span class="text-[9px] font-['Press_Start_2P'] uppercase text-[#00e5ff]">PEARLS</span>
+        <span id="final-score-pearl" class="text-3xl font-black font-mono text-[#00e5ff] tabular-nums mt-1 drop-shadow-[0_0_8px_rgba(0,229,255,0.6)]">0</span>
       </div>
     </div>
 
-    <!-- Play Again Button -->
-    <div class="w-full flex flex-col sm:flex-row items-center gap-2.5">
+    <!-- Play Again & Review Action Buttons (Evenly aligned 2-column grid) -->
+    <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
       <button
         id="btn-game-over-rematch"
         type="button"
-        class="w-full vercel-btn-primary py-2.5 px-4 rounded-lg text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white flex items-center justify-center gap-2"
+        class="w-full nes-btn-primary py-2.5 px-4 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 flex items-center justify-center gap-1.5 cursor-pointer"
       >
-        <svg class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="w-4 h-4 text-black shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
-        <span>Play Rematch</span>
+        <span>PLAY REMATCH</span>
       </button>
 
       <button
         id="btn-game-over-close"
         type="button"
-        class="w-full sm:w-auto vercel-btn-secondary py-2.5 px-4 rounded-lg text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+        class="w-full nes-btn-secondary py-2.5 px-4 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 flex items-center justify-center gap-1.5 cursor-pointer"
       >
-        Review Board
+        <span>REVIEW BOARD</span>
       </button>
     </div>
 

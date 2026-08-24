@@ -3,26 +3,26 @@
 
 <dialog
   id="dialog-shortcuts"
-  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 backdrop:backdrop-blur-md max-w-md w-[calc(100vw-1rem)]"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 backdrop:backdrop-blur-md max-w-md w-[calc(100vw-1rem)]"
   aria-labelledby="shortcuts-dialog-title"
 >
-  <div class="vercel-card rounded-2xl p-4 sm:p-6 border border-zinc-800 shadow-2xl text-zinc-100 flex flex-col gap-4 sm:gap-5 max-h-[88vh] overflow-y-auto">
+  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/40 shadow-[0_0_50px_rgba(0,0,0,0.95)] text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[88vh] overflow-y-auto">
     
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+    <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm font-mono">
+        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm shadow-[0_0_12px_rgba(0,229,255,0.3)]">
           ⌨️
         </div>
-        <h2 id="shortcuts-dialog-title" class="text-base font-semibold text-white tracking-tight">
-          Keyboard Shortcuts
+        <h2 id="shortcuts-dialog-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-['Press_Start_2P'] text-[11px] sm:text-xs text-cyan-300">
+          CONTROLS
         </h2>
       </div>
       <button
         id="btn-close-shortcuts"
         type="button"
-        class="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
-        aria-label="Close shortcuts dialog"
+        class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+        aria-label="Close keyboard shortcuts dialog"
       >
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -30,49 +30,37 @@
       </button>
     </div>
 
-    <!-- Shortcut list -->
-    <div class="flex flex-col gap-2.5 text-xs text-zinc-300">
-      
-      <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-        <span>Restart / New Game</span>
-        <kbd class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-white font-mono text-[11px]">Space</kbd>
+    <!-- Shortcuts List -->
+    <div class="flex flex-col gap-2 font-mono text-xs">
+      <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <span class="text-slate-300">Undo Last Move</span>
+        <kbd class="px-2 py-1 rounded-md bg-[#090d1a] border border-cyan-400/40 text-cyan-300 font-bold shadow">U</kbd>
       </div>
 
-      <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-        <span>Undo Last Move</span>
-        <kbd class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-white font-mono text-[11px]">U</kbd>
+      <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <span class="text-slate-300">Restart Current Game</span>
+        <kbd class="px-2 py-1 rounded-md bg-[#090d1a] border border-cyan-400/40 text-cyan-300 font-bold shadow">R</kbd>
       </div>
 
-      <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-        <span>Toggle Sound / Mute</span>
-        <kbd class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-white font-mono text-[11px]">M</kbd>
+      <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <span class="text-slate-300">Toggle Sound Audio</span>
+        <kbd class="px-2 py-1 rounded-md bg-[#090d1a] border border-cyan-400/40 text-cyan-300 font-bold shadow">M</kbd>
       </div>
 
-      <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-        <span>Open How to Play</span>
-        <kbd class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-white font-mono text-[11px]">?</kbd>
+      <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <span class="text-slate-300">Deselect / Close Dialogs</span>
+        <kbd class="px-2 py-1 rounded-md bg-[#090d1a] border border-cyan-400/40 text-cyan-300 font-bold shadow">ESC</kbd>
       </div>
-
-      <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-        <span>Select / Place Piece</span>
-        <kbd class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-white font-mono text-[11px]">Enter / Click</kbd>
-      </div>
-
-      <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-        <span>Close any Dialog</span>
-        <kbd class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-white font-mono text-[11px]">Esc</kbd>
-      </div>
-
     </div>
 
-    <!-- Close button -->
-    <div class="flex justify-end pt-2">
+    <!-- Footer action -->
+    <div class="flex justify-end pt-1">
       <button
         id="btn-close-shortcuts-action"
         type="button"
-        class="vercel-btn-primary px-4 py-1.5 rounded-lg text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        class="nes-btn-primary px-4 py-2 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
       >
-        Close
+        DISMISS
       </button>
     </div>
 

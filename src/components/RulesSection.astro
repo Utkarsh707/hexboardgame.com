@@ -1,53 +1,74 @@
 ---
 ---
 
-<section id="rules-section" class="w-full max-w-4xl mx-auto px-4 mt-12 mb-8">
-  <div class="vercel-card rounded-2xl p-6 sm:p-8 border border-zinc-800/80 flex flex-col gap-6">
+<section id="rules-section" class="w-full max-w-4xl mx-auto px-2 sm:px-4 mt-6 mb-4">
+  <details class="group nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/30 transition-all duration-300 open:shadow-[0_0_30px_rgba(0,229,255,0.15)]">
     
-    <div class="flex flex-col gap-1.5 border-b border-zinc-800 pb-4">
-      <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Rules & Origins</span>
-      <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
-        About Online Hex Board Game (Hexxagon)
-      </h2>
-      <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+    <!-- Collapsible Header -->
+    <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-base shadow-[0_0_12px_rgba(0,229,255,0.3)] shrink-0">
+          📖
+        </div>
+        <div class="flex flex-col text-left">
+          <span class="text-[9px] font-['Press_Start_2P'] text-cyan-300">RULES & ORIGINS</span>
+          <h2 class="text-xs sm:text-base font-bold text-white tracking-wide font-['Outfit'] mt-0.5">
+            How Hexxagon Works (Rules & Mechanics)
+          </h2>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-[10px] font-mono text-cyan-400/70 hidden sm:inline group-open:hidden">Click to Expand</span>
+        <div class="w-7 h-7 rounded-lg bg-[#090d1a] border border-cyan-400/40 flex items-center justify-center text-cyan-300 group-open:rotate-180 transition-transform duration-200 shadow">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+    </summary>
+
+    <!-- Expanded Body Content -->
+    <div class="mt-4 pt-4 border-t border-cyan-500/20 flex flex-col gap-4 text-xs text-slate-300">
+      <p class="text-xs text-slate-400 leading-relaxed font-mono">
         Hexxagon is an iconic strategy board game invented in 1993 by Software Creations. Played on a tessellated hexagonal grid, it challenges players to clone, leap, and infect adjacent opposing tokens.
       </p>
+
+      <!-- 3 Core Mechanics Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-300">
+        
+        <div class="p-3.5 rounded-xl bg-[#050814] border border-emerald-500/30 flex flex-col gap-1.5">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-xs font-bold font-mono">
+            01
+          </div>
+          <h3 class="text-xs font-bold text-white font-['Outfit']">Cell Duplication (1 Step)</h3>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Moving 1 distance to an adjacent hex clones your piece, adding an additional friendly token to the board without sacrificing the original.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[#050814] border border-amber-500/30 flex flex-col gap-1.5">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-xs font-bold font-mono">
+            02
+          </div>
+          <h3 class="text-xs font-bold text-white font-['Outfit']">Tactical Leap (2 Steps)</h3>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Jumping 2 distances teleports your piece to an open hex across enemy lines, vacating the initial position for surprise offensive strikes.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[#050814] border border-rose-500/30 flex flex-col gap-1.5">
+          <div class="w-7 h-7 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 text-xs font-bold font-mono">
+            03
+          </div>
+          <h3 class="text-xs font-bold text-white font-['Outfit']">Infection Cascade</h3>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            When landing, all enemy pieces touching the target destination are converted to your color instantly, triggering massive point swings.
+          </p>
+        </div>
+
+      </div>
     </div>
 
-    <!-- 3 Core Mechanics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-zinc-300">
-      
-      <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex flex-col gap-2">
-        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-sm font-bold font-mono">
-          01
-        </div>
-        <h3 class="text-sm font-semibold text-white">Cell Duplication</h3>
-        <p class="text-zinc-400 leading-relaxed">
-          Moving 1 distance to an adjacent hex clones your piece, adding an additional friendly token to the board without sacrificing the original.
-        </p>
-      </div>
-
-      <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex flex-col gap-2">
-        <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-sm font-bold font-mono">
-          02
-        </div>
-        <h3 class="text-sm font-semibold text-white">Tactical Leap</h3>
-        <p class="text-zinc-400 leading-relaxed">
-          Jumping 2 distances teleports your piece to an open hex across enemy lines, vacating the initial position for surprise offensive strikes.
-        </p>
-      </div>
-
-      <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex flex-col gap-2">
-        <div class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-sm font-bold font-mono">
-          03
-        </div>
-        <h3 class="text-sm font-semibold text-white">Infection Cascade</h3>
-        <p class="text-zinc-400 leading-relaxed">
-          When landing, all enemy pieces touching the target destination are converted to your color instantly, triggering massive point swings.
-        </p>
-      </div>
-
-    </div>
-
-  </div>
+  </details>
 </section>

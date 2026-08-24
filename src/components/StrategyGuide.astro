@@ -1,66 +1,87 @@
 ---
 ---
 
-<section id="strategy-section" class="w-full max-w-4xl mx-auto px-4 mb-12">
-  <div class="vercel-card rounded-2xl p-6 sm:p-8 border border-zinc-800/80 flex flex-col gap-6">
+<section id="strategy-section" class="w-full max-w-4xl mx-auto px-2 sm:px-4 mb-8">
+  <details class="group nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/30 transition-all duration-300 open:shadow-[0_0_30px_rgba(0,229,255,0.15)]">
     
-    <div class="flex flex-col gap-1.5 border-b border-zinc-800 pb-4">
-      <span class="text-xs font-mono uppercase tracking-wider text-[#00e5ff]">Grandmaster Playbook</span>
-      <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
-        Pro Strategies & Tactical Principles
-      </h2>
-      <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+    <!-- Collapsible Header -->
+    <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-base shadow-[0_0_12px_rgba(192,132,252,0.3)] shrink-0">
+          ⚡
+        </div>
+        <div class="flex flex-col text-left">
+          <span class="text-[9px] font-['Press_Start_2P'] text-purple-300">TACTICAL PLAYBOOK</span>
+          <h2 class="text-xs sm:text-base font-bold text-white tracking-wide font-['Outfit'] mt-0.5">
+            Grandmaster Strategies & Pro Tips
+          </h2>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-[10px] font-mono text-purple-400/70 hidden sm:inline group-open:hidden">Click to Expand</span>
+        <div class="w-7 h-7 rounded-lg bg-[#090d1a] border border-purple-400/40 flex items-center justify-center text-purple-300 group-open:rotate-180 transition-transform duration-200 shadow">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+    </summary>
+
+    <!-- Expanded Body Content -->
+    <div class="mt-4 pt-4 border-t border-cyan-500/20 flex flex-col gap-4 text-xs text-slate-300">
+      <p class="text-xs text-slate-400 leading-relaxed font-mono">
         Mastering hexagonal geometry requires spatial awareness and understanding the trade-off between board growth and aggressive leaps.
       </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-300">
+        
+        <!-- Tip 1: Edge & Corner Anchoring -->
+        <div class="p-3.5 rounded-xl bg-[#050814] border border-cyan-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800 font-mono text-[9px] font-bold">DEFENSE</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Edge & Corner Anchoring</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Hexes on outer perimeters have only 3 to 4 neighbors compared to 6 in the interior. Anchoring along edges prevents the enemy from completely surrounding and converting your clusters.
+          </p>
+        </div>
+
+        <!-- Tip 2: The Jump Trap -->
+        <div class="p-3.5 rounded-xl bg-[#050814] border border-amber-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800 font-mono text-[9px] font-bold">CAUTION</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Beware the Reckless Jump</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Leaping into open territory leaves an isolated token exposed to counter-infections. Prefer cloning over jumping unless the capture yields a 3+ piece swing or seals an endgame cluster.
+          </p>
+        </div>
+
+        <!-- Tip 3: Denial & Bottleneck Control -->
+        <div class="p-3.5 rounded-xl bg-[#050814] border border-rose-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800 font-mono text-[9px] font-bold">CONTROL</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Choke Points & Donut Rings</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            In maps like The Donut Void or Quantum Hourglass, controlling the narrow bridges cuts off the opponent's expansion, forcing them to jump blindly into your traps.
+          </p>
+        </div>
+
+        <!-- Tip 4: Late Game Sweep -->
+        <div class="p-3.5 rounded-xl bg-[#050814] border border-emerald-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800 font-mono text-[9px] font-bold">ENDGAME</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Chain Reaction Conversions</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            When the board is over 80% full, single moves can convert up to 6 adjacent hexes in one turn. Calculate multiple moves ahead to ensure your conversion cannot be immediately recaptured.
+          </p>
+        </div>
+
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-zinc-300">
-      
-      <!-- Tip 1: Edge & Corner Anchoring -->
-      <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex flex-col gap-2">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[10px]">Defense</span>
-          <h3 class="text-sm font-semibold text-white">Edge & Corner Anchoring</h3>
-        </div>
-        <p class="text-zinc-400 leading-relaxed">
-          Hexes on outer perimeters have only 3 to 4 neighbors compared to 6 in the interior. Anchoring your chain along edges prevents the enemy from completely surrounding and converting your clusters.
-        </p>
-      </div>
-
-      <!-- Tip 2: The Jump Trap -->
-      <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex flex-col gap-2">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800 font-mono text-[10px]">Caution</span>
-          <h3 class="text-sm font-semibold text-white">Beware the Reckless Jump</h3>
-        </div>
-        <p class="text-zinc-400 leading-relaxed">
-          Leaping into open enemy territory might capture 2 pieces, but leaves an isolated token exposed to counter-infections. Prefer cloning over jumping unless the capture yields a 3+ piece swing or seals an endgame cluster.
-        </p>
-      </div>
-
-      <!-- Tip 3: Denial & Bottleneck Control -->
-      <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex flex-col gap-2">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800 font-mono text-[10px]">Control</span>
-          <h3 class="text-sm font-semibold text-white">Choke Points & Donut Rings</h3>
-        </div>
-        <p class="text-zinc-400 leading-relaxed">
-          In maps like The Donut Void or Quantum Hourglass, controlling the narrow bridges cuts off the opponent's expansion, forcing them to pass turns or jump blindly into your territory.
-        </p>
-      </div>
-
-      <!-- Tip 4: Late Game Sweep -->
-      <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex flex-col gap-2">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800 font-mono text-[10px]">Endgame</span>
-          <h3 class="text-sm font-semibold text-white">Chain Reaction Conversions</h3>
-        </div>
-        <p class="text-zinc-400 leading-relaxed">
-          When the board is over 80% full, single moves can convert up to 6 adjacent hexes in one turn. Calculate multiple moves ahead to ensure your conversion cannot be immediately recaptured on the next turn.
-        </p>
-      </div>
-
-    </div>
-
-  </div>
+  </details>
 </section>

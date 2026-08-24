@@ -29,14 +29,19 @@ export function initGameUI() {
     const turnDotEmeraldSolid = document.getElementById('turn-dot-emerald-solid');
     const turnStatusIndicator = document.getElementById('turn-status-indicator');
     const turnStatusText = document.getElementById('turn-status-text');
+    const turnStatusIndicatorMobile = document.getElementById('turn-status-indicator-mobile');
+    const turnStatusTextMobile = document.getElementById('turn-status-text-mobile');
     const labelPlayerPearl = document.getElementById('label-player-pearl');
     const hudMoveCount = document.getElementById('hud-move-count');
 
     // Controls
     const selectGameMode = document.getElementById('select-game-mode');
     const selectBoardPreset = document.getElementById('select-board-preset');
+    const selectGameModeMobile = document.getElementById('select-game-mode-mobile');
+    const selectBoardPresetMobile = document.getElementById('select-board-preset-mobile');
     const btnRestartGame = document.getElementById('btn-restart-game');
     const btnHudUndo = document.getElementById('btn-hud-undo');
+    const btnHudUndoMobile = document.getElementById('btn-hud-undo-mobile');
     const btnToggleSound = document.getElementById('btn-toggle-sound');
     const iconSoundOn = document.getElementById('icon-sound-on');
     const iconSoundOff = document.getElementById('icon-sound-off');
@@ -118,23 +123,30 @@ export function initGameUI() {
             cardRuby?.classList.add('border-[#ff2d60]', 'bg-white/5');
             if (hudTurnGlow) hudTurnGlow.style.background = 'radial-gradient(circle at 15% 50%, rgba(255, 45, 96, 0.25), transparent 70%)';
             if (turnStatusIndicator) turnStatusIndicator.style.backgroundColor = '#ff2d60';
-            if (turnStatusText) turnStatusText.textContent = selectGameMode?.value === 'pvp' ? "Player 1's Turn (Rubies)" : "Your Turn (Rubies)";
+            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.style.backgroundColor = '#ff2d60';
+            const text = selectGameMode?.value === 'pvp' ? "Player 1's Turn" : "Your Turn (Rubies)";
+            if (turnStatusText) turnStatusText.textContent = text;
+            if (turnStatusTextMobile) turnStatusTextMobile.textContent = text;
         } else if (currentPlayer === 'pearl') {
             turnDotPearl?.classList.remove('hidden');
             turnDotPearlSolid?.classList.remove('hidden');
             cardPearl?.classList.add('border-[#00e5ff]', 'bg-white/5');
             if (hudTurnGlow) hudTurnGlow.style.background = 'radial-gradient(circle at 85% 50%, rgba(0, 229, 255, 0.25), transparent 70%)';
             if (turnStatusIndicator) turnStatusIndicator.style.backgroundColor = '#00e5ff';
-            if (turnStatusText) {
-                turnStatusText.textContent = isAi ? 'AI Opponent Thinking…' : "Player 2's Turn (Pearls)";
-            }
+            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.style.backgroundColor = '#00e5ff';
+            const text = isAi ? 'AI Opponent Thinking…' : "Player 2's Turn";
+            if (turnStatusText) turnStatusText.textContent = text;
+            if (turnStatusTextMobile) turnStatusTextMobile.textContent = text;
         } else if (currentPlayer === 'emerald') {
             turnDotEmerald?.classList.remove('hidden');
             turnDotEmeraldSolid?.classList.remove('hidden');
             cardEmerald?.classList.add('border-[#10b981]', 'bg-white/5');
             if (hudTurnGlow) hudTurnGlow.style.background = 'radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.25), transparent 70%)';
             if (turnStatusIndicator) turnStatusIndicator.style.backgroundColor = '#10b981';
-            if (turnStatusText) turnStatusText.textContent = "Player 3's Turn (Emeralds)";
+            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.style.backgroundColor = '#10b981';
+            const text = "Player 3's Turn";
+            if (turnStatusText) turnStatusText.textContent = text;
+            if (turnStatusTextMobile) turnStatusTextMobile.textContent = text;
         }
     });
 
@@ -142,9 +154,12 @@ export function initGameUI() {
     game.on('aiThinking', (thinking) => {
         if (thinking) {
             if (turnStatusIndicator) turnStatusIndicator.classList.add('animate-spin');
-            if (turnStatusText) turnStatusText.textContent = 'AI Calculating Best Move…';
+            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.classList.add('animate-spin');
+            if (turnStatusText) turnStatusText.textContent = 'AI Calculating Move…';
+            if (turnStatusTextMobile) turnStatusTextMobile.textContent = 'AI Thinking…';
         } else {
             if (turnStatusIndicator) turnStatusIndicator.classList.remove('animate-spin');
+            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.classList.remove('animate-spin');
         }
     });
 
@@ -178,6 +193,7 @@ export function initGameUI() {
     const containerAiDifficultyMobile = document.getElementById('container-ai-difficulty-mobile');
     const labelCurrentDiff = document.getElementById('label-current-diff');
     const diffLockBadge = document.getElementById('diff-lock-badge');
+    const diffLockBadgeMobile = document.getElementById('diff-lock-badge-mobile');
     const diffButtons = document.querySelectorAll('.btn-difficulty, .btn-diff-mobile');
 
     function syncDifficultyLock(moveCount) {
@@ -200,6 +216,13 @@ export function initGameUI() {
                 diffLockBadge.classList.remove('hidden');
             } else {
                 diffLockBadge.classList.add('hidden');
+            }
+        }
+        if (diffLockBadgeMobile) {
+            if (isGameStarted) {
+                diffLockBadgeMobile.classList.remove('hidden');
+            } else {
+                diffLockBadgeMobile.classList.add('hidden');
             }
         }
     }
@@ -246,9 +269,11 @@ export function initGameUI() {
         });
     });
 
-    // Mode Selector
-    selectGameMode?.addEventListener('change', (e) => {
-        const mode = e.target.value;
+    // Unified Mode & Preset Handlers (Desktop & Mobile Sync)
+    function handleModeChange(mode) {
+        if (selectGameMode) selectGameMode.value = mode;
+        if (selectGameModeMobile) selectGameModeMobile.value = mode;
+
         if (mode === 'pve') {
             containerAiDifficulty?.classList.remove('opacity-30', 'pointer-events-none');
             containerAiDifficultyMobile?.classList.remove('opacity-30', 'pointer-events-none');
@@ -262,35 +287,49 @@ export function initGameUI() {
         if (mode === 'trio') {
             cardEmerald?.classList.remove('hidden');
             cardEmerald?.classList.add('flex');
-            if (selectBoardPreset) selectBoardPreset.value = 'trio';
+            handlePresetChange('trio');
         } else {
             cardEmerald?.classList.add('hidden');
             cardEmerald?.classList.remove('flex');
-            if (selectBoardPreset && selectBoardPreset.value === 'trio') {
-                selectBoardPreset.value = 'classic';
+            if (game.presetId === 'trio') {
+                handlePresetChange('classic');
             }
         }
 
         if (labelPlayerPearl) {
             labelPlayerPearl.textContent = mode === 'pvp' ? 'Player 2' : (mode === 'trio' ? 'Player 2' : 'AI // PEARL');
         }
-    });
 
-    // Preset Layout Selector
-    selectBoardPreset?.addEventListener('change', (e) => {
-        const preset = e.target.value;
-        if (preset === 'trio' && selectGameMode) {
-            selectGameMode.value = 'trio';
+        sound.playSelect();
+    }
+
+    function handlePresetChange(preset) {
+        if (selectBoardPreset) selectBoardPreset.value = preset;
+        if (selectBoardPresetMobile) selectBoardPresetMobile.value = preset;
+
+        if (preset === 'trio') {
+            if (selectGameMode) selectGameMode.value = 'trio';
+            if (selectGameModeMobile) selectGameModeMobile.value = 'trio';
             cardEmerald?.classList.remove('hidden');
             cardEmerald?.classList.add('flex');
             containerAiDifficulty?.classList.add('opacity-30', 'pointer-events-none');
+            containerAiDifficultyMobile?.classList.add('opacity-30', 'pointer-events-none');
         }
+
         if (stageBannerText && BOARD_PRESETS[preset]) {
             stageBannerText.textContent = BOARD_PRESETS[preset].stageTitle;
         }
+
         game.setPreset(preset);
         syncDifficultyLock(0);
-    });
+        sound.playSelect();
+    }
+
+    selectGameMode?.addEventListener('change', (e) => handleModeChange(e.target.value));
+    selectGameModeMobile?.addEventListener('change', (e) => handleModeChange(e.target.value));
+
+    selectBoardPreset?.addEventListener('change', (e) => handlePresetChange(e.target.value));
+    selectBoardPresetMobile?.addEventListener('change', (e) => handlePresetChange(e.target.value));
 
     // Restart Button
     btnRestartGame?.addEventListener('click', () => {
@@ -299,8 +338,11 @@ export function initGameUI() {
         syncDifficultyLock(0);
     });
 
-    // Undo Button
+    // Undo Button (Desktop & Mobile)
     btnHudUndo?.addEventListener('click', () => {
+        game.undo();
+    });
+    btnHudUndoMobile?.addEventListener('click', () => {
         game.undo();
     });
 

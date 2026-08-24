@@ -15,80 +15,102 @@ import '../styles/global.css';
   <!-- Main Header Navigation (Compact 48px) -->
   <Header />
 
-  <!-- ZERO-SCROLL GAME SCREEN (Board on Left, Vertical Score & Control Sidebar on Right) -->
-  <main id="game-main" class="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-[calc(100dvh-3rem)] max-h-[calc(100dvh-3rem)] flex flex-col justify-between py-1.5 sm:py-2 overflow-hidden">
+  <!-- MAIN GAME ARENA (Responsive: Natural Flow on Mobile, Fixed Cockpit on Desktop) -->
+  <main id="game-main" class="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 md:h-[calc(100dvh-3rem)] md:max-h-[calc(100dvh-3rem)] flex flex-col justify-between py-2 sm:py-2.5">
     
     <!-- Top Stage Header Bar -->
-    <div class="w-full flex items-center justify-between px-1 pb-1 border-b border-cyan-500/20 shrink-0">
+    <div class="w-full flex items-center justify-between px-1 pb-1.5 border-b border-cyan-500/20 shrink-0">
       <div class="flex items-center gap-1.5 sm:gap-2">
         <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-        <span id="stage-banner-text" class="text-[8px] sm:text-[9px] font-['Press_Start_2P'] text-cyan-300">STAGE 1 // ORBITAL VOID</span>
+        <span id="stage-banner-text" class="text-[9px] sm:text-[10px] font-['Press_Start_2P'] text-cyan-300">STAGE 1 // ORBITAL VOID</span>
       </div>
       
-      <!-- Central Turn Status Pill & Undo CTA -->
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <div id="turn-status-badge" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[11px] font-mono font-semibold bg-[#030612] border border-cyan-400/40 text-cyan-200 shadow-[0_0_10px_rgba(0,229,255,0.2)]">
-          <span id="turn-status-indicator" class="w-1.5 h-1.5 rounded-full bg-[#ff2d60] shadow-[0_0_6px_#ff2d60]"></span>
-          <span id="turn-status-text" class="truncate max-w-[110px] sm:max-w-none uppercase tracking-wider font-bold">Rubies Turn</span>
+      <!-- Central Turn Status Pill & Undo CTA (Desktop view) -->
+      <div class="hidden md:flex items-center gap-2">
+        <div id="turn-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#030612] border border-cyan-400/40 text-cyan-200 shadow-[0_0_10px_rgba(0,229,255,0.2)]">
+          <span id="turn-status-indicator" class="w-2 h-2 rounded-full bg-[#ff2d60] shadow-[0_0_6px_#ff2d60]"></span>
+          <span id="turn-status-text" class="truncate max-w-[130px] lg:max-w-none uppercase tracking-wider font-bold">Rubies Turn</span>
         </div>
         
         <button
           id="btn-hud-undo"
           type="button"
-          class="inline-flex items-center gap-1 hover:text-cyan-300 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 bg-slate-900/90 border border-slate-700 hover:border-cyan-400/50 text-[9px] sm:text-[10px] font-mono font-bold"
+          class="inline-flex items-center gap-1 hover:text-cyan-300 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded px-2 py-1 bg-slate-900/90 border border-slate-700 hover:border-cyan-400/50 text-[11px] font-mono font-bold"
           title="Undo Last Move (Key: U)"
         >
-          <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
           </svg>
-          <span class="hidden xs:inline">UNDO</span>
+          <span>UNDO</span>
         </button>
       </div>
 
-      <div class="text-[9px] sm:text-[10px] font-mono text-slate-400">
+      <div class="text-[10px] sm:text-xs font-mono text-slate-400">
         MOVE: <strong id="hud-move-count" class="text-slate-100 font-bold">0</strong>
       </div>
     </div>
 
     <!-- MAIN GAME VIEW: BOARD ON LEFT, VERTICAL STATS & CONTROLS ON RIGHT -->
-    <div class="flex-1 min-h-0 w-full grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-4 lg:gap-6 items-center justify-center py-1">
+    <div class="flex-1 min-h-0 w-full grid grid-cols-1 md:grid-cols-12 gap-3 lg:gap-6 items-center justify-center py-1 sm:py-2">
       
-      <!-- LEFT / CENTER COLUMN: THE 2.5D HEXAGON BOARD (Auto-scaled to viewport height) -->
-      <div class="md:col-span-7 lg:col-span-8 xl:col-span-8 flex flex-col items-center justify-center h-full min-h-0">
+      <!-- LEFT / CENTER COLUMN: THE 2.5D HEXAGON BOARD -->
+      <div class="md:col-span-7 lg:col-span-8 xl:col-span-8 flex flex-col items-center justify-center w-full h-full min-h-0">
         
-        <!-- Mobile Top HUD Bar (Only on mobile screens < md) -->
-        <div class="flex md:hidden w-full items-center justify-between px-2 py-1 nes-card rounded-xl mb-1.5 shrink-0">
-          <div class="flex items-center gap-1.5">
-            <span class="text-lg">💎</span>
-            <div class="flex items-baseline gap-1">
-              <span id="score-ruby-mobile" class="text-xl font-bold font-mono text-[#ff2d60]">3</span>
-              <span class="text-[8px] font-mono text-slate-400">1P</span>
+        <!-- MOBILE TOP HUD BAR (Prominent, High-Contrast, Touch-Friendly) -->
+        <div class="flex md:hidden w-full items-center justify-between px-3 py-2 nes-card rounded-2xl mb-2.5 shrink-0 shadow-lg border-cyan-400/30">
+          
+          <!-- Player 1 Score -->
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">💎</span>
+            <div class="flex flex-col">
+              <span class="text-[8px] font-['Press_Start_2P'] text-[#ff2d60]">1P RUBY</span>
+              <span id="score-ruby-mobile" class="text-2xl font-black font-mono text-[#ff2d60] leading-none mt-0.5">3</span>
             </div>
           </div>
-          <div class="text-[8px] font-['Press_Start_2P'] text-cyan-300">VS</div>
-          <div class="flex items-center gap-1.5">
-            <div class="flex items-baseline gap-1">
-              <span id="score-pearl-mobile" class="text-xl font-bold font-mono text-[#00e5ff]">3</span>
-              <span class="text-[8px] font-mono text-slate-400">AI</span>
+
+          <!-- Mobile Turn Indicator & Undo Action -->
+          <div class="flex flex-col items-center gap-1">
+            <div id="turn-status-badge-mobile" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#030612] border border-cyan-400/50 text-cyan-200">
+              <span id="turn-status-indicator-mobile" class="w-2 h-2 rounded-full bg-[#ff2d60] shadow-[0_0_6px_#ff2d60]"></span>
+              <span id="turn-status-text-mobile" class="uppercase">Rubies Turn</span>
             </div>
-            <span class="text-lg">🔮</span>
+            <button
+              id="btn-hud-undo-mobile"
+              type="button"
+              class="inline-flex items-center gap-1 text-[10px] font-mono text-slate-400 hover:text-cyan-300 bg-slate-900/90 border border-slate-700 px-2 py-0.5 rounded"
+            >
+              <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg>
+              <span>UNDO</span>
+            </button>
           </div>
+
+          <!-- Player 2 / AI Score -->
+          <div class="flex items-center gap-2 text-right">
+            <div class="flex flex-col items-end">
+              <span class="text-[8px] font-['Press_Start_2P'] text-[#00e5ff]">AI PEARL</span>
+              <span id="score-pearl-mobile" class="text-2xl font-black font-mono text-[#00e5ff] leading-none mt-0.5">3</span>
+            </div>
+            <span class="text-2xl">🔮</span>
+          </div>
+
         </div>
 
-        <!-- Board Wrapper -->
-        <div class="relative aspect-square h-full max-h-[calc(100dvh-8rem)] md:max-h-[calc(100dvh-6rem)] max-w-[calc(100vw-1rem)] flex items-center justify-center p-0.5">
+        <!-- Board Wrapper (Large & Prominent on Mobile & Desktop) -->
+        <div class="relative w-full aspect-square max-w-[min(100vw-1rem,520px)] md:max-h-[calc(100dvh-6.5rem)] flex items-center justify-center p-0.5 sm:p-1">
           
           <!-- Floor Glow Halo -->
-          <div class="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-cyan-500/15 via-purple-600/10 to-rose-500/15 blur-xl opacity-70 pointer-events-none"></div>
+          <div class="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-cyan-500/15 via-purple-600/10 to-rose-500/15 blur-2xl opacity-70 pointer-events-none"></div>
 
           <!-- NES Space Station Platform Base -->
-          <div class="relative w-full h-full rounded-2xl sm:rounded-3xl nes-stage-platform flex items-center justify-center p-1 sm:p-2 touch-manipulation">
+          <div class="relative w-full h-full rounded-2xl sm:rounded-3xl nes-stage-platform flex items-center justify-center p-1.5 sm:p-3 touch-manipulation">
             
             <!-- Arcade Stage Corner Brackets -->
-            <div class="absolute top-1.5 left-1.5 w-2.5 h-2.5 border-t-2 border-l-2 border-cyan-400/60 pointer-events-none"></div>
-            <div class="absolute top-1.5 right-1.5 w-2.5 h-2.5 border-t-2 border-r-2 border-cyan-400/60 pointer-events-none"></div>
-            <div class="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 border-b-2 border-l-2 border-rose-500/60 pointer-events-none"></div>
-            <div class="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 border-b-2 border-r-2 border-rose-500/60 pointer-events-none"></div>
+            <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-cyan-400/60 pointer-events-none"></div>
+            <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-cyan-400/60 pointer-events-none"></div>
+            <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-rose-500/60 pointer-events-none"></div>
+            <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-rose-500/60 pointer-events-none"></div>
 
             <!-- SVG Hexagon Board -->
             <svg
@@ -104,47 +126,80 @@ import '../styles/global.css';
           </div>
         </div>
 
-        <!-- Mobile Bottom Controls (Only on mobile screens < md) -->
-        <div class="flex md:hidden flex-col w-full gap-1.5 mt-1.5 shrink-0">
-          <div class="flex items-center justify-between gap-1.5">
-            <div class="flex-1">
+        <!-- Mobile Controls (Comfortable Touch Targets on Phones) -->
+        <div class="flex md:hidden flex-col w-full gap-2 mt-3 shrink-0">
+          
+          <div class="grid grid-cols-2 gap-2">
+            <!-- Mobile Mode Select -->
+            <div class="flex flex-col gap-1">
+              <label for="select-game-mode-mobile" class="text-[8px] font-['Press_Start_2P'] text-cyan-300">
+                MATCH TYPE
+              </label>
               <select
                 id="select-game-mode-mobile"
-                class="w-full bg-[#050814] border border-cyan-400/30 rounded-lg px-1.5 py-1 text-[10px] text-cyan-100 font-mono"
+                class="w-full bg-[#050814] border border-cyan-400/30 rounded-xl px-2.5 py-2 text-xs text-cyan-100 font-mono focus:outline-none focus:ring-1 focus:ring-cyan-400"
               >
                 <option value="pve" selected>🤖 VS CPU</option>
                 <option value="pvp">👥 Local 2P</option>
                 <option value="trio">⚔️ 3P Battle</option>
               </select>
             </div>
-            <div class="flex-1">
+
+            <!-- Mobile Stage Select -->
+            <div class="flex flex-col gap-1">
+              <label for="select-board-preset-mobile" class="text-[8px] font-['Press_Start_2P'] text-cyan-300">
+                STAGE SELECT
+              </label>
               <select
                 id="select-board-preset-mobile"
-                class="w-full bg-[#050814] border border-cyan-400/30 rounded-lg px-1.5 py-1 text-[10px] text-cyan-100 font-mono"
+                class="w-full bg-[#050814] border border-cyan-400/30 rounded-xl px-2.5 py-2 text-xs text-cyan-100 font-mono focus:outline-none focus:ring-1 focus:ring-cyan-400"
               >
-                <option value="classic" selected>Stage 1: Classic (58)</option>
-                <option value="ring">Stage 2: Donut Void (48)</option>
-                <option value="hourglass">Stage 3: Hourglass (40)</option>
-                <option value="trio">Stage 4: Tri-Chamber (61)</option>
+                <option value="classic" selected>Stage 1: Classic</option>
+                <option value="ring">Stage 2: Donut Void</option>
+                <option value="hourglass">Stage 3: Hourglass</option>
+                <option value="trio">Stage 4: Tri-Chamber</option>
               </select>
             </div>
           </div>
 
           <!-- Mobile 3-Tier AI Difficulty Bar -->
-          <div id="container-ai-difficulty-mobile" class="grid grid-cols-3 gap-1 p-0.5 rounded-lg bg-[#030612] border border-cyan-500/30">
-            <button type="button" data-diff="easy" class="btn-diff-mobile py-0.5 text-[9px] font-mono text-slate-400 rounded">🌱 Easy</button>
-            <button type="button" data-diff="medium" class="btn-diff-mobile active py-0.5 text-[9px] font-mono text-cyan-200 bg-cyan-500/20 border border-cyan-400 rounded">⚡ Medium</button>
-            <button type="button" data-diff="master" class="btn-diff-mobile py-0.5 text-[9px] font-mono text-slate-400 rounded">🔥 Master</button>
+          <div id="container-ai-difficulty-mobile" class="flex flex-col gap-1 p-2 rounded-xl bg-[#04060e] border border-cyan-500/30">
+            <div class="flex items-center justify-between text-[8px] font-['Press_Start_2P'] text-cyan-300">
+              <span>CPU DIFFICULTY</span>
+              <span id="diff-lock-badge-mobile" class="hidden text-[8px] font-mono text-amber-400 bg-amber-500/15 px-1 rounded">🔒 LOCKED</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5">
+              <button type="button" data-diff="easy" class="btn-diff-mobile py-1.5 text-xs font-mono font-bold text-slate-400 rounded-lg bg-[#090d1a] border border-slate-800">🌱 Easy</button>
+              <button type="button" data-diff="medium" class="btn-diff-mobile active py-1.5 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400 rounded-lg shadow-[0_0_8px_rgba(0,229,255,0.4)]">⚡ Medium</button>
+              <button type="button" data-diff="master" class="btn-diff-mobile py-1.5 text-xs font-mono font-bold text-slate-400 rounded-lg bg-[#090d1a] border border-slate-800">🔥 Master</button>
+            </div>
           </div>
+
+          <!-- Mobile Action Legend -->
+          <div class="grid grid-cols-3 gap-1 py-1.5 px-2 rounded-xl bg-[#04060e]/95 border border-cyan-500/25 text-[9px] font-mono text-slate-300 text-center shadow-md">
+            <div class="flex items-center justify-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981] shrink-0"></span>
+              <span class="truncate"><strong class="text-emerald-300">1:</strong> CLONE</span>
+            </div>
+            <div class="flex items-center justify-center gap-1 border-x border-cyan-500/20 px-0.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b] shrink-0"></span>
+              <span class="truncate"><strong class="text-amber-300">2:</strong> JUMP</span>
+            </div>
+            <div class="flex items-center justify-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_#ff2d60] shrink-0"></span>
+              <span class="truncate"><strong class="text-rose-400">ADJ:</strong> INFECT</span>
+            </div>
+          </div>
+
         </div>
 
       </div>
 
-      <!-- RIGHT SIDE: VERTICAL TACTICAL COMMAND & SCORE DASHBOARD -->
-      <div class="hidden md:flex md:col-span-5 lg:col-span-4 xl:col-span-4 flex-col gap-2 sm:gap-2.5 w-full max-w-sm ml-auto h-full justify-center">
+      <!-- RIGHT SIDE: VERTICAL TACTICAL COMMAND & SCORE DASHBOARD (Desktop View) -->
+      <div class="hidden md:flex md:col-span-5 lg:col-span-4 xl:col-span-4 flex-col gap-2.5 sm:gap-3 w-full max-w-sm ml-auto h-full justify-center">
         
         <!-- VERTICAL SCORE CARD: PLAYER 1 (RUBIES) -->
-        <div id="card-player-ruby" class="nes-card rounded-2xl p-3 flex items-center justify-between relative overflow-hidden border-rose-500/30 shadow-[0_0_16px_rgba(255,45,96,0.15)] transition-all duration-300">
+        <div id="card-player-ruby" class="nes-card rounded-2xl p-3.5 flex items-center justify-between relative overflow-hidden border-rose-500/30 shadow-[0_0_16px_rgba(255,45,96,0.15)] transition-all duration-300">
           <div class="flex items-center gap-3">
             <div class="relative w-12 h-12 rounded-2xl bg-[#ff2d60]/20 border-2 border-[#ff2d60]/60 flex items-center justify-center shadow-[0_0_16px_rgba(255,45,96,0.4)] shrink-0">
               <span class="text-2xl">💎</span>
@@ -152,7 +207,7 @@ import '../styles/global.css';
               <span id="turn-dot-ruby-solid" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#ff2d60] ring-2 ring-black"></span>
             </div>
             <div class="flex flex-col">
-              <span class="text-[8px] sm:text-[9px] font-['Press_Start_2P'] text-[#ff2d60] leading-none">1P // RUBY</span>
+              <span class="text-[9px] font-['Press_Start_2P'] text-[#ff2d60] leading-none">1P // RUBY</span>
               <span class="text-xs font-bold text-white font-['Outfit'] mt-0.5">Ruby Core</span>
             </div>
           </div>
@@ -163,7 +218,7 @@ import '../styles/global.css';
         </div>
 
         <!-- VERTICAL SCORE CARD: PLAYER 2 (PEARLS) -->
-        <div id="card-player-pearl" class="nes-card rounded-2xl p-3 flex items-center justify-between relative overflow-hidden border-cyan-500/30 shadow-[0_0_16px_rgba(0,229,255,0.15)] transition-all duration-300">
+        <div id="card-player-pearl" class="nes-card rounded-2xl p-3.5 flex items-center justify-between relative overflow-hidden border-cyan-500/30 shadow-[0_0_16px_rgba(0,229,255,0.15)] transition-all duration-300">
           <div class="flex items-center gap-3">
             <div class="relative w-12 h-12 rounded-2xl bg-[#00e5ff]/20 border-2 border-[#00e5ff]/60 flex items-center justify-center shadow-[0_0_16px_rgba(0,229,255,0.4)] shrink-0">
               <span class="text-2xl">🔮</span>
@@ -171,7 +226,7 @@ import '../styles/global.css';
               <span id="turn-dot-pearl-solid" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#00e5ff] ring-2 ring-black"></span>
             </div>
             <div class="flex flex-col">
-              <span id="label-player-pearl" class="text-[8px] sm:text-[9px] font-['Press_Start_2P'] text-[#00e5ff] leading-none">AI // PEARL</span>
+              <span id="label-player-pearl" class="text-[9px] font-['Press_Start_2P'] text-[#00e5ff] leading-none">AI // PEARL</span>
               <span class="text-xs font-bold text-white font-['Outfit'] mt-0.5">Pearl Nexus</span>
             </div>
           </div>
@@ -182,7 +237,7 @@ import '../styles/global.css';
         </div>
 
         <!-- VERTICAL SCORE CARD: PLAYER 3 (EMERALDS) (Only in 3P Mode) -->
-        <div id="card-player-emerald" class="hidden nes-card rounded-2xl p-2.5 items-center justify-between relative overflow-hidden border-emerald-500/30 transition-all duration-300">
+        <div id="card-player-emerald" class="hidden nes-card rounded-2xl p-3 items-center justify-between relative overflow-hidden border-emerald-500/30 transition-all duration-300">
           <div class="flex items-center gap-2.5">
             <div class="relative w-10 h-10 rounded-xl bg-[#10b981]/20 border-2 border-[#10b981]/60 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.4)] shrink-0">
               <span class="text-xl">🟢</span>
@@ -201,7 +256,7 @@ import '../styles/global.css';
         </div>
 
         <!-- MATCH CONFIGURATION CONTROLS -->
-        <div class="nes-card rounded-2xl p-3 flex flex-col gap-2.5">
+        <div class="nes-card rounded-2xl p-3.5 flex flex-col gap-2.5">
           
           <!-- Mode & Stage Row -->
           <div class="grid grid-cols-2 gap-2">
@@ -212,7 +267,7 @@ import '../styles/global.css';
               </label>
               <select
                 id="select-game-mode"
-                class="w-full bg-[#050814] border border-cyan-400/30 hover:border-cyan-300 rounded-lg px-2 py-1.5 text-[11px] font-medium text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono"
+                class="w-full bg-[#050814] border border-cyan-400/30 hover:border-cyan-300 rounded-xl px-2 py-1.5 text-xs font-medium text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono"
               >
                 <option value="pve" selected>🤖 VS CPU</option>
                 <option value="pvp">👥 Local 2P</option>
@@ -223,48 +278,48 @@ import '../styles/global.css';
             <!-- Stage Select -->
             <div class="flex flex-col gap-1">
               <label for="select-board-preset" class="text-[8px] font-['Press_Start_2P'] text-cyan-300">
-                STAGE
+                STAGE SELECT
               </label>
               <select
                 id="select-board-preset"
-                class="w-full bg-[#050814] border border-cyan-400/30 hover:border-cyan-300 rounded-lg px-2 py-1.5 text-[11px] font-medium text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono"
+                class="w-full bg-[#050814] border border-cyan-400/30 hover:border-cyan-300 rounded-xl px-2 py-1.5 text-xs font-medium text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono"
               >
-                <option value="classic" selected>Stage 1: Classic (58)</option>
-                <option value="ring">Stage 2: Donut Void (48)</option>
-                <option value="hourglass">Stage 3: Hourglass (40)</option>
-                <option value="trio">Stage 4: Tri-Chamber (61)</option>
+                <option value="classic" selected>Stage 1: Classic</option>
+                <option value="ring">Stage 2: Donut Void</option>
+                <option value="hourglass">Stage 3: Hourglass</option>
+                <option value="trio">Stage 4: Tri-Chamber</option>
               </select>
             </div>
           </div>
 
-          <!-- DEDICATED 3-TIER CPU DIFFICULTY SELECTOR (Visible in VS CPU mode) -->
-          <div id="container-ai-difficulty" class="flex flex-col gap-1 pt-1.5 border-t border-cyan-500/20">
+          <!-- DEDICATED 3-TIER CPU DIFFICULTY SELECTOR -->
+          <div id="container-ai-difficulty" class="flex flex-col gap-1.5 pt-1.5 border-t border-cyan-500/20">
             <div class="flex items-center justify-between">
               <span class="text-[8px] font-['Press_Start_2P'] text-cyan-300">CPU DIFFICULTY</span>
               <div class="flex items-center gap-1.5">
                 <span id="diff-lock-badge" class="hidden text-[8px] font-mono text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/40">🔒 LOCKED</span>
-                <span id="label-current-diff" class="text-[9px] font-mono text-cyan-300 font-bold">MEDIUM (TACTICAL)</span>
+                <span id="label-current-diff" class="text-[10px] font-mono text-cyan-300 font-bold">MEDIUM (TACTICAL)</span>
               </div>
             </div>
             <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#030612] border border-cyan-500/30">
               <button
                 type="button"
                 data-diff="easy"
-                class="btn-difficulty py-1 px-1 rounded-lg text-[10px] font-mono font-bold transition-all text-slate-400 hover:text-emerald-300"
+                class="btn-difficulty py-1.5 px-1 rounded-lg text-xs font-mono font-bold transition-all text-slate-400 hover:text-emerald-300"
               >
                 🌱 Easy
               </button>
               <button
                 type="button"
                 data-diff="medium"
-                class="btn-difficulty active py-1 px-1 rounded-lg text-[10px] font-mono font-bold transition-all bg-cyan-500/20 text-cyan-200 border border-cyan-400 shadow-[0_0_8px_rgba(0,229,255,0.4)]"
+                class="btn-difficulty active py-1.5 px-1 rounded-lg text-xs font-mono font-bold transition-all bg-cyan-500/20 text-cyan-200 border border-cyan-400 shadow-[0_0_8px_rgba(0,229,255,0.4)]"
               >
                 ⚡ Medium
               </button>
               <button
                 type="button"
                 data-diff="master"
-                class="btn-difficulty py-1 px-1 rounded-lg text-[10px] font-mono font-bold transition-all text-slate-400 hover:text-rose-400"
+                class="btn-difficulty py-1.5 px-1 rounded-lg text-xs font-mono font-bold transition-all text-slate-400 hover:text-rose-400"
               >
                 🔥 Master
               </button>
@@ -272,7 +327,7 @@ import '../styles/global.css';
           </div>
 
           <!-- Action Legend Bar -->
-          <div class="grid grid-cols-3 gap-1 py-1.5 px-2 rounded-xl bg-[#04060e]/95 border border-cyan-500/25 text-[8px] sm:text-[9px] font-mono text-slate-300 text-center shadow-md">
+          <div class="grid grid-cols-3 gap-1 py-1.5 px-2 rounded-xl bg-[#04060e]/95 border border-cyan-500/25 text-[9px] font-mono text-slate-300 text-center shadow-md">
             <div class="flex items-center justify-center gap-1">
               <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981] shrink-0"></span>
               <span class="truncate"><strong class="text-emerald-300">1:</strong> CLONE</span>
@@ -294,7 +349,7 @@ import '../styles/global.css';
     </div>
 
     <!-- Bottom Bar Navigation Cue -->
-    <div class="w-full flex items-center justify-between text-[8px] sm:text-[9px] font-mono text-slate-500 border-t border-cyan-500/10 pt-1 shrink-0">
+    <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-slate-500 border-t border-cyan-500/10 pt-1.5 shrink-0">
       <span>TACTICAL HEX-93 ARENA ENGINE</span>
       <a href="#rules-and-guides" class="hover:text-cyan-300 transition-colors flex items-center gap-1">
         <span>RULES & STRATEGY GUIDE</span>

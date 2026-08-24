@@ -3,25 +3,25 @@
 
 <dialog
   id="dialog-how-to-play"
-  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 backdrop:backdrop-blur-md max-w-xl w-[calc(100vw-1rem)]"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 backdrop:backdrop-blur-md max-w-xl w-[calc(100vw-1rem)]"
   aria-labelledby="how-to-play-title"
 >
-  <div class="vercel-card rounded-2xl p-4 sm:p-6 border border-zinc-800 shadow-2xl text-zinc-100 flex flex-col gap-4 sm:gap-5 max-h-[88vh] overflow-y-auto">
+  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/40 shadow-[0_0_50px_rgba(0,0,0,0.95)] text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[88vh] overflow-y-auto">
     
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+    <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">
+        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm shadow-[0_0_12px_rgba(0,229,255,0.3)]">
           📖
         </div>
-        <h2 id="how-to-play-title" class="text-base font-semibold text-white tracking-tight">
-          How to Play Hexxagon
+        <h2 id="how-to-play-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-['Press_Start_2P'] text-[11px] sm:text-xs text-cyan-300">
+          HOW TO PLAY
         </h2>
       </div>
       <button
         id="btn-close-how-to-play"
         type="button"
-        class="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+        class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
         aria-label="Close dialog"
       >
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -31,67 +31,67 @@
     </div>
 
     <!-- Rules Walkthrough Content -->
-    <div class="flex flex-col gap-4 text-xs leading-relaxed text-zinc-300">
+    <div class="flex flex-col gap-3 text-xs leading-relaxed text-slate-300">
       
       <!-- Rule 1: Selection & Duplication -->
-      <div class="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 flex items-center justify-center font-mono font-bold shrink-0">
           1
         </div>
         <div>
-          <h3 class="font-semibold text-white text-sm mb-1 flex items-center gap-1.5">
+          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 flex items-center gap-1.5 font-['Outfit']">
             <span>Clone / Duplicate (Distance 1)</span>
-            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800">Green Dots</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800">Green Ring</span>
           </h3>
-          <p>
-            Click one of your pieces and select any adjacent neighboring empty hex. A brand new piece is spawned on the target cell while keeping your original piece intact.
+          <p class="text-[11px] sm:text-xs text-slate-400">
+            Click one of your pieces and select an adjacent hex (1 step). A brand new piece is spawned on the target cell while keeping your original piece intact.
           </p>
         </div>
       </div>
 
       <!-- Rule 2: Jumping -->
-      <div class="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
+        <div class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center font-mono font-bold shrink-0">
           2
         </div>
         <div>
-          <h3 class="font-semibold text-white text-sm mb-1 flex items-center gap-1.5">
+          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 flex items-center gap-1.5 font-['Outfit']">
             <span>Jump / Leap (Distance 2)</span>
-            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800">Amber Dots</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800">Amber Ring</span>
           </h3>
-          <p>
-            You can leap across two spaces to reach distant tactical positions. Jumping removes the piece from its starting cell and places it at the target destination.
+          <p class="text-[11px] sm:text-xs text-slate-400">
+            Leap across two spaces to reach tactical positions. Jumping moves the original piece to the destination without duplicating.
           </p>
         </div>
       </div>
 
       <!-- Rule 3: Infection & Capture -->
-      <div class="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
+        <div class="w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 flex items-center justify-center font-mono font-bold shrink-0">
           3
         </div>
         <div>
-          <h3 class="font-semibold text-white text-sm mb-1 flex items-center gap-1.5">
+          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 flex items-center gap-1.5 font-['Outfit']">
             <span>Infection / Conversion</span>
-            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800">Cascade Attack</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800">Cascade Attack</span>
           </h3>
-          <p>
-            Whenever your piece lands on a hex, all neighboring opponent pieces immediately get converted to your color! Strategic moves can turn 3–5 enemy pieces at once.
+          <p class="text-[11px] sm:text-xs text-slate-400">
+            Whenever your piece lands, all neighboring opponent pieces immediately convert to your color! Strategic moves can turn multiple enemy gems at once.
           </p>
         </div>
       </div>
 
       <!-- Rule 4: Win Condition -->
-      <div class="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
+        <div class="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 flex items-center justify-center font-mono font-bold shrink-0">
           4
         </div>
         <div>
-          <h3 class="font-semibold text-white text-sm mb-1">
+          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 font-['Outfit']">
             Victory Condition
           </h3>
-          <p>
-            The game ends when all board spaces are occupied or no player can make a legal move. The player with the highest total piece count claims victory!
+          <p class="text-[11px] sm:text-xs text-slate-400">
+            The game ends when all board spaces are occupied or an opponent is wiped out. The player with the highest territory count claims victory!
           </p>
         </div>
       </div>
@@ -99,13 +99,13 @@
     </div>
 
     <!-- Footer action -->
-    <div class="flex justify-end pt-2">
+    <div class="flex justify-end pt-1">
       <button
         id="btn-confirm-how-to-play"
         type="button"
-        class="vercel-btn-primary px-4 py-2 rounded-lg text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        class="nes-btn-primary px-4 py-2 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
       >
-        Got it, Let's Play!
+        START BATTLE
       </button>
     </div>
 
