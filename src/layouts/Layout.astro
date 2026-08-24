@@ -1,0 +1,74 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Online Hex Board Game | Rubies vs Pearls - Hexxagon Strategy",
+  description = "Play Hexxagon online! The ultimate hexagonal turn-based strategy board game of duplication, jumping, and cascade infections. Play vs AI or 2-Player local."
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="keywords" content="hex board game, hexxagon, hex strategy, turn based game, online board game, rubies vs pearls, hexagonal game" />
+  
+  <!-- Open Graph / Social Meta -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://hexboardgame.com/" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content="https://hexboardgame.com/og-image.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5' fill='%23ff2d60'/><circle cx='50' cy='50' r='20' fill='%2300e5ff'/></svg>" />
+  
+  <!-- Google Fonts: Geist & Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Game",
+      "name": "Online Hex Board Game",
+      "url": "https://hexboardgame.com",
+      "description": "Tactical hexagonal board game of piece duplication, leaps, and conversion captures.",
+      "genre": ["Strategy", "Board Game", "Tactical"],
+      "numberOfPlayers": {
+        "@type": "QuantitativeValue",
+        "minValue": 1,
+        "maxValue": 3
+      },
+      "applicationCategory": "Game"
+    }
+  </script>
+</head>
+<body class="bg-black text-zinc-100 min-h-screen flex flex-col font-sans antialiased selection:bg-zinc-800 selection:text-white">
+  <!-- Skip Link for Accessibility -->
+  <a href="#game-main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-medium focus:rounded-md focus:shadow-xl focus:outline-none">
+    Skip to game
+  </a>
+
+  <!-- Ambient Vercel-Style Mesh Glow -->
+  <div class="fixed inset-0 pointer-events-none z-0 bg-grid-pattern opacity-60"></div>
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] pointer-events-none z-0 bg-radial-gradient"></div>
+
+  <div class="relative z-10 flex flex-col min-h-screen">
+    <slot />
+  </div>
+</body>
+</html>

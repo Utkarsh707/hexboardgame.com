@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-page: #000000;
+    --bg-surface: #0a0a0a;
+    --bg-surface-hover: #141414;
+    --bg-surface-elevated: #18181b;
+    --border-subtle: #27272a;
+    --border-default: #3f3f46;
+    --border-bright: #52525b;
+    
+    --text-primary: #ededed;
+    --text-secondary: #a1a1aa;
+    --text-tertiary: #71717a;
+
+    --ruby-color: #ff2d60;
+    --pearl-color: #00e5ff;
+    --emerald-color: #10b981;
+
+    --clone-marker: #10b981;
+    --jump-marker: #f59e0b;
+    --danger-color: #ef4444;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: 'Geist', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Background Subtle Dot / Grid Matrix */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+}
+
+.bg-radial-gradient {
+  background: radial-gradient(circle 800px at 50% -20%, rgba(120, 119, 198, 0.1), transparent 70%);
+}
+
+/* Glassmorphic Cards & Panels */
+.vercel-card {
+  background-color: rgba(10, 10, 10, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.15s ease;
+}
+
+.vercel-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Button & Interactive styles */
+.vercel-btn-primary {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 500;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.vercel-btn-primary:hover {
+  background: #e4e4e7;
+  transform: translateY(-1px);
+}
+
+.vercel-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ededed;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.vercel-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* SVG Hex Cells & High-Performance Vector Styles */
+.hex-cell {
+  transition: fill 0.12s ease, stroke 0.12s ease;
+  cursor: pointer;
+}
+
+.hex-cell:hover {
+  fill: #141724;
+}
+
+.hex-cell-empty {
+  fill: #0c0d12;
+  stroke: #1c202c;
+  stroke-width: 1.5;
+}
+
+.hex-cell-obstacle {
+  fill: #050608;
+  stroke: #14161d;
+  stroke-width: 1.5;
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.hex-cell-clone-target {
+  fill: rgba(16, 185, 129, 0.18);
+  stroke: #10b981;
+  stroke-width: 2;
+}
+
+.hex-cell-jump-target {
+  fill: rgba(245, 158, 11, 0.18);
+  stroke: #f59e0b;
+  stroke-width: 2;
+}
+
+.hex-cell-selected {
+  stroke-width: 2.5 !important;
+  fill: #151928 !important;
+}
+
+/* Pulse Move Target Animations */
+@keyframes pulse-clone {
+  0%, 100% { fill-opacity: 0.2; stroke-opacity: 0.8; }
+  50% { fill-opacity: 0.4; stroke-opacity: 1; }
+}
+
+@keyframes pulse-jump {
+  0%, 100% { fill-opacity: 0.2; stroke-opacity: 0.8; }
+  50% { fill-opacity: 0.4; stroke-opacity: 1; }
+}
+
+.hex-cell-clone-target {
+  animation: pulse-clone 1.8s infinite ease-in-out;
+}
+
+.hex-cell-jump-target {
+  animation: pulse-jump 1.8s infinite ease-in-out;
+}
+
+/* Gem Piece Flip Animation */
+@keyframes piece-convert {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.25) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+.piece-converting {
+  animation: piece-convert 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Pop-in animation for board sweep & rapid piece spawning */
+@keyframes piece-pop-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.28);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.piece-popping-in {
+  animation: piece-pop-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Subtle, Zero-Lag Target Threat Highlight on Affected Opponent Tiles & Pieces */
+@keyframes subtle-threat-piece {
+  0%, 100% { stroke: #ff2d60; stroke-width: 2.5px; opacity: 0.85; }
+  50% { stroke: #ffffff; stroke-width: 3px; opacity: 1; }
+}
+
+.piece-capture-threat circle:first-of-type {
+  animation: subtle-threat-piece 0.9s infinite ease-in-out !important;
+}
+
+.hex-cell-capture-threat {
+  stroke: #ff2d60 !important;
+  stroke-width: 2.2px !important;
+  fill: rgba(255, 45, 96, 0.18) !important;
+  transition: fill 0.1s ease, stroke 0.1s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}

@@ -1,0 +1,64 @@
+---
+---
+
+<dialog
+  id="dialog-game-over"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 backdrop:backdrop-blur-md max-w-md w-[calc(100vw-1rem)]"
+  aria-labelledby="game-over-title"
+>
+  <div class="vercel-card rounded-2xl p-5 sm:p-8 border border-zinc-800 shadow-2xl text-zinc-100 flex flex-col items-center text-center gap-4 sm:gap-6 relative overflow-hidden max-h-[88vh] overflow-y-auto">
+    
+    <!-- Ambient Win Glow -->
+    <div id="game-over-glow" class="absolute inset-0 pointer-events-none opacity-20 bg-gradient-to-b from-[#ff2d60]/40 to-transparent"></div>
+
+    <!-- Trophy / Badge Icon -->
+    <div id="game-over-icon" class="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-3xl shadow-xl">
+      🏆
+    </div>
+
+    <!-- Title & Subtitle -->
+    <div class="flex flex-col gap-1">
+      <h2 id="game-over-title" class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+        Match Concluded
+      </h2>
+      <p id="game-over-subtitle" class="text-xs text-zinc-400">
+        All playable spaces occupied.
+      </p>
+    </div>
+
+    <!-- Final Score Display -->
+    <div class="w-full grid grid-cols-2 gap-3 p-4 rounded-xl bg-zinc-950/80 border border-zinc-850">
+      <div class="flex flex-col items-center">
+        <span class="text-xs font-mono uppercase text-[#ff2d60]">Rubies</span>
+        <span id="final-score-ruby" class="text-3xl font-bold font-mono text-[#ff2d60] tabular-nums mt-0.5">0</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-xs font-mono uppercase text-[#00e5ff]">Pearls</span>
+        <span id="final-score-pearl" class="text-3xl font-bold font-mono text-[#00e5ff] tabular-nums mt-0.5">0</span>
+      </div>
+    </div>
+
+    <!-- Play Again Button -->
+    <div class="w-full flex flex-col sm:flex-row items-center gap-2.5">
+      <button
+        id="btn-game-over-rematch"
+        type="button"
+        class="w-full vercel-btn-primary py-2.5 px-4 rounded-lg text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white flex items-center justify-center gap-2"
+      >
+        <svg class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>Play Rematch</span>
+      </button>
+
+      <button
+        id="btn-game-over-close"
+        type="button"
+        class="w-full sm:w-auto vercel-btn-secondary py-2.5 px-4 rounded-lg text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+      >
+        Review Board
+      </button>
+    </div>
+
+  </div>
+</dialog>

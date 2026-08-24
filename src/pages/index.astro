@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import GameHUD from '../components/GameHUD.astro';
+import BoardControls from '../components/BoardControls.astro';
+import HowToPlayModal from '../components/HowToPlayModal.astro';
+import StatsModal from '../components/StatsModal.astro';
+import KeyboardShortcutsModal from '../components/KeyboardShortcutsModal.astro';
+import GameOverModal from '../components/GameOverModal.astro';
+import RulesSection from '../components/RulesSection.astro';
+import StrategyGuide from '../components/StrategyGuide.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<Layout>
+  <!-- Main Header Navigation -->
+  <Header />
+
+  <!-- Main Game Stage & Interactive Board -->
+  <main id="game-main" class="flex-1 flex flex-col items-center justify-start py-3 sm:py-7 w-full max-w-7xl mx-auto overflow-hidden">
+    
+    <!-- Hero / Headline -->
+    <div class="text-center px-3 mb-3 sm:mb-5">
+      <div class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-mono bg-zinc-900/80 border border-zinc-800 text-zinc-400 mb-1.5 sm:mb-2">
+        <span class="text-rose-500 font-semibold">Rubies</span> vs <span class="text-cyan-400 font-semibold">Pearls</span>
+        <span class="text-zinc-600">•</span>
+        <span>Hexagonal Tactical Duel</span>
+      </div>
+      <h1 class="text-xl sm:text-4xl font-bold tracking-tight text-white">
+        Online Hex Board Game
+      </h1>
+      <p class="text-[11px] sm:text-sm text-zinc-400 mt-0.5 sm:mt-1 max-w-lg mx-auto">
+        Duplicate, leap, and infect opposing cells across authentic 1993 hexagonal arenas.
+      </p>
+    </div>
+
+    <!-- Live Telemetry HUD -->
+    <GameHUD />
+
+    <!-- Interactive Hexagon Canvas / SVG Arena -->
+    <div class="w-full max-w-4xl mx-auto px-2 sm:px-4 mt-3 sm:mt-5 flex flex-col items-center">
+      <div class="relative w-full aspect-square max-w-[min(100vw-1rem,580px)] rounded-2xl sm:rounded-3xl vercel-card border border-zinc-800/80 flex items-center justify-center overflow-hidden shadow-2xl p-1 sm:p-2 touch-manipulation">
+        
+        <!-- SVG Hexagon Board -->
+        <svg
+          id="board-svg"
+          viewBox="0 0 700 700"
+          class="w-full h-full relative z-10 select-none touch-manipulation"
+          aria-label="Hexagonal Board Game Grid"
+        >
+          <!-- Hexagon Cells dynamically rendered via game-engine.js -->
+        </svg>
+
+        <!-- Foreground Particle Canvas -->
+        <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
+
+      </div>
+    </div>
+
+    <!-- Match Controls & Arena Presets -->
+    <BoardControls />
+
+    <!-- Informational Rules & Strategy -->
+    <RulesSection />
+    <StrategyGuide />
+
+  </main>
+
+  <!-- Modals & Dialogs -->
+  <HowToPlayModal />
+  <StatsModal />
+  <KeyboardShortcutsModal />
+  <GameOverModal />
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- Game Client Script -->
+  <script>
+    import { initGameUI } from '../scripts/game-ui.js';
+
+    // Mount game engine on DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => initGameUI());
+    } else {
+      initGameUI();
+    }
+  </script>
+</Layout>
