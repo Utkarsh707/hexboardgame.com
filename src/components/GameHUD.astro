@@ -2,24 +2,24 @@
 ---
 
 <div class="w-full max-w-4xl mx-auto px-2 sm:px-4">
-  <div class="vercel-card rounded-2xl p-2.5 sm:p-4 flex flex-row items-center justify-between gap-2 sm:gap-4 border border-zinc-800/80 shadow-2xl relative overflow-hidden">
+  <div class="nes-card rounded-2xl p-2.5 sm:p-4 flex flex-row items-center justify-between gap-2 sm:gap-4 relative overflow-hidden">
     
     <!-- Ambient Turn Glow backdrop -->
     <div id="hud-turn-glow" class="absolute inset-0 pointer-events-none opacity-20 transition-all duration-500 bg-gradient-to-r from-[#ff2d60]/30 via-transparent to-[#00e5ff]/30"></div>
 
     <!-- PLAYER 1: RUBY -->
     <div id="card-player-ruby" class="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2.5 rounded-xl border border-transparent transition-all duration-300">
-      <div class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#ff2d60]/15 border border-[#ff2d60]/40 flex items-center justify-center shadow-[0_0_12px_rgba(255,45,96,0.3)] shrink-0">
-        <span class="text-base sm:text-lg">💎</span>
+      <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#ff2d60]/20 border border-[#ff2d60]/50 flex items-center justify-center shadow-[0_0_16px_rgba(255,45,96,0.4)] shrink-0">
+        <span class="text-base sm:text-xl">💎</span>
         <span id="turn-dot-ruby" class="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ff2d60] ring-2 ring-black animate-ping"></span>
         <span id="turn-dot-ruby-solid" class="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ff2d60] ring-2 ring-black"></span>
       </div>
       <div class="flex flex-col">
-        <span class="hidden sm:inline text-[10px] sm:text-xs font-mono uppercase tracking-wider text-zinc-400">Player 1</span>
-        <span class="hidden sm:inline text-xs sm:text-sm font-semibold text-white">Rubies</span>
+        <span class="hidden sm:inline text-[9px] sm:text-[10px] font-['Press_Start_2P'] text-[#ff2d60]">1P // RUBY</span>
+        <span class="hidden sm:inline text-xs sm:text-sm font-bold text-white tracking-wide font-['Outfit']">Ruby Gems</span>
         <div class="flex items-baseline gap-1">
-          <span id="score-ruby" class="text-xl sm:text-3xl font-bold font-mono text-[#ff2d60] tabular-nums">3</span>
-          <span class="text-[10px] sm:text-xs font-mono text-zinc-500 hidden sm:inline">gems</span>
+          <span id="score-ruby" class="text-2xl sm:text-3xl font-black font-mono text-[#ff2d60] tabular-nums drop-shadow-[0_0_10px_rgba(255,45,96,0.5)]">3</span>
+          <span class="text-[9px] sm:text-[10px] font-['Press_Start_2P'] text-slate-500 hidden sm:inline">PTS</span>
         </div>
       </div>
     </div>
@@ -28,25 +28,25 @@
     <div class="flex flex-col items-center justify-center gap-1 sm:gap-2 text-center py-0.5 px-1 shrink-0">
       
       <!-- Current Turn Pill -->
-      <div id="turn-status-badge" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-medium bg-zinc-900 border border-zinc-800 text-zinc-200 shadow-inner">
-        <span id="turn-status-indicator" class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#ff2d60]"></span>
-        <span id="turn-status-text" class="truncate max-w-[110px] sm:max-w-none">Rubies Turn</span>
+      <div id="turn-status-badge" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-mono font-semibold bg-[#030612] border border-cyan-400/40 text-cyan-200 shadow-[0_0_12px_rgba(0,229,255,0.2)]">
+        <span id="turn-status-indicator" class="w-2 h-2 rounded-full bg-[#ff2d60] shadow-[0_0_8px_#ff2d60]"></span>
+        <span id="turn-status-text" class="truncate max-w-[120px] sm:max-w-none uppercase tracking-wider font-bold">Rubies Turn</span>
       </div>
 
       <!-- Quick Actions (Undo & Move count) -->
-      <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-zinc-400 font-mono">
-        <span id="move-counter-label" class="tabular-nums hidden sm:inline">Move: <strong id="hud-move-count" class="text-zinc-200">0</strong></span>
-        <span class="text-zinc-700 hidden sm:inline">•</span>
+      <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-400 font-mono">
+        <span id="move-counter-label" class="tabular-nums hidden sm:inline">MOVE: <strong id="hud-move-count" class="text-slate-100">0</strong></span>
+        <span class="text-slate-700 hidden sm:inline">•</span>
         <button
           id="btn-hud-undo"
           type="button"
-          class="inline-flex items-center gap-1 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 rounded px-1.5 py-0.5 bg-zinc-900/60 sm:bg-transparent border border-zinc-800 sm:border-none"
+          class="inline-flex items-center gap-1 hover:text-cyan-300 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded px-2 py-0.5 bg-slate-900/90 border border-slate-700 hover:border-cyan-400/50 text-[10px] font-bold"
           title="Undo Last Move (Key: U)"
         >
           <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
           </svg>
-          <span>Undo</span>
+          <span>UNDO [U]</span>
         </button>
       </div>
 
@@ -55,15 +55,15 @@
     <!-- PLAYER 2: PEARL -->
     <div id="card-player-pearl" class="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2.5 rounded-xl border border-transparent transition-all duration-300">
       <div class="flex flex-col text-right">
-        <span id="label-player-pearl" class="hidden sm:inline text-[10px] sm:text-xs font-mono uppercase tracking-wider text-zinc-400">AI Opponent</span>
-        <span class="hidden sm:inline text-xs sm:text-sm font-semibold text-white">Pearls</span>
+        <span id="label-player-pearl" class="hidden sm:inline text-[9px] sm:text-[10px] font-['Press_Start_2P'] text-[#00e5ff]">AI // PEARL</span>
+        <span class="hidden sm:inline text-xs sm:text-sm font-bold text-white tracking-wide font-['Outfit']">Pearl Gems</span>
         <div class="flex items-baseline justify-end gap-1">
-          <span id="score-pearl" class="text-xl sm:text-3xl font-bold font-mono text-[#00e5ff] tabular-nums">3</span>
-          <span class="text-[10px] sm:text-xs font-mono text-zinc-500 hidden sm:inline">gems</span>
+          <span id="score-pearl" class="text-2xl sm:text-3xl font-black font-mono text-[#00e5ff] tabular-nums drop-shadow-[0_0_10px_rgba(0,229,255,0.5)]">3</span>
+          <span class="text-[9px] sm:text-[10px] font-['Press_Start_2P'] text-slate-500 hidden sm:inline">PTS</span>
         </div>
       </div>
-      <div class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#00e5ff]/15 border border-[#00e5ff]/40 flex items-center justify-center shadow-[0_0_12px_rgba(0,229,255,0.3)] shrink-0">
-        <span class="text-base sm:text-lg">🔮</span>
+      <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#00e5ff]/20 border border-[#00e5ff]/50 flex items-center justify-center shadow-[0_0_16px_rgba(0,229,255,0.4)] shrink-0">
+        <span class="text-base sm:text-xl">🔮</span>
         <span id="turn-dot-pearl" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#00e5ff] ring-2 ring-black animate-ping"></span>
         <span id="turn-dot-pearl-solid" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#00e5ff] ring-2 ring-black"></span>
       </div>
@@ -71,17 +71,17 @@
 
     <!-- PLAYER 3: EMERALD (Only displayed in 3-Player mode) -->
     <div id="card-player-emerald" class="hidden items-center gap-2 sm:gap-3 p-1.5 sm:p-2.5 rounded-xl border border-transparent transition-all duration-300">
-      <div class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#10b981]/15 border border-[#10b981]/40 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.3)] shrink-0">
-        <span class="text-base sm:text-lg">🟢</span>
+      <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#10b981]/20 border border-[#10b981]/50 flex items-center justify-center shadow-[0_0_16px_rgba(16,185,129,0.4)] shrink-0">
+        <span class="text-base sm:text-xl">🟢</span>
         <span id="turn-dot-emerald" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#10b981] ring-2 ring-black animate-ping"></span>
         <span id="turn-dot-emerald-solid" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#10b981] ring-2 ring-black"></span>
       </div>
       <div class="flex flex-col">
-        <span class="hidden sm:inline text-[10px] sm:text-xs font-mono uppercase tracking-wider text-zinc-400">Player 3</span>
-        <span class="hidden sm:inline text-xs sm:text-sm font-semibold text-white">Emeralds</span>
+        <span class="hidden sm:inline text-[9px] sm:text-[10px] font-['Press_Start_2P'] text-[#10b981]">3P // EMERALD</span>
+        <span class="hidden sm:inline text-xs sm:text-sm font-bold text-white tracking-wide font-['Outfit']">Emeralds</span>
         <div class="flex items-baseline gap-1">
-          <span id="score-emerald" class="text-xl sm:text-3xl font-bold font-mono text-[#10b981] tabular-nums">2</span>
-          <span class="text-[10px] sm:text-xs font-mono text-zinc-500 hidden sm:inline">gems</span>
+          <span id="score-emerald" class="text-2xl sm:text-3xl font-black font-mono text-[#10b981] tabular-nums drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">2</span>
+          <span class="text-[9px] sm:text-[10px] font-['Press_Start_2P'] text-slate-500 hidden sm:inline">PTS</span>
         </div>
       </div>
     </div>

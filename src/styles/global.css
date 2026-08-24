@@ -2,17 +2,17 @@
 
 @layer base {
   :root {
-    --bg-page: #000000;
-    --bg-surface: #0a0a0a;
-    --bg-surface-hover: #141414;
-    --bg-surface-elevated: #18181b;
-    --border-subtle: #27272a;
-    --border-default: #3f3f46;
-    --border-bright: #52525b;
+    --bg-page: #03040a;
+    --bg-surface: #080c18;
+    --bg-surface-hover: #10172c;
+    --bg-surface-elevated: #16203c;
+    --border-subtle: #1e293b;
+    --border-default: #334155;
+    --border-bright: #475569;
     
-    --text-primary: #ededed;
-    --text-secondary: #a1a1aa;
-    --text-tertiary: #71717a;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
 
     --ruby-color: #ff2d60;
     --pearl-color: #00e5ff;
@@ -26,110 +26,119 @@
   body {
     background-color: var(--bg-page);
     color: var(--text-primary);
-    font-family: 'Geist', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Outfit', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
     letter-spacing: -0.01em;
   }
 }
 
-/* Background Subtle Dot / Grid Matrix */
-.bg-grid-pattern {
-  background-size: 32px 32px;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+/* NES Arcade Stage Panels & Frames */
+.nes-card {
+  background: linear-gradient(180deg, rgba(12, 17, 32, 0.9) 0%, rgba(6, 9, 18, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
 }
 
-.bg-radial-gradient {
-  background: radial-gradient(circle 800px at 50% -20%, rgba(120, 119, 198, 0.1), transparent 70%);
+.nes-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
 }
 
-/* Glassmorphic Cards & Panels */
-.vercel-card {
-  background-color: rgba(10, 10, 10, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.6);
-  transition: border-color 0.15s ease;
+/* Arcade Buttons */
+.nes-btn-primary {
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+  color: #020617;
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.35), 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: all 0.15s ease;
 }
 
-.vercel-card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
-}
-
-/* Button & Interactive styles */
-.vercel-btn-primary {
+.nes-btn-primary:hover {
   background: #ffffff;
-  color: #000000;
-  font-weight: 500;
-  transition: background-color 0.15s ease, transform 0.15s ease;
-}
-
-.vercel-btn-primary:hover {
-  background: #e4e4e7;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.6), 0 4px 8px rgba(0, 0, 0, 0.6);
   transform: translateY(-1px);
 }
 
-.vercel-btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ededed;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+.nes-btn-secondary {
+  background: rgba(15, 23, 42, 0.75);
+  color: #f1f5f9;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.15s ease;
 }
 
-.vercel-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.22);
+.nes-btn-secondary:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(56, 189, 248, 0.55);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
 }
 
-/* SVG Hex Cells & High-Performance Vector Styles */
+/* ==========================================================================
+   NES-STYLE VIDEOGAME STAGE BOARD PLATFORM
+   ========================================================================== */
+.nes-stage-platform {
+  background: radial-gradient(circle at 50% 35%, #0f172a 0%, #070a14 70%, #030408 100%);
+  border: 2px solid #1e293b;
+  box-shadow: 
+    0 0 0 1px rgba(56, 189, 248, 0.3),
+    0 25px 60px -12px rgba(0, 0, 0, 0.98),
+    0 0 40px rgba(0, 229, 255, 0.15),
+    inset 0 2px 2px rgba(255, 255, 255, 0.18),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* 2.5D Hexagonal Tiles & Grid Styles */
 .hex-cell {
   transition: fill 0.12s ease, stroke 0.12s ease;
   cursor: pointer;
 }
 
 .hex-cell:hover {
-  fill: #141724;
+  fill: #1e293b !important;
 }
 
 .hex-cell-empty {
-  fill: #0c0d12;
-  stroke: #1c202c;
-  stroke-width: 1.5;
+  fill: #0b0f19;
+  stroke: #1e293b;
+  stroke-width: 1.6;
 }
 
 .hex-cell-obstacle {
-  fill: #050608;
-  stroke: #14161d;
+  fill: #030509;
+  stroke: #0f172a;
   stroke-width: 1.5;
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .hex-cell-clone-target {
-  fill: rgba(16, 185, 129, 0.18);
+  fill: rgba(16, 185, 129, 0.25);
   stroke: #10b981;
-  stroke-width: 2;
+  stroke-width: 2.2;
 }
 
 .hex-cell-jump-target {
-  fill: rgba(245, 158, 11, 0.18);
+  fill: rgba(245, 158, 11, 0.25);
   stroke: #f59e0b;
-  stroke-width: 2;
+  stroke-width: 2.2;
 }
 
 .hex-cell-selected {
-  stroke-width: 2.5 !important;
-  fill: #151928 !important;
+  stroke-width: 2.8 !important;
+  fill: #1e293b !important;
 }
 
-/* Pulse Move Target Animations */
+/* Move Marker Pulse Animations */
 @keyframes pulse-clone {
-  0%, 100% { fill-opacity: 0.2; stroke-opacity: 0.8; }
-  50% { fill-opacity: 0.4; stroke-opacity: 1; }
+  0%, 100% { fill-opacity: 0.25; stroke-opacity: 0.85; }
+  50% { fill-opacity: 0.55; stroke-opacity: 1; }
 }
 
 @keyframes pulse-jump {
-  0%, 100% { fill-opacity: 0.2; stroke-opacity: 0.8; }
-  50% { fill-opacity: 0.4; stroke-opacity: 1; }
+  0%, 100% { fill-opacity: 0.25; stroke-opacity: 0.85; }
+  50% { fill-opacity: 0.55; stroke-opacity: 1; }
 }
 
 .hex-cell-clone-target {
@@ -143,7 +152,7 @@
 /* Gem Piece Flip Animation */
 @keyframes piece-convert {
   0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.25) rotate(180deg); }
+  50% { transform: scale(1.3) rotate(180deg); }
   100% { transform: scale(1) rotate(360deg); }
 }
 
@@ -155,18 +164,9 @@
 
 /* Pop-in animation for board sweep & rapid piece spawning */
 @keyframes piece-pop-in {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.28);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .piece-popping-in {
@@ -175,20 +175,20 @@
   transform-origin: center;
 }
 
-/* Subtle, Zero-Lag Target Threat Highlight on Affected Opponent Tiles & Pieces */
+/* Subtle Target Threat Highlight on Affected Opponent Tiles & Pieces */
 @keyframes subtle-threat-piece {
-  0%, 100% { stroke: #ff2d60; stroke-width: 2.5px; opacity: 0.85; }
-  50% { stroke: #ffffff; stroke-width: 3px; opacity: 1; }
+  0%, 100% { stroke: #ff2d60; stroke-width: 2.8px; opacity: 0.85; }
+  50% { stroke: #ffffff; stroke-width: 3.2px; opacity: 1; }
 }
 
-.piece-capture-threat circle:first-of-type {
+.piece-capture-threat circle:nth-of-type(2) {
   animation: subtle-threat-piece 0.9s infinite ease-in-out !important;
 }
 
 .hex-cell-capture-threat {
   stroke: #ff2d60 !important;
-  stroke-width: 2.2px !important;
-  fill: rgba(255, 45, 96, 0.18) !important;
+  stroke-width: 2.4px !important;
+  fill: rgba(255, 45, 96, 0.22) !important;
   transition: fill 0.1s ease, stroke 0.1s ease;
 }
 
@@ -198,12 +198,12 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: #03040a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #1e293b;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #334155;
 }

@@ -4,7 +4,7 @@
 
 import { HexxagonGame } from './game-engine.js';
 import { sound } from './audio.js';
-import { PLAYERS } from './boards.js';
+import { PLAYERS, BOARD_PRESETS } from './boards.js';
 
 export function initGameUI() {
     const game = new HexxagonGame({
@@ -13,6 +13,7 @@ export function initGameUI() {
     });
 
     // DOM Elements
+    const stageBannerText = document.getElementById('stage-banner-text');
     const hudTurnGlow = document.getElementById('hud-turn-glow');
     const scoreRuby = document.getElementById('score-ruby');
     const scorePearl = document.getElementById('score-pearl');
@@ -99,6 +100,7 @@ export function initGameUI() {
     // Event: Turn Change
     game.on('turnChange', ({ currentPlayer, isAi, moveCount }) => {
         if (hudMoveCount) hudMoveCount.textContent = moveCount;
+        syncDifficultyLock(moveCount);
 
         // Reset turn dots & borders
         [turnDotRuby, turnDotRubySolid, turnDotPearl, turnDotPearlSolid, turnDotEmerald, turnDotEmeraldSolid].forEach(el => el?.classList.add('hidden'));
@@ -170,9 +172,93 @@ export function initGameUI() {
         dialogGameOver.showModal();
     });
 
+    // Difficulty and Mode Setup
+    let currentDifficulty = 'medium';
+    const containerAiDifficulty = document.getElementById('container-ai-difficulty');
+    const containerAiDifficultyMobile = document.getElementById('container-ai-difficulty-mobile');
+    const labelCurrentDiff = document.getElementById('label-current-diff');
+    const diffLockBadge = document.getElementById('diff-lock-badge');
+    const diffButtons = document.querySelectorAll('.btn-difficulty, .btn-diff-mobile');
+
+    function syncDifficultyLock(moveCount) {
+        const isGameStarted = moveCount > 0 && !game.isGameOver;
+        
+        diffButtons.forEach(btn => {
+            if (isGameStarted) {
+                btn.disabled = true;
+                btn.classList.add('opacity-40', 'cursor-not-allowed');
+                btn.setAttribute('title', 'Difficulty locked during active match. Reset to change.');
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('opacity-40', 'cursor-not-allowed');
+                btn.removeAttribute('title');
+            }
+        });
+
+        if (diffLockBadge) {
+            if (isGameStarted) {
+                diffLockBadge.classList.remove('hidden');
+            } else {
+                diffLockBadge.classList.add('hidden');
+            }
+        }
+    }
+
+    function setDifficulty(diff) {
+        // Prevent changing difficulty if match has already started
+        if (game.state && game.state.moveCount > 0 && !game.isGameOver) {
+            return;
+        }
+
+        currentDifficulty = diff;
+        
+        if (labelCurrentDiff) {
+            const labels = {
+                easy: 'EASY (NOVICE)',
+                medium: 'MEDIUM (TACTICAL)',
+                master: 'MASTER (GRANDMASTER)'
+            };
+            labelCurrentDiff.textContent = labels[diff] || diff.toUpperCase();
+        }
+
+        diffButtons.forEach(btn => {
+            if (btn.getAttribute('data-diff') === diff) {
+                btn.classList.add('bg-cyan-500/20', 'text-cyan-200', 'border', 'border-cyan-400', 'shadow-[0_0_8px_rgba(0,229,255,0.4)]');
+                btn.classList.remove('text-slate-400');
+            } else {
+                btn.classList.remove('bg-cyan-500/20', 'text-cyan-200', 'border', 'border-cyan-400', 'shadow-[0_0_8px_rgba(0,229,255,0.4)]');
+                btn.classList.add('text-slate-400');
+            }
+        });
+
+        if (!selectGameMode || selectGameMode.value === 'pve' || selectGameMode.value.startsWith('pve')) {
+            game.setGameMode(`pve-${diff}`);
+        }
+    }
+
+    diffButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const diff = btn.getAttribute('data-diff');
+            if (diff) {
+                setDifficulty(diff);
+                sound.playSelect();
+            }
+        });
+    });
+
     // Mode Selector
     selectGameMode?.addEventListener('change', (e) => {
         const mode = e.target.value;
+        if (mode === 'pve') {
+            containerAiDifficulty?.classList.remove('opacity-30', 'pointer-events-none');
+            containerAiDifficultyMobile?.classList.remove('opacity-30', 'pointer-events-none');
+            game.setGameMode(`pve-${currentDifficulty}`);
+        } else {
+            containerAiDifficulty?.classList.add('opacity-30', 'pointer-events-none');
+            containerAiDifficultyMobile?.classList.add('opacity-30', 'pointer-events-none');
+            game.setGameMode(mode);
+        }
+
         if (mode === 'trio') {
             cardEmerald?.classList.remove('hidden');
             cardEmerald?.classList.add('flex');
@@ -186,10 +272,8 @@ export function initGameUI() {
         }
 
         if (labelPlayerPearl) {
-            labelPlayerPearl.textContent = mode === 'pvp' ? 'Player 2' : 'AI Opponent';
+            labelPlayerPearl.textContent = mode === 'pvp' ? 'Player 2' : (mode === 'trio' ? 'Player 2' : 'AI // PEARL');
         }
-
-        game.setGameMode(mode);
     });
 
     // Preset Layout Selector
@@ -199,14 +283,20 @@ export function initGameUI() {
             selectGameMode.value = 'trio';
             cardEmerald?.classList.remove('hidden');
             cardEmerald?.classList.add('flex');
+            containerAiDifficulty?.classList.add('opacity-30', 'pointer-events-none');
+        }
+        if (stageBannerText && BOARD_PRESETS[preset]) {
+            stageBannerText.textContent = BOARD_PRESETS[preset].stageTitle;
         }
         game.setPreset(preset);
+        syncDifficultyLock(0);
     });
 
     // Restart Button
     btnRestartGame?.addEventListener('click', () => {
         game.initGame();
         sound.playSelect();
+        syncDifficultyLock(0);
     });
 
     // Undo Button
@@ -218,6 +308,7 @@ export function initGameUI() {
     btnGameOverRematch?.addEventListener('click', () => {
         dialogGameOver?.close();
         game.initGame();
+        syncDifficultyLock(0);
     });
 
     btnGameOverClose?.addEventListener('click', () => {
@@ -253,7 +344,7 @@ export function initGameUI() {
             if (elRubyWins) elRubyWins.textContent = rWins;
             if (elPearlWins) elPearlWins.textContent = pWins;
             if (elHighRuby) elHighRuby.textContent = stats.highScoreRuby || 0;
-        } catch (e) {}
+        } catch (e) { }
     }
 
     const openStats = () => {

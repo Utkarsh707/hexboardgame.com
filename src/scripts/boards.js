@@ -13,7 +13,9 @@ export const PLAYERS = {
 export const BOARD_PRESETS = {
     classic: {
         id: 'classic',
-        name: 'Classic Hexagon (58 Cells)',
+        stageNumber: 1,
+        stageTitle: 'STAGE 1 // ORBITAL VOID',
+        name: 'Hexagon Classic (58 Cells)',
         description: 'The authentic 1993 hexagonal arena: Rubies vs Pearls in tactical duplication.',
         radius: 4,
         players: ['ruby', 'pearl'],
@@ -47,7 +49,9 @@ export const BOARD_PRESETS = {
 
     ring: {
         id: 'ring',
-        name: 'The Donut Void',
+        stageNumber: 2,
+        stageTitle: 'STAGE 2 // THE DONUT VOID',
+        name: 'The Donut Void (48 Cells)',
         description: 'A circular battle ring with an impassable cosmic void in the center.',
         radius: 4,
         players: ['ruby', 'pearl'],
@@ -84,7 +88,9 @@ export const BOARD_PRESETS = {
 
     hourglass: {
         id: 'hourglass',
-        name: 'Quantum Hourglass',
+        stageNumber: 3,
+        stageTitle: 'STAGE 3 // QUANTUM HOURGLASS',
+        name: 'Quantum Hourglass (40 Cells)',
         description: 'Two battle zones connected by a perilous central bottleneck bridge.',
         radius: 4,
         players: ['ruby', 'pearl'],
@@ -121,7 +127,9 @@ export const BOARD_PRESETS = {
 
     trio: {
         id: 'trio',
-        name: 'Tri-Chamber (3 Players)',
+        stageNumber: 4,
+        stageTitle: 'STAGE 4 // TRI-CHAMBER 3P',
+        name: 'Tri-Chamber (61 Cells)',
         description: '3-Player free-for-all: Rubies vs Pearls vs Emeralds in a tactical battle.',
         radius: 4,
         players: ['ruby', 'pearl', 'emerald'],

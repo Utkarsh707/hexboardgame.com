@@ -1,8 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import GameHUD from '../components/GameHUD.astro';
-import BoardControls from '../components/BoardControls.astro';
 import HowToPlayModal from '../components/HowToPlayModal.astro';
 import StatsModal from '../components/StatsModal.astro';
 import KeyboardShortcutsModal from '../components/KeyboardShortcutsModal.astro';
@@ -14,58 +12,303 @@ import '../styles/global.css';
 ---
 
 <Layout>
-  <!-- Main Header Navigation -->
+  <!-- Main Header Navigation (Compact 48px) -->
   <Header />
 
-  <!-- Main Game Stage & Interactive Board -->
-  <main id="game-main" class="flex-1 flex flex-col items-center justify-start py-3 sm:py-7 w-full max-w-7xl mx-auto overflow-hidden">
+  <!-- ZERO-SCROLL GAME SCREEN (Board on Left, Vertical Score & Control Sidebar on Right) -->
+  <main id="game-main" class="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-[calc(100dvh-3rem)] max-h-[calc(100dvh-3rem)] flex flex-col justify-between py-1.5 sm:py-2 overflow-hidden">
     
-    <!-- Hero / Headline -->
-    <div class="text-center px-3 mb-3 sm:mb-5">
-      <div class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-mono bg-zinc-900/80 border border-zinc-800 text-zinc-400 mb-1.5 sm:mb-2">
-        <span class="text-rose-500 font-semibold">Rubies</span> vs <span class="text-cyan-400 font-semibold">Pearls</span>
-        <span class="text-zinc-600">•</span>
-        <span>Hexagonal Tactical Duel</span>
+    <!-- Top Stage Header Bar -->
+    <div class="w-full flex items-center justify-between px-1 pb-1 border-b border-cyan-500/20 shrink-0">
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+        <span id="stage-banner-text" class="text-[8px] sm:text-[9px] font-['Press_Start_2P'] text-cyan-300">STAGE 1 // ORBITAL VOID</span>
       </div>
-      <h1 class="text-xl sm:text-4xl font-bold tracking-tight text-white">
-        Online Hex Board Game
-      </h1>
-      <p class="text-[11px] sm:text-sm text-zinc-400 mt-0.5 sm:mt-1 max-w-lg mx-auto">
-        Duplicate, leap, and infect opposing cells across authentic 1993 hexagonal arenas.
-      </p>
-    </div>
-
-    <!-- Live Telemetry HUD -->
-    <GameHUD />
-
-    <!-- Interactive Hexagon Canvas / SVG Arena -->
-    <div class="w-full max-w-4xl mx-auto px-2 sm:px-4 mt-3 sm:mt-5 flex flex-col items-center">
-      <div class="relative w-full aspect-square max-w-[min(100vw-1rem,580px)] rounded-2xl sm:rounded-3xl vercel-card border border-zinc-800/80 flex items-center justify-center overflow-hidden shadow-2xl p-1 sm:p-2 touch-manipulation">
+      
+      <!-- Central Turn Status Pill & Undo CTA -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <div id="turn-status-badge" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[11px] font-mono font-semibold bg-[#030612] border border-cyan-400/40 text-cyan-200 shadow-[0_0_10px_rgba(0,229,255,0.2)]">
+          <span id="turn-status-indicator" class="w-1.5 h-1.5 rounded-full bg-[#ff2d60] shadow-[0_0_6px_#ff2d60]"></span>
+          <span id="turn-status-text" class="truncate max-w-[110px] sm:max-w-none uppercase tracking-wider font-bold">Rubies Turn</span>
+        </div>
         
-        <!-- SVG Hexagon Board -->
-        <svg
-          id="board-svg"
-          viewBox="0 0 700 700"
-          class="w-full h-full relative z-10 select-none touch-manipulation"
-          aria-label="Hexagonal Board Game Grid"
+        <button
+          id="btn-hud-undo"
+          type="button"
+          class="inline-flex items-center gap-1 hover:text-cyan-300 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 bg-slate-900/90 border border-slate-700 hover:border-cyan-400/50 text-[9px] sm:text-[10px] font-mono font-bold"
+          title="Undo Last Move (Key: U)"
         >
-          <!-- Hexagon Cells dynamically rendered via game-engine.js -->
-        </svg>
+          <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          </svg>
+          <span class="hidden xs:inline">UNDO</span>
+        </button>
+      </div>
 
-        <!-- Foreground Particle Canvas -->
-        <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
-
+      <div class="text-[9px] sm:text-[10px] font-mono text-slate-400">
+        MOVE: <strong id="hud-move-count" class="text-slate-100 font-bold">0</strong>
       </div>
     </div>
 
-    <!-- Match Controls & Arena Presets -->
-    <BoardControls />
+    <!-- MAIN GAME VIEW: BOARD ON LEFT, VERTICAL STATS & CONTROLS ON RIGHT -->
+    <div class="flex-1 min-h-0 w-full grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-4 lg:gap-6 items-center justify-center py-1">
+      
+      <!-- LEFT / CENTER COLUMN: THE 2.5D HEXAGON BOARD (Auto-scaled to viewport height) -->
+      <div class="md:col-span-7 lg:col-span-8 xl:col-span-8 flex flex-col items-center justify-center h-full min-h-0">
+        
+        <!-- Mobile Top HUD Bar (Only on mobile screens < md) -->
+        <div class="flex md:hidden w-full items-center justify-between px-2 py-1 nes-card rounded-xl mb-1.5 shrink-0">
+          <div class="flex items-center gap-1.5">
+            <span class="text-lg">💎</span>
+            <div class="flex items-baseline gap-1">
+              <span id="score-ruby-mobile" class="text-xl font-bold font-mono text-[#ff2d60]">3</span>
+              <span class="text-[8px] font-mono text-slate-400">1P</span>
+            </div>
+          </div>
+          <div class="text-[8px] font-['Press_Start_2P'] text-cyan-300">VS</div>
+          <div class="flex items-center gap-1.5">
+            <div class="flex items-baseline gap-1">
+              <span id="score-pearl-mobile" class="text-xl font-bold font-mono text-[#00e5ff]">3</span>
+              <span class="text-[8px] font-mono text-slate-400">AI</span>
+            </div>
+            <span class="text-lg">🔮</span>
+          </div>
+        </div>
 
-    <!-- Informational Rules & Strategy -->
-    <RulesSection />
-    <StrategyGuide />
+        <!-- Board Wrapper -->
+        <div class="relative aspect-square h-full max-h-[calc(100dvh-8rem)] md:max-h-[calc(100dvh-6rem)] max-w-[calc(100vw-1rem)] flex items-center justify-center p-0.5">
+          
+          <!-- Floor Glow Halo -->
+          <div class="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-cyan-500/15 via-purple-600/10 to-rose-500/15 blur-xl opacity-70 pointer-events-none"></div>
+
+          <!-- NES Space Station Platform Base -->
+          <div class="relative w-full h-full rounded-2xl sm:rounded-3xl nes-stage-platform flex items-center justify-center p-1 sm:p-2 touch-manipulation">
+            
+            <!-- Arcade Stage Corner Brackets -->
+            <div class="absolute top-1.5 left-1.5 w-2.5 h-2.5 border-t-2 border-l-2 border-cyan-400/60 pointer-events-none"></div>
+            <div class="absolute top-1.5 right-1.5 w-2.5 h-2.5 border-t-2 border-r-2 border-cyan-400/60 pointer-events-none"></div>
+            <div class="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 border-b-2 border-l-2 border-rose-500/60 pointer-events-none"></div>
+            <div class="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 border-b-2 border-r-2 border-rose-500/60 pointer-events-none"></div>
+
+            <!-- SVG Hexagon Board -->
+            <svg
+              id="board-svg"
+              viewBox="0 0 700 700"
+              class="w-full h-full relative z-10 select-none touch-manipulation"
+              aria-label="Hexagonal Board Game Grid"
+            ></svg>
+
+            <!-- Foreground Particle Canvas -->
+            <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
+
+          </div>
+        </div>
+
+        <!-- Mobile Bottom Controls (Only on mobile screens < md) -->
+        <div class="flex md:hidden flex-col w-full gap-1.5 mt-1.5 shrink-0">
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="flex-1">
+              <select
+                id="select-game-mode-mobile"
+                class="w-full bg-[#050814] border border-cyan-400/30 rounded-lg px-1.5 py-1 text-[10px] text-cyan-100 font-mono"
+              >
+                <option value="pve" selected>🤖 VS CPU</option>
+                <option value="pvp">👥 Local 2P</option>
+                <option value="trio">⚔️ 3P Battle</option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <select
+                id="select-board-preset-mobile"
+                class="w-full bg-[#050814] border border-cyan-400/30 rounded-lg px-1.5 py-1 text-[10px] text-cyan-100 font-mono"
+              >
+                <option value="classic" selected>Stage 1: Classic (58)</option>
+                <option value="ring">Stage 2: Donut Void (48)</option>
+                <option value="hourglass">Stage 3: Hourglass (40)</option>
+                <option value="trio">Stage 4: Tri-Chamber (61)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Mobile 3-Tier AI Difficulty Bar -->
+          <div id="container-ai-difficulty-mobile" class="grid grid-cols-3 gap-1 p-0.5 rounded-lg bg-[#030612] border border-cyan-500/30">
+            <button type="button" data-diff="easy" class="btn-diff-mobile py-0.5 text-[9px] font-mono text-slate-400 rounded">🌱 Easy</button>
+            <button type="button" data-diff="medium" class="btn-diff-mobile active py-0.5 text-[9px] font-mono text-cyan-200 bg-cyan-500/20 border border-cyan-400 rounded">⚡ Medium</button>
+            <button type="button" data-diff="master" class="btn-diff-mobile py-0.5 text-[9px] font-mono text-slate-400 rounded">🔥 Master</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDE: VERTICAL TACTICAL COMMAND & SCORE DASHBOARD -->
+      <div class="hidden md:flex md:col-span-5 lg:col-span-4 xl:col-span-4 flex-col gap-2 sm:gap-2.5 w-full max-w-sm ml-auto h-full justify-center">
+        
+        <!-- VERTICAL SCORE CARD: PLAYER 1 (RUBIES) -->
+        <div id="card-player-ruby" class="nes-card rounded-2xl p-3 flex items-center justify-between relative overflow-hidden border-rose-500/30 shadow-[0_0_16px_rgba(255,45,96,0.15)] transition-all duration-300">
+          <div class="flex items-center gap-3">
+            <div class="relative w-12 h-12 rounded-2xl bg-[#ff2d60]/20 border-2 border-[#ff2d60]/60 flex items-center justify-center shadow-[0_0_16px_rgba(255,45,96,0.4)] shrink-0">
+              <span class="text-2xl">💎</span>
+              <span id="turn-dot-ruby" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#ff2d60] ring-2 ring-black animate-ping"></span>
+              <span id="turn-dot-ruby-solid" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#ff2d60] ring-2 ring-black"></span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[8px] sm:text-[9px] font-['Press_Start_2P'] text-[#ff2d60] leading-none">1P // RUBY</span>
+              <span class="text-xs font-bold text-white font-['Outfit'] mt-0.5">Ruby Core</span>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1 pr-2">
+            <span id="score-ruby" class="text-3xl font-black font-mono text-[#ff2d60] tabular-nums drop-shadow-[0_0_10px_rgba(255,45,96,0.6)]">3</span>
+            <span class="text-[9px] font-mono text-slate-400">GEMS</span>
+          </div>
+        </div>
+
+        <!-- VERTICAL SCORE CARD: PLAYER 2 (PEARLS) -->
+        <div id="card-player-pearl" class="nes-card rounded-2xl p-3 flex items-center justify-between relative overflow-hidden border-cyan-500/30 shadow-[0_0_16px_rgba(0,229,255,0.15)] transition-all duration-300">
+          <div class="flex items-center gap-3">
+            <div class="relative w-12 h-12 rounded-2xl bg-[#00e5ff]/20 border-2 border-[#00e5ff]/60 flex items-center justify-center shadow-[0_0_16px_rgba(0,229,255,0.4)] shrink-0">
+              <span class="text-2xl">🔮</span>
+              <span id="turn-dot-pearl" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#00e5ff] ring-2 ring-black animate-ping"></span>
+              <span id="turn-dot-pearl-solid" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#00e5ff] ring-2 ring-black"></span>
+            </div>
+            <div class="flex flex-col">
+              <span id="label-player-pearl" class="text-[8px] sm:text-[9px] font-['Press_Start_2P'] text-[#00e5ff] leading-none">AI // PEARL</span>
+              <span class="text-xs font-bold text-white font-['Outfit'] mt-0.5">Pearl Nexus</span>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1 pr-2">
+            <span id="score-pearl" class="text-3xl font-black font-mono text-[#00e5ff] tabular-nums drop-shadow-[0_0_10px_rgba(0,229,255,0.6)]">3</span>
+            <span class="text-[9px] font-mono text-slate-400">GEMS</span>
+          </div>
+        </div>
+
+        <!-- VERTICAL SCORE CARD: PLAYER 3 (EMERALDS) (Only in 3P Mode) -->
+        <div id="card-player-emerald" class="hidden nes-card rounded-2xl p-2.5 items-center justify-between relative overflow-hidden border-emerald-500/30 transition-all duration-300">
+          <div class="flex items-center gap-2.5">
+            <div class="relative w-10 h-10 rounded-xl bg-[#10b981]/20 border-2 border-[#10b981]/60 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.4)] shrink-0">
+              <span class="text-xl">🟢</span>
+              <span id="turn-dot-emerald" class="hidden absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#10b981] ring-2 ring-black animate-ping"></span>
+              <span id="turn-dot-emerald-solid" class="hidden absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#10b981] ring-2 ring-black"></span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[8px] font-['Press_Start_2P'] text-[#10b981]">3P // EMERALD</span>
+              <span class="text-xs font-bold text-white font-['Outfit']">Emerald Hive</span>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1 pr-2">
+            <span id="score-emerald" class="text-2xl font-black font-mono text-[#10b981] tabular-nums">2</span>
+            <span class="text-[8px] font-mono text-slate-400">GEMS</span>
+          </div>
+        </div>
+
+        <!-- MATCH CONFIGURATION CONTROLS -->
+        <div class="nes-card rounded-2xl p-3 flex flex-col gap-2.5">
+          
+          <!-- Mode & Stage Row -->
+          <div class="grid grid-cols-2 gap-2">
+            <!-- Mode Picker -->
+            <div class="flex flex-col gap-1">
+              <label for="select-game-mode" class="text-[8px] font-['Press_Start_2P'] text-cyan-300">
+                MATCH TYPE
+              </label>
+              <select
+                id="select-game-mode"
+                class="w-full bg-[#050814] border border-cyan-400/30 hover:border-cyan-300 rounded-lg px-2 py-1.5 text-[11px] font-medium text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono"
+              >
+                <option value="pve" selected>🤖 VS CPU</option>
+                <option value="pvp">👥 Local 2P</option>
+                <option value="trio">⚔️ 3P Battle</option>
+              </select>
+            </div>
+
+            <!-- Stage Select -->
+            <div class="flex flex-col gap-1">
+              <label for="select-board-preset" class="text-[8px] font-['Press_Start_2P'] text-cyan-300">
+                STAGE
+              </label>
+              <select
+                id="select-board-preset"
+                class="w-full bg-[#050814] border border-cyan-400/30 hover:border-cyan-300 rounded-lg px-2 py-1.5 text-[11px] font-medium text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono"
+              >
+                <option value="classic" selected>Stage 1: Classic (58)</option>
+                <option value="ring">Stage 2: Donut Void (48)</option>
+                <option value="hourglass">Stage 3: Hourglass (40)</option>
+                <option value="trio">Stage 4: Tri-Chamber (61)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- DEDICATED 3-TIER CPU DIFFICULTY SELECTOR (Visible in VS CPU mode) -->
+          <div id="container-ai-difficulty" class="flex flex-col gap-1 pt-1.5 border-t border-cyan-500/20">
+            <div class="flex items-center justify-between">
+              <span class="text-[8px] font-['Press_Start_2P'] text-cyan-300">CPU DIFFICULTY</span>
+              <div class="flex items-center gap-1.5">
+                <span id="diff-lock-badge" class="hidden text-[8px] font-mono text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/40">🔒 LOCKED</span>
+                <span id="label-current-diff" class="text-[9px] font-mono text-cyan-300 font-bold">MEDIUM (TACTICAL)</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#030612] border border-cyan-500/30">
+              <button
+                type="button"
+                data-diff="easy"
+                class="btn-difficulty py-1 px-1 rounded-lg text-[10px] font-mono font-bold transition-all text-slate-400 hover:text-emerald-300"
+              >
+                🌱 Easy
+              </button>
+              <button
+                type="button"
+                data-diff="medium"
+                class="btn-difficulty active py-1 px-1 rounded-lg text-[10px] font-mono font-bold transition-all bg-cyan-500/20 text-cyan-200 border border-cyan-400 shadow-[0_0_8px_rgba(0,229,255,0.4)]"
+              >
+                ⚡ Medium
+              </button>
+              <button
+                type="button"
+                data-diff="master"
+                class="btn-difficulty py-1 px-1 rounded-lg text-[10px] font-mono font-bold transition-all text-slate-400 hover:text-rose-400"
+              >
+                🔥 Master
+              </button>
+            </div>
+          </div>
+
+          <!-- Action Legend Bar -->
+          <div class="grid grid-cols-3 gap-1 py-1.5 px-2 rounded-xl bg-[#04060e]/95 border border-cyan-500/25 text-[8px] sm:text-[9px] font-mono text-slate-300 text-center shadow-md">
+            <div class="flex items-center justify-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981] shrink-0"></span>
+              <span class="truncate"><strong class="text-emerald-300">1:</strong> CLONE</span>
+            </div>
+            <div class="flex items-center justify-center gap-1 border-x border-cyan-500/20 px-0.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b] shrink-0"></span>
+              <span class="truncate"><strong class="text-amber-300">2:</strong> JUMP</span>
+            </div>
+            <div class="flex items-center justify-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_#ff2d60] shrink-0"></span>
+              <span class="truncate"><strong class="text-rose-400">ADJ:</strong> INFECT</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom Bar Navigation Cue -->
+    <div class="w-full flex items-center justify-between text-[8px] sm:text-[9px] font-mono text-slate-500 border-t border-cyan-500/10 pt-1 shrink-0">
+      <span>TACTICAL HEX-93 ARENA ENGINE</span>
+      <a href="#rules-and-guides" class="hover:text-cyan-300 transition-colors flex items-center gap-1">
+        <span>RULES & STRATEGY GUIDE</span>
+        <span>↓</span>
+      </a>
+    </div>
 
   </main>
+
+  <!-- Below-the-fold Extended Guides & Rules -->
+  <section id="rules-and-guides" class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-slate-800/80">
+    <RulesSection />
+    <StrategyGuide />
+  </section>
 
   <!-- Modals & Dialogs -->
   <HowToPlayModal />
