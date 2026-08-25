@@ -147,8 +147,48 @@ export class HexxagonGame {
             currentPlayer: currentTurn,
             playerInfo: PLAYERS[currentTurn],
             moveCount: this.state.moveCount,
-            isAi: this.isCurrentPlayerAi()
+            isAi: this.isCurrentPlayerAi(),
+            canUndo: this.canUndo()
         });
+    }
+
+    canUndo() {
+        return !this.isGameOver && !this.isAiTurn && this.history && this.history.length > 0;
+    }
+
+    undo() {
+        if (!this.canUndo()) return;
+
+        // In PvE vs Computer, undo both the AI move and the player's last move so it's the player's turn again
+        const isPvE = this.gameMode.startsWith('pve');
+        let stepsToUndo = 1;
+        if (isPvE && this.history.length >= 2) {
+            stepsToUndo = 2;
+        }
+
+        let snapshot = null;
+        for (let i = 0; i < stepsToUndo; i++) {
+            if (this.history.length > 0) {
+                snapshot = this.history.pop();
+            }
+        }
+
+        if (!snapshot) return;
+
+        this.state.board = { ...snapshot.board };
+        this.state.currentTurnIndex = snapshot.currentTurnIndex;
+        this.state.moveCount = snapshot.moveCount;
+        if (snapshot.specialTiles) {
+            this.state.specialTiles = JSON.parse(JSON.stringify(snapshot.specialTiles));
+        }
+        this.lastMove = snapshot.lastMove || null;
+        this.selectedCell = null;
+        this.validMoves = [];
+        this.state.scores = this.calculateScores(this.state.board, this.state.players);
+
+        sound.playSelect();
+        this.renderBoard();
+        this.notifyState();
     }
 
     getCurrentPlayer() {
@@ -911,7 +951,9 @@ export class HexxagonGame {
         this.history.push({
             board: { ...this.state.board },
             currentTurnIndex: this.state.currentTurnIndex,
-            moveCount: this.state.moveCount
+            moveCount: this.state.moveCount,
+            specialTiles: JSON.parse(JSON.stringify(this.state.specialTiles || {})),
+            lastMove: this.lastMove ? { ...this.lastMove } : null
         });
 
         // Exact SVG Coordinate Calculation

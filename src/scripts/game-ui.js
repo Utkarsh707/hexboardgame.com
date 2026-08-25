@@ -414,9 +414,24 @@ export function initGameUI() {
             }
         });
 
+        // Helper: Contextual Undo Button Visibility
+        function updateUndoButton(canUndo) {
+            if (!btnHudUndo) return;
+            if (canUndo) {
+                btnHudUndo.classList.remove('opacity-0', 'pointer-events-none', 'scale-95', 'invisible');
+                btnHudUndo.classList.add('opacity-100', 'scale-100', 'visible');
+                btnHudUndo.removeAttribute('disabled');
+            } else {
+                btnHudUndo.classList.add('opacity-0', 'pointer-events-none', 'scale-95', 'invisible');
+                btnHudUndo.classList.remove('opacity-100', 'scale-100', 'visible');
+                btnHudUndo.setAttribute('disabled', 'true');
+            }
+        }
+
         // Event: Turn Change
-        gameInstance.on('turnChange', ({ currentPlayer, isAi, moveCount }) => {
+        gameInstance.on('turnChange', ({ currentPlayer, isAi, moveCount, canUndo }) => {
             if (hudMoveCount) hudMoveCount.textContent = moveCount;
+            updateUndoButton(canUndo ?? gameInstance.canUndo());
 
             // Reset turn dots & borders
             turnDotRuby?.classList.add('hidden');
@@ -463,13 +478,16 @@ export function initGameUI() {
             if (thinking) {
                 turnStatusIndicator?.classList.add('animate-spin');
                 if (turnStatusText) turnStatusText.textContent = 'AI Calculating…';
+                updateUndoButton(false);
             } else {
                 turnStatusIndicator?.classList.remove('animate-spin');
+                updateUndoButton(gameInstance.canUndo());
             }
         });
 
         // Event: Game Over
         gameInstance.on('gameOver', ({ winner, isTie, scores, moveCount }) => {
+            updateUndoButton(false);
             if (!dialogGameOver) return;
 
             if (finalScoreRuby) finalScoreRuby.textContent = scores.ruby || 0;
