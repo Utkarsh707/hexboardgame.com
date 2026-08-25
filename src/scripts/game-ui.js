@@ -1,5 +1,8 @@
 /**
- * Hexxagon UI Binder & DOM Orchestration
+ * Hexxagon UI Binder & DOM State Orchestrator
+ * - Splash Screen / Main Menu vs Active Game Arena
+ * - Zero-Scroll Viewport Adaptation & Dialog Lifecycle Management
+ * - Comprehensive Settings, Stats, Audio, and Strategy Modals
  */
 
 import { HexxagonGame } from './game-engine.js';
@@ -7,18 +10,27 @@ import { sound } from './audio.js';
 import { PLAYERS, BOARD_PRESETS } from './boards.js';
 
 export function initGameUI() {
-    // Controls & Select Elements
-    const selectGameMode = document.getElementById('select-game-mode');
-    const selectBoardPreset = document.getElementById('select-board-preset');
+    // Screen Elements
+    const screenSplash = document.getElementById('screen-splash');
+    const screenGame = document.getElementById('screen-game');
 
-    // Reset UI dropdowns to defaults on load
-    if (selectBoardPreset) selectBoardPreset.value = 'classic';
-    if (selectGameMode) selectGameMode.value = 'pve';
+    // Splash Screen Controls
+    const splashSelectMode = document.getElementById('splash-select-mode');
+    const splashSelectPreset = document.getElementById('splash-select-preset');
+    const splashContainerDiff = document.getElementById('splash-container-difficulty');
+    const splashDiffButtons = document.querySelectorAll('.btn-splash-diff');
+    const btnSplashStartGame = document.getElementById('btn-splash-start-game');
+    const btnSplashSound = document.getElementById('btn-splash-sound');
+    const splashSoundIcon = document.getElementById('splash-sound-icon');
+    const splashSoundText = document.getElementById('splash-sound-text');
 
-    const game = new HexxagonGame({
-        presetId: 'classic',
-        gameMode: 'pve-medium'
-    });
+    // In-Game Header & Arena Controls
+    const btnNavMenu = document.getElementById('btn-nav-menu');
+    const btnRestartGame = document.getElementById('btn-restart-game');
+    const btnHudUndo = document.getElementById('btn-hud-undo');
+    const btnToggleSound = document.getElementById('btn-toggle-sound');
+    const iconSoundOn = document.getElementById('icon-sound-on');
+    const iconSoundOff = document.getElementById('icon-sound-off');
 
     // Score & Telemetry DOM Elements
     const stageBannerText = document.getElementById('stage-banner-text');
@@ -37,31 +49,47 @@ export function initGameUI() {
     const labelPlayerPearl = document.getElementById('label-player-pearl');
     const hudMoveCount = document.getElementById('hud-move-count');
 
-    // Controls Buttons
-    const btnRestartGame = document.getElementById('btn-restart-game');
-    const btnHudUndo = document.getElementById('btn-hud-undo');
-    const btnToggleSound = document.getElementById('btn-toggle-sound');
-    const iconSoundOn = document.getElementById('icon-sound-on');
-    const iconSoundOff = document.getElementById('icon-sound-off');
-
-    // Modals
+    // Dialog Elements
     const dialogHowToPlay = document.getElementById('dialog-how-to-play');
     const btnOpenHowToPlay = document.getElementById('btn-open-how-to-play');
+    const btnSplashHowToPlay = document.getElementById('btn-splash-how-to-play');
     const btnCloseHowToPlay = document.getElementById('btn-close-how-to-play');
     const btnConfirmHowToPlay = document.getElementById('btn-confirm-how-to-play');
-    const btnFooterHowToPlay = document.getElementById('btn-footer-how-to-play');
+
+    const dialogStrategy = document.getElementById('dialog-strategy');
+    const btnOpenStrategy = document.getElementById('btn-open-strategy');
+    const btnSplashStrategy = document.getElementById('btn-splash-strategy');
+    const btnCloseStrategy = document.getElementById('btn-close-strategy');
+    const btnConfirmStrategy = document.getElementById('btn-confirm-strategy');
+
+    const dialogSettings = document.getElementById('dialog-settings');
+    const btnOpenSettings = document.getElementById('btn-open-settings');
+    const btnSplashSettings = document.getElementById('btn-splash-settings');
+    const btnCloseSettings = document.getElementById('btn-close-settings');
+    const btnConfirmSettings = document.getElementById('btn-confirm-settings');
+    const settingToggleSound = document.getElementById('setting-toggle-sound');
+    const settingVolumeSlider = document.getElementById('setting-volume-slider');
+    const settingVolumeLabel = document.getElementById('setting-volume-label');
+    const settingToggleShake = document.getElementById('setting-toggle-shake');
+    const settingToggleFlashes = document.getElementById('setting-toggle-flashes');
+    const btnSettingsClearData = document.getElementById('btn-settings-clear-data');
 
     const dialogStats = document.getElementById('dialog-stats');
     const btnOpenStats = document.getElementById('btn-open-stats');
+    const btnSplashStats = document.getElementById('btn-splash-stats');
     const btnCloseStats = document.getElementById('btn-close-stats');
     const btnCloseStatsAction = document.getElementById('btn-close-stats-action');
     const btnResetStats = document.getElementById('btn-reset-stats');
 
     const dialogShortcuts = document.getElementById('dialog-shortcuts');
-    const btnOpenShortcuts = document.getElementById('btn-open-shortcuts');
+    const btnSplashShortcuts = document.getElementById('btn-splash-shortcuts');
     const btnCloseShortcuts = document.getElementById('btn-close-shortcuts');
     const btnCloseShortcutsAction = document.getElementById('btn-close-shortcuts-action');
-    const btnFooterShortcuts = document.getElementById('btn-footer-shortcuts');
+
+    const dialogAbout = document.getElementById('dialog-about');
+    const btnSplashAbout = document.getElementById('btn-splash-about');
+    const btnCloseAbout = document.getElementById('btn-close-about');
+    const btnConfirmAbout = document.getElementById('btn-confirm-about');
 
     const dialogGameOver = document.getElementById('dialog-game-over');
     const gameOverTitle = document.getElementById('game-over-title');
@@ -72,8 +100,26 @@ export function initGameUI() {
     const btnGameOverRematch = document.getElementById('btn-game-over-rematch');
     const btnGameOverClose = document.getElementById('btn-game-over-close');
 
-    // Backdrop click-to-close handler for all HTML dialogs
-    [dialogHowToPlay, dialogStats, dialogShortcuts, dialogGameOver].forEach(dlg => {
+    // State Variables
+    let selectedMode = 'pve';
+    let selectedPreset = 'classic';
+    let selectedDiff = 'medium';
+    let game = null;
+    let screenShakeEnabled = localStorage.getItem('hexxagon_shake') !== 'false';
+    let reduceFlashesEnabled = localStorage.getItem('hexxagon_reduce_flashes') === 'true';
+
+    // Auto-close dialogs on backdrop click
+    const allDialogs = [
+        dialogHowToPlay,
+        dialogStrategy,
+        dialogSettings,
+        dialogStats,
+        dialogShortcuts,
+        dialogAbout,
+        dialogGameOver
+    ];
+
+    allDialogs.forEach(dlg => {
         if (dlg) {
             dlg.addEventListener('click', (e) => {
                 const rect = dlg.getBoundingClientRect();
@@ -90,14 +136,26 @@ export function initGameUI() {
         }
     });
 
-    // Sound UI Sync
+    // Sound UI Synchronization
     function syncSoundUI(muted) {
         if (muted) {
             iconSoundOn?.classList.add('hidden');
             iconSoundOff?.classList.remove('hidden');
+            if (splashSoundIcon) splashSoundIcon.textContent = '🔇';
+            if (splashSoundText) splashSoundText.textContent = 'AUDIO MUTED';
+            if (settingToggleSound) {
+                settingToggleSound.textContent = 'MUTED';
+                settingToggleSound.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-rose-500/20 border border-rose-400 text-rose-300 hover:bg-rose-500/30';
+            }
         } else {
             iconSoundOn?.classList.remove('hidden');
             iconSoundOff?.classList.add('hidden');
+            if (splashSoundIcon) splashSoundIcon.textContent = '🔊';
+            if (splashSoundText) splashSoundText.textContent = 'AUDIO ON';
+            if (settingToggleSound) {
+                settingToggleSound.textContent = 'ENABLED';
+                settingToggleSound.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-emerald-500/20 border border-emerald-400 text-emerald-300 hover:bg-emerald-500/30';
+            }
         }
     }
     syncSoundUI(sound.muted);
@@ -107,247 +165,324 @@ export function initGameUI() {
         syncSoundUI(isMuted);
     });
 
-    game.on('soundToggle', (muted) => syncSoundUI(muted));
-
-    // Event: Score Change
-    game.on('scoreChange', ({ scores }) => {
-        if (scoreRuby) scoreRuby.textContent = scores.ruby || 0;
-        if (scorePearl) scorePearl.textContent = scores.pearl || 0;
-        if (scoreEmerald && scores.emerald !== undefined) {
-            scoreEmerald.textContent = scores.emerald || 0;
-        }
+    btnSplashSound?.addEventListener('click', () => {
+        const isMuted = sound.toggleMute();
+        syncSoundUI(isMuted);
+        if (!isMuted) sound.playSelect();
     });
 
-    // Event: Turn Change
-    game.on('turnChange', ({ currentPlayer, isAi, moveCount }) => {
-        if (hudMoveCount) hudMoveCount.textContent = moveCount;
-        syncDifficultyLock(moveCount);
-
-        // Reset turn dots & borders
-        turnDotRuby?.classList.add('hidden');
-        turnDotRubySolid?.classList.add('hidden');
-        turnDotPearl?.classList.add('hidden');
-        turnDotPearlSolid?.classList.add('hidden');
-
-        cardRuby?.classList.remove('border-[#ff2d60]', 'bg-white/5');
-        cardPearl?.classList.remove('border-[#00e5ff]', 'bg-white/5');
-        cardEmerald?.classList.remove('border-[#10b981]', 'bg-white/5');
-
-        if (currentPlayer === 'ruby') {
-            turnDotRuby?.classList.remove('hidden');
-            turnDotRubySolid?.classList.remove('hidden');
-            cardRuby?.classList.add('border-[#ff2d60]', 'bg-white/5');
-            if (turnStatusIndicator) {
-                turnStatusIndicator.style.backgroundColor = '#ff2d60';
-                turnStatusIndicator.style.boxShadow = '0 0 8px #ff2d60';
-            }
-            const text = selectGameMode?.value === 'pvp' ? "Player 1's Turn" : "Your Turn";
-            if (turnStatusText) turnStatusText.textContent = text;
-        } else if (currentPlayer === 'pearl') {
-            turnDotPearl?.classList.remove('hidden');
-            turnDotPearlSolid?.classList.remove('hidden');
-            cardPearl?.classList.add('border-[#00e5ff]', 'bg-white/5');
-            if (turnStatusIndicator) {
-                turnStatusIndicator.style.backgroundColor = '#00e5ff';
-                turnStatusIndicator.style.boxShadow = '0 0 8px #00e5ff';
-            }
-            const text = isAi ? 'AI Thinking…' : "Player 2's Turn";
-            if (turnStatusText) turnStatusText.textContent = text;
-        } else if (currentPlayer === 'emerald') {
-            cardEmerald?.classList.add('border-[#10b981]', 'bg-white/5');
-            if (turnStatusIndicator) {
-                turnStatusIndicator.style.backgroundColor = '#10b981';
-                turnStatusIndicator.style.boxShadow = '0 0 8px #10b981';
-            }
-            if (turnStatusText) turnStatusText.textContent = "Player 3's Turn";
-        }
+    settingToggleSound?.addEventListener('click', () => {
+        const isMuted = sound.toggleMute();
+        syncSoundUI(isMuted);
+        if (!isMuted) sound.playSelect();
     });
 
-    // Event: AI Thinking
-    game.on('aiThinking', (thinking) => {
-        if (thinking) {
-            turnStatusIndicator?.classList.add('animate-spin');
-            if (turnStatusText) turnStatusText.textContent = 'AI Calculating…';
-        } else {
-            turnStatusIndicator?.classList.remove('animate-spin');
-        }
-    });
+    // Volume Slider
+    if (settingVolumeSlider && settingVolumeLabel) {
+        const initialVol = Math.round((sound.volume || 0.7) * 100);
+        settingVolumeSlider.value = String(initialVol);
+        settingVolumeLabel.textContent = `${initialVol}%`;
 
-    // Event: Game Over
-    game.on('gameOver', ({ winner, isTie, scores, moveCount }) => {
-        if (!dialogGameOver) return;
-
-        if (finalScoreRuby) finalScoreRuby.textContent = scores.ruby || 0;
-        if (finalScorePearl) finalScorePearl.textContent = scores.pearl || 0;
-
-        if (isTie) {
-            if (gameOverTitle) gameOverTitle.textContent = 'Stalemate / Draw!';
-            if (gameOverSubtitle) gameOverSubtitle.textContent = `Both players finished tied with ${scores.ruby} gems each in ${moveCount} moves.`;
-            if (gameOverIcon) gameOverIcon.textContent = '🤝';
-        } else if (winner === 'ruby') {
-            if (gameOverTitle) gameOverTitle.textContent = selectGameMode?.value === 'pvp' ? 'Player 1 Wins!' : 'Victory! You Won!';
-            if (gameOverSubtitle) gameOverSubtitle.textContent = `Rubies dominated the board with ${scores.ruby} gems over Pearls (${scores.pearl}) in ${moveCount} moves.`;
-            if (gameOverIcon) gameOverIcon.textContent = '🏆';
-        } else if (winner === 'pearl') {
-            if (gameOverTitle) gameOverTitle.textContent = selectGameMode?.value === 'pvp' ? 'Player 2 Wins!' : 'AI Opponent Wins!';
-            if (gameOverSubtitle) gameOverSubtitle.textContent = `Pearls secured victory with ${scores.pearl} gems vs Rubies (${scores.ruby}) in ${moveCount} moves.`;
-            if (gameOverIcon) gameOverIcon.textContent = selectGameMode?.value === 'pvp' ? '🏆' : '💀';
-        }
-
-        dialogGameOver.showModal();
-    });
-
-    // Difficulty Setup
-    let currentDifficulty = 'medium';
-    const containerAiDifficulty = document.getElementById('container-ai-difficulty');
-    const diffLockBadge = document.getElementById('diff-lock-badge');
-    const diffButtons = document.querySelectorAll('.btn-difficulty');
-
-    function syncDifficultyLock(moveCount) {
-        const isGameStarted = moveCount > 0 && !game.isGameOver;
-
-        diffButtons.forEach(btn => {
-            if (isGameStarted) {
-                btn.disabled = true;
-                btn.classList.add('opacity-40', 'cursor-not-allowed');
-                btn.setAttribute('title', 'Difficulty locked during active match. Reset to change.');
-            } else {
-                btn.disabled = false;
-                btn.classList.remove('opacity-40', 'cursor-not-allowed');
-                btn.removeAttribute('title');
-            }
+        settingVolumeSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            settingVolumeLabel.textContent = `${val}%`;
+            sound.setVolume(val / 100);
         });
+    }
 
-        if (diffLockBadge) {
-            if (isGameStarted) {
-                diffLockBadge.classList.remove('hidden');
+    // Screen Shake & Accessibility Toggles
+    function updateSettingsUI() {
+        if (settingToggleShake) {
+            if (screenShakeEnabled) {
+                settingToggleShake.textContent = 'ON';
+                settingToggleShake.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-cyan-500/20 border border-cyan-400 text-cyan-300 hover:bg-cyan-500/30';
             } else {
-                diffLockBadge.classList.add('hidden');
+                settingToggleShake.textContent = 'OFF';
+                settingToggleShake.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-slate-800 border border-slate-700 text-slate-400 hover:text-white';
+            }
+        }
+
+        if (settingToggleFlashes) {
+            if (reduceFlashesEnabled) {
+                settingToggleFlashes.textContent = 'ON';
+                settingToggleFlashes.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-emerald-500/20 border border-emerald-400 text-emerald-300 hover:bg-emerald-500/30';
+            } else {
+                settingToggleFlashes.textContent = 'OFF';
+                settingToggleFlashes.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-slate-800 border border-slate-700 text-slate-400 hover:text-white';
             }
         }
     }
+    updateSettingsUI();
 
-    function setDifficulty(diff) {
-        if (game.state && game.state.moveCount > 0 && !game.isGameOver) {
-            return;
-        }
+    settingToggleShake?.addEventListener('click', () => {
+        screenShakeEnabled = !screenShakeEnabled;
+        localStorage.setItem('hexxagon_shake', String(screenShakeEnabled));
+        updateSettingsUI();
+        sound.playSelect();
+    });
 
-        currentDifficulty = diff;
+    settingToggleFlashes?.addEventListener('click', () => {
+        reduceFlashesEnabled = !reduceFlashesEnabled;
+        localStorage.setItem('hexxagon_reduce_flashes', String(reduceFlashesEnabled));
+        updateSettingsUI();
+        sound.playSelect();
+    });
 
-        diffButtons.forEach(btn => {
-            if (btn.getAttribute('data-diff') === diff) {
-                btn.classList.add('bg-cyan-500/20', 'text-cyan-200', 'border', 'border-cyan-400', 'shadow-[0_0_8px_rgba(0,229,255,0.4)]');
-                btn.classList.remove('text-slate-400');
-            } else {
-                btn.classList.remove('bg-cyan-500/20', 'text-cyan-200', 'border', 'border-cyan-400', 'shadow-[0_0_8px_rgba(0,229,255,0.4)]');
-                btn.classList.add('text-slate-400');
-            }
-        });
-
-        if (!selectGameMode || selectGameMode.value === 'pve' || selectGameMode.value.startsWith('pve')) {
-            game.setGameMode(`pve-${diff}`);
-        }
-    }
-
-    diffButtons.forEach(btn => {
+    // Splash Screen: Difficulty Buttons
+    splashDiffButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const diff = btn.getAttribute('data-diff');
             if (diff) {
-                setDifficulty(diff);
+                selectedDiff = diff;
+                splashDiffButtons.forEach(b => {
+                    if (b.getAttribute('data-diff') === diff) {
+                        b.className = 'btn-splash-diff active py-1.5 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-lg cursor-pointer';
+                    } else {
+                        b.className = 'btn-splash-diff py-1.5 text-xs font-mono font-bold text-slate-400 rounded-lg transition-colors hover:text-cyan-300 cursor-pointer';
+                    }
+                });
                 sound.playSelect();
             }
         });
     });
 
-    // Unified Mode & Preset Handlers
-    function handleModeChange(mode, playSound = true) {
-        if (selectGameMode) selectGameMode.value = mode;
-
-        if (mode === 'pve') {
-            containerAiDifficulty?.classList.remove('opacity-30', 'pointer-events-none');
-            game.setGameMode(`pve-${currentDifficulty}`);
+    // Splash Screen: Mode Selector
+    splashSelectMode?.addEventListener('change', (e) => {
+        selectedMode = e.target.value;
+        if (selectedMode === 'pve') {
+            splashContainerDiff?.classList.remove('opacity-30', 'pointer-events-none');
         } else {
-            containerAiDifficulty?.classList.add('opacity-30', 'pointer-events-none');
-            game.setGameMode(mode);
+            splashContainerDiff?.classList.add('opacity-30', 'pointer-events-none');
         }
 
-        if (mode === 'trio') {
+        if (selectedMode === 'trio') {
+            if (splashSelectPreset) splashSelectPreset.value = 'trio';
+            selectedPreset = 'trio';
+        } else if (selectedPreset === 'trio') {
+            if (splashSelectPreset) splashSelectPreset.value = 'classic';
+            selectedPreset = 'classic';
+        }
+        sound.playSelect();
+    });
+
+    // Splash Screen: Preset Selector
+    splashSelectPreset?.addEventListener('change', (e) => {
+        selectedPreset = e.target.value;
+        if (selectedPreset === 'trio') {
+            if (splashSelectMode) splashSelectMode.value = 'trio';
+            selectedMode = 'trio';
+            splashContainerDiff?.classList.add('opacity-30', 'pointer-events-none');
+        } else if (selectedMode === 'trio') {
+            if (splashSelectMode) splashSelectMode.value = 'pve';
+            selectedMode = 'pve';
+            splashContainerDiff?.classList.remove('opacity-30', 'pointer-events-none');
+        }
+        sound.playSelect();
+    });
+
+    // Screen State Transition Functions
+    function showSplashScreen() {
+        screenGame?.classList.add('hidden-screen');
+        screenSplash?.classList.remove('hidden-screen');
+        sound.playDeselect();
+    }
+
+    function launchBattle() {
+        sound.playSelect();
+        screenSplash?.classList.add('hidden-screen');
+        screenGame?.classList.remove('hidden-screen');
+
+        const modeKey = selectedMode === 'pve' ? `pve-${selectedDiff}` : selectedMode;
+
+        if (!game) {
+            game = new HexxagonGame({
+                presetId: selectedPreset,
+                gameMode: modeKey
+            });
+            attachGameEvents(game);
+        } else {
+            game.setPreset(selectedPreset);
+            game.setGameMode(modeKey);
+            game.initGame();
+        }
+
+        // Update In-Game Labels
+        if (stageBannerText && BOARD_PRESETS[selectedPreset]) {
+            stageBannerText.textContent = BOARD_PRESETS[selectedPreset].stageTitle;
+        }
+
+        if (selectedMode === 'trio') {
             cardEmerald?.classList.remove('hidden');
             cardEmerald?.classList.add('flex');
-            handlePresetChange('trio', playSound);
         } else {
             cardEmerald?.classList.add('hidden');
             cardEmerald?.classList.remove('flex');
-            if (game.presetId === 'trio') {
-                handlePresetChange('classic', playSound);
-            }
         }
 
         if (labelPlayerPearl) {
-            labelPlayerPearl.textContent = mode === 'pvp' ? 'Player 2' : (mode === 'trio' ? 'Player 2' : 'Pearls');
+            labelPlayerPearl.textContent = selectedMode === 'pvp' ? 'Player 2' : (selectedMode === 'trio' ? 'Player 2' : 'Pearls');
         }
 
-        if (playSound) sound.playSelect();
+        window.hexxagonInstance = game;
     }
 
-    function handlePresetChange(preset, playSound = true) {
-        if (selectBoardPreset) selectBoardPreset.value = preset;
+    // Attach Game Event Listeners
+    function attachGameEvents(gameInstance) {
+        // Event: Score Change
+        gameInstance.on('scoreChange', ({ scores }) => {
+            if (scoreRuby) scoreRuby.textContent = scores.ruby || 0;
+            if (scorePearl) scorePearl.textContent = scores.pearl || 0;
+            if (scoreEmerald && scores.emerald !== undefined) {
+                scoreEmerald.textContent = scores.emerald || 0;
+            }
+        });
 
-        if (preset === 'trio') {
-            if (selectGameMode) selectGameMode.value = 'trio';
-            cardEmerald?.classList.remove('hidden');
-            cardEmerald?.classList.add('flex');
-            containerAiDifficulty?.classList.add('opacity-30', 'pointer-events-none');
-        }
+        // Event: Turn Change
+        gameInstance.on('turnChange', ({ currentPlayer, isAi, moveCount }) => {
+            if (hudMoveCount) hudMoveCount.textContent = moveCount;
 
-        if (stageBannerText && BOARD_PRESETS[preset]) {
-            stageBannerText.textContent = BOARD_PRESETS[preset].stageTitle;
-        }
+            // Reset turn dots & borders
+            turnDotRuby?.classList.add('hidden');
+            turnDotRubySolid?.classList.add('hidden');
+            turnDotPearl?.classList.add('hidden');
+            turnDotPearlSolid?.classList.add('hidden');
 
-        game.setPreset(preset);
-        syncDifficultyLock(0);
-        if (playSound) sound.playSelect();
+            cardRuby?.classList.remove('border-[#ff2d60]', 'bg-white/5');
+            cardPearl?.classList.remove('border-[#00e5ff]', 'bg-white/5');
+            cardEmerald?.classList.remove('border-[#10b981]', 'bg-white/5');
+
+            if (currentPlayer === 'ruby') {
+                turnDotRuby?.classList.remove('hidden');
+                turnDotRubySolid?.classList.remove('hidden');
+                cardRuby?.classList.add('border-[#ff2d60]', 'bg-white/5');
+                if (turnStatusIndicator) {
+                    turnStatusIndicator.style.backgroundColor = '#ff2d60';
+                    turnStatusIndicator.style.boxShadow = '0 0 8px #ff2d60';
+                }
+                const text = selectedMode === 'pvp' ? "Player 1's Turn" : "Your Turn";
+                if (turnStatusText) turnStatusText.textContent = text;
+            } else if (currentPlayer === 'pearl') {
+                turnDotPearl?.classList.remove('hidden');
+                turnDotPearlSolid?.classList.remove('hidden');
+                cardPearl?.classList.add('border-[#00e5ff]', 'bg-white/5');
+                if (turnStatusIndicator) {
+                    turnStatusIndicator.style.backgroundColor = '#00e5ff';
+                    turnStatusIndicator.style.boxShadow = '0 0 8px #00e5ff';
+                }
+                const text = isAi ? 'AI Thinking…' : "Player 2's Turn";
+                if (turnStatusText) turnStatusText.textContent = text;
+            } else if (currentPlayer === 'emerald') {
+                cardEmerald?.classList.add('border-[#10b981]', 'bg-white/5');
+                if (turnStatusIndicator) {
+                    turnStatusIndicator.style.backgroundColor = '#10b981';
+                    turnStatusIndicator.style.boxShadow = '0 0 8px #10b981';
+                }
+                if (turnStatusText) turnStatusText.textContent = "Player 3's Turn";
+            }
+        });
+
+        // Event: AI Thinking
+        gameInstance.on('aiThinking', (thinking) => {
+            if (thinking) {
+                turnStatusIndicator?.classList.add('animate-spin');
+                if (turnStatusText) turnStatusText.textContent = 'AI Calculating…';
+            } else {
+                turnStatusIndicator?.classList.remove('animate-spin');
+            }
+        });
+
+        // Event: Game Over
+        gameInstance.on('gameOver', ({ winner, isTie, scores, moveCount }) => {
+            if (!dialogGameOver) return;
+
+            if (finalScoreRuby) finalScoreRuby.textContent = scores.ruby || 0;
+            if (finalScorePearl) finalScorePearl.textContent = scores.pearl || 0;
+
+            if (isTie) {
+                if (gameOverTitle) gameOverTitle.textContent = 'Stalemate / Draw!';
+                if (gameOverSubtitle) gameOverSubtitle.textContent = `Both sides finished tied with ${scores.ruby} gems each in ${moveCount} moves.`;
+                if (gameOverIcon) gameOverIcon.textContent = '🤝';
+            } else if (winner === 'ruby') {
+                if (gameOverTitle) gameOverTitle.textContent = selectedMode === 'pvp' ? 'Player 1 Wins!' : 'Victory! You Won!';
+                if (gameOverSubtitle) gameOverSubtitle.textContent = `Rubies dominated the board with ${scores.ruby} gems over Pearls (${scores.pearl}) in ${moveCount} moves.`;
+                if (gameOverIcon) gameOverIcon.textContent = '🏆';
+            } else if (winner === 'pearl') {
+                if (gameOverTitle) gameOverTitle.textContent = selectedMode === 'pvp' ? 'Player 2 Wins!' : 'AI Opponent Wins!';
+                if (gameOverSubtitle) gameOverSubtitle.textContent = `Pearls secured victory with ${scores.pearl} gems vs Rubies (${scores.ruby}) in ${moveCount} moves.`;
+                if (gameOverIcon) gameOverIcon.textContent = selectedMode === 'pvp' ? '🏆' : '💀';
+            }
+
+            // Smooth 350ms cinematic delay so player sees the final board state before modal pops
+            setTimeout(() => {
+                if (!dialogGameOver.open) {
+                    dialogGameOver.showModal();
+                }
+            }, 350);
+        });
     }
 
-    // Initial silent sync on startup / page refresh
-    handlePresetChange('classic', false);
-    handleModeChange('pve', false);
+    // Launch Button from Splash
+    btnSplashStartGame?.addEventListener('click', launchBattle);
 
-    selectGameMode?.addEventListener('change', (e) => handleModeChange(e.target.value));
-    selectBoardPreset?.addEventListener('change', (e) => handlePresetChange(e.target.value));
+    // Return to Menu Button from Game Arena
+    btnNavMenu?.addEventListener('click', showSplashScreen);
 
-    // Restart Button
+    // Restart Button inside Arena
     btnRestartGame?.addEventListener('click', () => {
-        game.initGame();
+        if (game) game.initGame();
         sound.playSelect();
-        syncDifficultyLock(0);
     });
 
     // Undo Button
     btnHudUndo?.addEventListener('click', () => {
-        game.undo();
+        if (game) game.undo();
     });
 
-    // Rematch Button
+    // Rematch & Review in Game Over Modal
     btnGameOverRematch?.addEventListener('click', () => {
         dialogGameOver?.close();
-        game.initGame();
-        syncDifficultyLock(0);
+        if (game) game.initGame();
     });
 
     btnGameOverClose?.addEventListener('click', () => {
         dialogGameOver?.close();
     });
 
-    // Modals: How to Play
-    const openHowToPlay = () => dialogHowToPlay?.showModal();
+    // Modal Triggers: How To Play / Rules
+    const openHowToPlay = () => {
+        sound.playSelect();
+        dialogHowToPlay?.showModal();
+    };
     const closeHowToPlay = () => dialogHowToPlay?.close();
     btnOpenHowToPlay?.addEventListener('click', openHowToPlay);
-    btnFooterHowToPlay?.addEventListener('click', openHowToPlay);
+    btnSplashHowToPlay?.addEventListener('click', openHowToPlay);
     btnCloseHowToPlay?.addEventListener('click', closeHowToPlay);
     btnConfirmHowToPlay?.addEventListener('click', closeHowToPlay);
 
-    // Modals: Stats
+    // Modal Triggers: Strategy Guide
+    const openStrategy = () => {
+        sound.playSelect();
+        dialogStrategy?.showModal();
+    };
+    const closeStrategy = () => dialogStrategy?.close();
+    btnOpenStrategy?.addEventListener('click', openStrategy);
+    btnSplashStrategy?.addEventListener('click', openStrategy);
+    btnCloseStrategy?.addEventListener('click', closeStrategy);
+    btnConfirmStrategy?.addEventListener('click', closeStrategy);
+
+    // Modal Triggers: Settings
+    const openSettings = () => {
+        sound.playSelect();
+        updateSettingsUI();
+        dialogSettings?.showModal();
+    };
+    const closeSettings = () => dialogSettings?.close();
+    btnOpenSettings?.addEventListener('click', openSettings);
+    btnSplashSettings?.addEventListener('click', openSettings);
+    btnCloseSettings?.addEventListener('click', closeSettings);
+    btnConfirmSettings?.addEventListener('click', closeSettings);
+
+    // Modal Triggers: Stats
     function updateStatsUI() {
         try {
             const raw = localStorage.getItem('hexxagon_stats_v2') || '{}';
@@ -372,34 +507,74 @@ export function initGameUI() {
     }
 
     const openStats = () => {
+        sound.playSelect();
         updateStatsUI();
         dialogStats?.showModal();
     };
     const closeStats = () => dialogStats?.close();
     btnOpenStats?.addEventListener('click', openStats);
+    btnSplashStats?.addEventListener('click', openStats);
     btnCloseStats?.addEventListener('click', closeStats);
     btnCloseStatsAction?.addEventListener('click', closeStats);
     btnResetStats?.addEventListener('click', () => {
         localStorage.removeItem('hexxagon_stats_v2');
         updateStatsUI();
+        sound.playDeselect();
     });
 
-    // Modals: Shortcuts
-    const openShortcuts = () => dialogShortcuts?.showModal();
+    btnSettingsClearData?.addEventListener('click', () => {
+        localStorage.removeItem('hexxagon_stats_v2');
+        localStorage.removeItem('hexxagon_shake');
+        localStorage.removeItem('hexxagon_reduce_flashes');
+        localStorage.removeItem('hexxagon_volume');
+        localStorage.removeItem('hexxagon_muted');
+        updateStatsUI();
+        updateSettingsUI();
+        sound.playDeselect();
+    });
+
+    // Modal Triggers: Shortcuts
+    const openShortcuts = () => {
+        sound.playSelect();
+        dialogShortcuts?.showModal();
+    };
     const closeShortcuts = () => dialogShortcuts?.close();
-    btnOpenShortcuts?.addEventListener('click', openShortcuts);
-    btnFooterShortcuts?.addEventListener('click', openShortcuts);
+    btnSplashShortcuts?.addEventListener('click', openShortcuts);
     btnCloseShortcuts?.addEventListener('click', closeShortcuts);
     btnCloseShortcutsAction?.addEventListener('click', closeShortcuts);
 
-    // Keyboard shortcut to open help
+    // Modal Triggers: About
+    const openAbout = () => {
+        sound.playSelect();
+        dialogAbout?.showModal();
+    };
+    const closeAbout = () => dialogAbout?.close();
+    btnSplashAbout?.addEventListener('click', openAbout);
+    btnCloseAbout?.addEventListener('click', closeAbout);
+    btnConfirmAbout?.addEventListener('click', closeAbout);
+
+    // Global Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
-        if (e.key === '?') {
+        if (e.key === '?' || (e.shiftKey && e.key === '/')) {
             e.preventDefault();
             openHowToPlay();
+        } else if (e.key === 'm' || e.key === 'M') {
+            const isMuted = sound.toggleMute();
+            syncSoundUI(isMuted);
+        } else if (e.key === 'u' || e.key === 'U') {
+            if (game && !screenGame?.classList.contains('hidden-screen')) {
+                game.undo();
+            }
+        } else if (e.key === 'r' || e.key === 'R') {
+            if (game && !screenGame?.classList.contains('hidden-screen')) {
+                game.initGame();
+                sound.playSelect();
+            }
+        } else if (e.key === 'Escape') {
+            // Close any open dialogs first
+            allDialogs.forEach(dlg => {
+                if (dlg && dlg.open) dlg.close();
+            });
         }
     });
-
-    window.hexxagonInstance = game;
 }
-

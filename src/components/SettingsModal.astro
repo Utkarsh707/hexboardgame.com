@@ -1,0 +1,129 @@
+---
+---
+
+<dialog
+  id="dialog-settings"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 max-w-md w-[calc(100vw-1rem)]"
+  aria-labelledby="settings-dialog-title"
+>
+  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/30 text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[85vh] overflow-y-auto">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm shadow-[0_0_12px_rgba(0,229,255,0.3)]">
+          ⚙️
+        </div>
+        <div>
+          <span class="text-[9px] font-['Press_Start_2P'] text-cyan-300 block">GAME SETTINGS</span>
+          <h2 id="settings-dialog-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-['Outfit']">
+            Preferences & Audio
+          </h2>
+        </div>
+      </div>
+      <button
+        id="btn-close-settings"
+        type="button"
+        class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+        aria-label="Close settings dialog"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Settings Controls List -->
+    <div class="flex flex-col gap-3.5 text-xs text-slate-300">
+      
+      <!-- Setting 1: Sound Effects Toggle -->
+      <div class="flex items-center justify-between p-3 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <div class="flex flex-col">
+          <span class="font-bold text-white font-['Outfit'] text-xs sm:text-sm">Sound Effects (SFX)</span>
+          <span class="text-[10px] text-slate-400 font-mono">Synthesized retro audio feedback</span>
+        </div>
+        <button
+          id="setting-toggle-sound"
+          type="button"
+          class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-emerald-500/20 border border-emerald-400 text-emerald-300 hover:bg-emerald-500/30"
+        >
+          ENABLED
+        </button>
+      </div>
+
+      <!-- Setting 2: Volume Slider -->
+      <div class="flex flex-col gap-2 p-3 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-white font-['Outfit'] text-xs sm:text-sm">Master Volume</span>
+          <span id="setting-volume-label" class="text-xs font-mono font-bold text-cyan-300">70%</span>
+        </div>
+        <input
+          id="setting-volume-slider"
+          type="range"
+          min="0"
+          max="100"
+          value="70"
+          class="w-full accent-cyan-400 bg-slate-800 h-2 rounded-lg cursor-pointer"
+        />
+      </div>
+
+      <!-- Setting 3: Screen Shake / Juice -->
+      <div class="flex items-center justify-between p-3 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <div class="flex flex-col">
+          <span class="font-bold text-white font-['Outfit'] text-xs sm:text-sm">Screen Shake & Juice</span>
+          <span class="text-[10px] text-slate-400 font-mono">Impact trauma and pop effects</span>
+        </div>
+        <button
+          id="setting-toggle-shake"
+          type="button"
+          class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-cyan-500/20 border border-cyan-400 text-cyan-300 hover:bg-cyan-500/30"
+        >
+          ON
+        </button>
+      </div>
+
+      <!-- Setting 4: Reduce Flashing (Accessibility) -->
+      <div class="flex items-center justify-between p-3 rounded-xl bg-[#050814] border border-cyan-500/20">
+        <div class="flex flex-col">
+          <span class="font-bold text-white font-['Outfit'] text-xs sm:text-sm">Reduce Flashes</span>
+          <span class="text-[10px] text-slate-400 font-mono">Photosensitivity protection</span>
+        </div>
+        <button
+          id="setting-toggle-flashes"
+          type="button"
+          class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-slate-800 border border-slate-700 text-slate-400 hover:text-white"
+        >
+          OFF
+        </button>
+      </div>
+
+      <!-- Setting 5: Data Reset -->
+      <div class="flex items-center justify-between p-3 rounded-xl bg-[#050814] border border-rose-500/20">
+        <div class="flex flex-col">
+          <span class="font-bold text-rose-300 font-['Outfit'] text-xs sm:text-sm">Reset Local Data</span>
+          <span class="text-[10px] text-slate-400 font-mono">Clear stats and restore defaults</span>
+        </div>
+        <button
+          id="btn-settings-clear-data"
+          type="button"
+          class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold text-rose-400 hover:text-rose-200 bg-rose-950/40 border border-rose-800 hover:bg-rose-900/50 transition-all"
+        >
+          CLEAR
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Footer Action -->
+    <div class="flex justify-end pt-1 border-t border-cyan-500/20">
+      <button
+        id="btn-confirm-settings"
+        type="button"
+        class="nes-btn-primary px-4 py-2 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
+      >
+        SAVE & CLOSE
+      </button>
+    </div>
+
+  </div>
+</dialog>

@@ -1,7 +1,8 @@
 /**
- * High-Performance Hexxagon Game State Controller & SVG Board Renderer
- * - Cached element maps for instantaneous O(1) hover lookups and 60 FPS transitions
- * - Lightweight particle triggers without idle overhead
+ * High-Performance Hexxagon Game State Controller & Native Vector VFX Board
+ * - Native SVG vector infection beams, expanding rings, diamond sparks, and score pops
+ * - 100% precision coordinate locking (zero canvas desync or DPI scaling drift)
+ * - Incremental 60/120 FPS piece updates and authentic arcade game-feel
  */
 
 import { HexMath } from './hex-math.js';
@@ -30,7 +31,7 @@ export class HexxagonGame {
         this.originX = 350;
         this.originY = 350;
 
-        // Cached DOM Elements for zero-lag O(1) lookups
+        // Cached DOM Elements for instantaneous O(1) lookups
         this.cellElements = new Map();
         this.pieceElements = new Map();
         this.activeThreatPieceElements = [];
@@ -47,7 +48,6 @@ export class HexxagonGame {
         };
 
         this.initGame();
-        this.setupEventListeners();
     }
 
     on(event, cb) {
@@ -201,6 +201,9 @@ export class HexxagonGame {
         const movesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         movesGroup.setAttribute('id', 'hex-moves-group');
 
+        const effectsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        effectsGroup.setAttribute('id', 'hex-effects-group');
+
         const cells = this.state.cells;
         for (let i = 0; i < cells.length; i++) {
             const key = cells[i];
@@ -216,7 +219,6 @@ export class HexxagonGame {
             polygon.setAttribute('role', 'button');
             polygon.setAttribute('aria-label', `Hex cell ${key}`);
 
-            // Last Move Visual Highlights
             if (this.lastMove) {
                 if (key === this.lastMove.toKey) {
                     polygon.classList.add('hex-cell-last-dest');
@@ -230,12 +232,6 @@ export class HexxagonGame {
             polygon.addEventListener('click', () => this.handleCellClick(key));
             polygon.addEventListener('mouseenter', () => this.previewCaptures(key));
             polygon.addEventListener('mouseleave', () => this.clearCapturePreviews());
-            polygon.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.handleCellClick(key);
-                }
-            });
 
             this.cellElements.set(key, polygon);
             cellsGroup.appendChild(polygon);
@@ -252,6 +248,7 @@ export class HexxagonGame {
         this.svgContainer.appendChild(cellsGroup);
         this.svgContainer.appendChild(piecesGroup);
         this.svgContainer.appendChild(movesGroup);
+        this.svgContainer.appendChild(effectsGroup);
 
         this.updateHighlights();
     }
@@ -262,6 +259,8 @@ export class HexxagonGame {
         group.setAttribute('data-owner', owner);
         group.setAttribute('class', 'hex-piece');
         group.style.cursor = (owner === this.getCurrentPlayer() && !this.isAiTurn) ? 'pointer' : 'default';
+        group.style.transformOrigin = `${x}px ${y}px`;
+        group.style.transformBox = 'view-box';
 
         // 1. Soft Ambient Drop Shadow
         const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
@@ -273,6 +272,7 @@ export class HexxagonGame {
 
         // 2. 3D Spherical Crystal Gem Body
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'gem-circle-body');
         circle.setAttribute('cx', x);
         circle.setAttribute('cy', y);
         circle.setAttribute('r', this.cellSize * 0.54);
@@ -304,6 +304,81 @@ export class HexxagonGame {
         });
 
         return group;
+    }
+
+    triggerCaptureVFX(fromX, fromY, toX, toY, color) {
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (!effectsGroup) return;
+
+        // 1. Infection Arc Energy Beam from Landing Piece to Converted Piece
+        const beam = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        beam.setAttribute('x1', fromX);
+        beam.setAttribute('y1', fromY);
+        beam.setAttribute('x2', toX);
+        beam.setAttribute('y2', toY);
+        beam.setAttribute('stroke', color);
+        beam.setAttribute('stroke-width', '3');
+        beam.setAttribute('stroke-linecap', 'round');
+        beam.setAttribute('class', 'svg-infection-beam');
+        effectsGroup.appendChild(beam);
+
+        // 2. Vector Shockwave Expanding Ring at Converted Piece
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', toX);
+        ring.setAttribute('cy', toY);
+        ring.setAttribute('r', '10');
+        ring.setAttribute('fill', 'none');
+        ring.setAttribute('stroke', color);
+        ring.setAttribute('stroke-width', '3.5');
+        ring.setAttribute('class', 'svg-capture-ring');
+        effectsGroup.appendChild(ring);
+
+        // 3. Symmetrical Diamond Gem Sparks Bursting Outward
+        for (let i = 0; i < 6; i++) {
+            const angle = (i * 60 + (Math.random() - 0.5) * 20) * Math.PI / 180;
+            const dist = 24 + Math.random() * 8;
+            const tx = Math.cos(angle) * dist;
+            const ty = Math.sin(angle) * dist;
+
+            const spark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const s = 3.5;
+            spark.setAttribute('points', `${toX},${toY - s} ${toX + s},${toY} ${toX},${toY + s} ${toX - s},${toY}`);
+            spark.setAttribute('fill', color);
+            spark.setAttribute('class', 'svg-gem-spark');
+            spark.style.setProperty('--tx', `${tx}px`);
+            spark.style.setProperty('--ty', `${ty}px`);
+            effectsGroup.appendChild(spark);
+
+            setTimeout(() => spark.remove(), 450);
+        }
+
+        // 4. Floating +1 Score Pop
+        const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        scoreText.setAttribute('x', toX);
+        scoreText.setAttribute('y', toY - 6);
+        scoreText.setAttribute('text-anchor', 'middle');
+        scoreText.setAttribute('fill', color);
+        scoreText.setAttribute('font-size', '13');
+        scoreText.setAttribute('class', 'svg-score-pop');
+        scoreText.textContent = '+1';
+        effectsGroup.appendChild(scoreText);
+
+        // Clean up DOM after animations complete
+        setTimeout(() => {
+            beam.remove();
+            ring.remove();
+            scoreText.remove();
+        }, 580);
+    }
+
+    triggerBoardShake() {
+        if (typeof window !== 'undefined' && localStorage.getItem('hexxagon_shake') === 'false') return;
+        const boardViewport = document.getElementById('board-viewport');
+        if (boardViewport) {
+            boardViewport.classList.remove('board-rumble');
+            void boardViewport.offsetWidth; // force reflow
+            boardViewport.classList.add('board-rumble');
+        }
     }
 
     previewCaptures(targetKey) {
@@ -413,6 +488,12 @@ export class HexxagonGame {
                 poly.classList.add('hex-cell-selected');
                 const owner = this.state.board[key];
                 poly.style.stroke = PLAYERS[owner]?.color || '#ffffff';
+            } else if (this.lastMove && key === this.lastMove.toKey) {
+                poly.classList.add('hex-cell-last-dest');
+                const playerColor = PLAYERS[this.lastMove.player]?.color || '#00e5ff';
+                poly.style.stroke = playerColor;
+            } else if (this.lastMove && this.lastMove.type === 'jump' && key === this.lastMove.fromKey) {
+                poly.classList.add('hex-cell-last-origin');
             } else {
                 poly.style.stroke = '';
             }
@@ -452,14 +533,12 @@ export class HexxagonGame {
             markerGroup.appendChild(outerCircle);
             markerGroup.appendChild(innerDot);
 
-            // Hover preview ONLY on the tiles affected by this specific candidate move
-            markerGroup.addEventListener('mouseenter', () => this.previewCaptures(move.toKey));
-            markerGroup.addEventListener('mouseleave', () => this.clearCapturePreviews());
-
             markerGroup.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.executeMove(move);
             });
+            markerGroup.addEventListener('mouseenter', () => this.previewCaptures(move.toKey));
+            markerGroup.addEventListener('mouseleave', () => this.clearCapturePreviews());
 
             movesGroup.appendChild(markerGroup);
         });
@@ -469,7 +548,11 @@ export class HexxagonGame {
         const player = this.getCurrentPlayer();
         this.selectedCell = null;
         this.validMoves = [];
-        this.updateHighlights();
+        this.clearCapturePreviews();
+
+        // Clear active markers
+        const movesGroup = document.getElementById('hex-moves-group');
+        if (movesGroup) movesGroup.innerHTML = '';
 
         // Save history for Undo
         this.history.push({
@@ -478,23 +561,47 @@ export class HexxagonGame {
             moveCount: this.state.moveCount
         });
 
-        // Audio & Particles for Move
+        // Exact SVG Coordinate Calculation
         const toCoords = HexMath.hexToPixel(move.to.q, move.to.r, this.cellSize, this.originX, this.originY);
         const fromCoords = HexMath.hexToPixel(move.from.q, move.from.r, this.cellSize, this.originX, this.originY);
+        const playerColor = PLAYERS[player]?.color || '#ff2d60';
+
+        const piecesGroup = document.getElementById('hex-pieces-group');
 
         if (move.type === 'clone') {
             sound.playClone();
             if (this.particleEngine) {
-                this.particleEngine.createShockwave(toCoords.x, toCoords.y, PLAYERS[player].color, 45);
-                this.particleEngine.createSparks(toCoords.x, toCoords.y, PLAYERS[player].color, 8, 1.0);
+                this.particleEngine.createShockwave(toCoords.x, toCoords.y, playerColor, 45);
+                this.particleEngine.createSparks(toCoords.x, toCoords.y, playerColor, 8, 1.0);
             }
+
+            // Create cloned piece element with pop-in animation
+            const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
+            newPiece.classList.add('piece-popping-in');
+            this.pieceElements.set(move.toKey, newPiece);
+            if (piecesGroup) piecesGroup.appendChild(newPiece);
+
         } else {
+            // Jump move
             sound.playJump();
             if (this.particleEngine) {
-                this.particleEngine.createJumpTrail(fromCoords.x, fromCoords.y, toCoords.x, toCoords.y, PLAYERS[player].color, 10);
-                this.particleEngine.createShockwave(toCoords.x, toCoords.y, PLAYERS[player].color, 50);
-                this.particleEngine.createSparks(toCoords.x, toCoords.y, PLAYERS[player].color, 8, 1.0);
+                this.particleEngine.createJumpTrail(fromCoords.x, fromCoords.y, toCoords.x, toCoords.y, playerColor, 12);
+                this.particleEngine.createShockwave(toCoords.x, toCoords.y, playerColor, 50);
+                this.particleEngine.createSparks(toCoords.x, toCoords.y, playerColor, 8, 1.0);
             }
+
+            // Move existing piece element
+            const jumpingPiece = this.pieceElements.get(move.fromKey);
+            this.pieceElements.delete(move.fromKey);
+
+            if (jumpingPiece && piecesGroup) {
+                jumpingPiece.remove();
+            }
+
+            const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
+            newPiece.classList.add('piece-popping-in');
+            this.pieceElements.set(move.toKey, newPiece);
+            if (piecesGroup) piecesGroup.appendChild(newPiece);
         }
 
         // Apply Move State
@@ -507,28 +614,38 @@ export class HexxagonGame {
 
         this.state = HexxagonAI.applyMove(this.state, move, player);
         this.state.moveCount++;
-        this.renderBoard();
 
-        // Staggered conversion audio & animation
+        // Staggered conversion audio & native vector animation
         if (move.captures.length > 0) {
+            this.triggerBoardShake();
             sound.playCapture(move.captures.length);
+
             move.captures.forEach((capKey, idx) => {
                 setTimeout(() => {
                     const capPiece = this.pieceElements.get(capKey);
                     if (capPiece) {
+                        capPiece.setAttribute('data-owner', player);
+                        const circleBody = capPiece.querySelector('.gem-circle-body') || capPiece.querySelector('circle');
+                        if (circleBody) {
+                            circleBody.setAttribute('fill', `url(#grad-${player})`);
+                        }
+                        capPiece.classList.remove('piece-converting');
+                        void capPiece.offsetWidth; // Trigger reflow for animation restart
                         capPiece.classList.add('piece-converting');
                     }
+
                     const capPos = HexMath.parseKey(capKey);
-                    const pos = HexMath.hexToPixel(capPos.q, capPos.r, this.cellSize, this.originX, this.originY);
-                    if (this.particleEngine) {
-                        this.particleEngine.createSparks(pos.x, pos.y, PLAYERS[player].color, 6, 0.8);
-                    }
-                }, idx * 60);
+                    const capCoords = HexMath.hexToPixel(capPos.q, capPos.r, this.cellSize, this.originX, this.originY);
+
+                    // Trigger Native Vector VFX (Beam, Shockwave Ring, Sparks, Floating +1)
+                    this.triggerCaptureVFX(toCoords.x, toCoords.y, capCoords.x, capCoords.y, playerColor);
+                }, idx * 55);
             });
-            // Ensure conversions are visually shown before turn advances
-            await new Promise(resolve => setTimeout(resolve, Math.min(500, move.captures.length * 60 + 180)));
+
+            await new Promise(resolve => setTimeout(resolve, Math.min(500, move.captures.length * 55 + 180)));
         }
 
+        this.updateHighlights();
         this.emit('moveMade', { move, player });
         this.notifyState();
 
@@ -572,7 +689,6 @@ export class HexxagonGame {
 
         // 2. If no legal moves remain for anyone OR board is completely full
         if (attempts >= totalPlayers || emptyCells.length === 0 || currentMoves.length === 0) {
-            // If only 1 player has legal moves remaining while spaces exist, sweep for that player
             if (emptyCells.length > 0) {
                 const playersWithMoves = this.state.players.filter(p => HexxagonAI.getLegalMoves(this.state, p).length > 0);
                 if (playersWithMoves.length === 1) {
@@ -595,12 +711,12 @@ export class HexxagonGame {
                 this.emit('aiThinking', false);
 
                 if (bestMove) {
-                    // 1. Visually highlight which piece the CPU picked
+                    // Visually highlight which piece the CPU picked
                     this.selectedCell = bestMove.fromKey;
                     sound.playSelect();
                     this.updateHighlights();
 
-                    // 2. Render CPU target ring indicator so user sees where CPU is moving
+                    // Render CPU target ring indicator
                     const movesGroup = document.getElementById('hex-moves-group');
                     if (movesGroup) {
                         movesGroup.innerHTML = '';
@@ -619,7 +735,7 @@ export class HexxagonGame {
                         movesGroup.appendChild(ring);
                     }
 
-                    // 3. Highlight all affected opponent pieces & tiles that will be converted
+                    // Highlight all affected opponent pieces
                     if (bestMove.captures && bestMove.captures.length > 0) {
                         for (let i = 0; i < bestMove.captures.length; i++) {
                             const capKey = bestMove.captures[i];
@@ -636,8 +752,8 @@ export class HexxagonGame {
                         }
                     }
 
-                    // 4. Clear 500ms visual window so user clearly sees the AI move intention & affected balls
-                    await new Promise(resolve => setTimeout(resolve, 500));
+                    // Pacing window
+                    await new Promise(resolve => setTimeout(resolve, 400));
 
                     this.clearCapturePreviews();
                     this.isAiTurn = false;
@@ -668,7 +784,6 @@ export class HexxagonGame {
         const piecesGroup = document.getElementById('hex-pieces-group');
         const color = PLAYERS[winnerPlayer]?.color || '#00e5ff';
 
-        // Rapid, rhythmic cascading fill (~36ms per tile for an energetic sweep)
         for (let i = 0; i < emptyCells.length; i++) {
             const key = emptyCells[i];
             this.state.board[key] = winnerPlayer;
@@ -684,18 +799,16 @@ export class HexxagonGame {
                 piecesGroup.appendChild(pieceEl);
             }
 
-            // High-energy ascending audio arpeggio & spark burst
             sound.playSweepPop(i, emptyCells.length);
             if (this.particleEngine) {
                 this.particleEngine.createSparks(x, y, color, 4, 0.7);
             }
 
             this.notifyState();
-            await new Promise(r => setTimeout(r, 36));
+            await new Promise(r => setTimeout(r, 32));
         }
 
-        // Brief cinematic pause to savor the final filled board
-        await new Promise(r => setTimeout(r, 350));
+        await new Promise(r => setTimeout(r, 300));
         this.handleGameOver();
     }
 
@@ -723,9 +836,6 @@ export class HexxagonGame {
 
         if (winner === 'ruby' || (winner !== 'pearl' && winner !== 'tie')) {
             sound.playVictory();
-            if (this.particleEngine) {
-                this.particleEngine.createVictoryConfetti();
-            }
         } else if (winner === 'pearl' && this.gameMode.startsWith('pve-')) {
             sound.playDefeat();
         }
@@ -781,42 +891,9 @@ export class HexxagonGame {
         sound.playDeselect();
     }
 
-    setupEventListeners() {
-        if (typeof window === 'undefined') return;
-
-        this.onKeyDown = (e) => {
-            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-
-            if (e.code === 'Space' || e.key === 'r' || e.key === 'R') {
-                e.preventDefault();
-                this.initGame();
-            } else if (e.key === 'u' || e.key === 'U') {
-                e.preventDefault();
-                this.undo();
-            } else if (e.key === 'm' || e.key === 'M') {
-                e.preventDefault();
-                const muted = sound.toggleMute();
-                this.emit('soundToggle', muted);
-            } else if (e.key === 'Escape') {
-                if (this.selectedCell) {
-                    this.selectedCell = null;
-                    this.validMoves = [];
-                    this.updateHighlights();
-                    sound.playDeselect();
-                }
-            }
-        };
-
-        window.addEventListener('keydown', this.onKeyDown);
-    }
-
     destroy() {
-        if (typeof window !== 'undefined' && this.onKeyDown) {
-            window.removeEventListener('keydown', this.onKeyDown);
-        }
         if (this.particleEngine) {
             this.particleEngine.destroy();
         }
     }
 }
-

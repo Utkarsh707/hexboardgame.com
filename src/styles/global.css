@@ -21,14 +21,24 @@
     --clone-marker: #10b981;
     --jump-marker: #f59e0b;
     --danger-color: #ef4444;
+
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+  }
+
+  html, body {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    touch-action: manipulation;
   }
 
   body {
     background-color: var(--bg-page);
     color: var(--text-primary);
     font-family: 'Outfit', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
     letter-spacing: -0.01em;
   }
 }
@@ -163,10 +173,109 @@
 }
 
 .piece-converting {
-  animation: piece-convert 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform-box: fill-box;
-  transform-origin: center;
+  animation: piece-convert 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform;
+}
+
+/* Infection Energy Laser Arcs between Landing & Captured Piece */
+@keyframes infection-beam-pulse {
+  0% {
+    stroke-dashoffset: 40;
+    opacity: 1;
+    stroke-width: 3.5px;
+  }
+  60% {
+    stroke-dashoffset: 0;
+    opacity: 0.95;
+    stroke-width: 2.5px;
+  }
+  100% {
+    stroke-dashoffset: -30;
+    opacity: 0;
+    stroke-width: 1px;
+  }
+}
+
+.svg-infection-beam {
+  stroke-dasharray: 10 5;
+  animation: infection-beam-pulse 0.35s ease-out forwards;
+  pointer-events: none;
+}
+
+/* SVG Vector Conversion Shockwave Ring */
+@keyframes capture-ring-expand {
+  0% {
+    r: 10px;
+    opacity: 1;
+    stroke-width: 4px;
+  }
+  100% {
+    r: 44px;
+    opacity: 0;
+    stroke-width: 0.8px;
+  }
+}
+
+.svg-capture-ring {
+  animation: capture-ring-expand 0.38s cubic-bezier(0.15, 0.85, 0.35, 1.2) forwards;
+  pointer-events: none;
+  transform-box: view-box;
+}
+
+/* SVG Diamond Spark Burst */
+@keyframes gem-spark-burst {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx, 15px), var(--ty, 15px)) scale(0) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.svg-gem-spark {
+  animation: gem-spark-burst 0.42s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+  pointer-events: none;
+  transform-box: view-box;
+}
+
+/* Floating +1 Score Pop */
+@keyframes score-float-pop {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(-8px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-28px) scale(1);
+    opacity: 0;
+  }
+}
+
+.svg-score-pop {
+  animation: score-float-pop 0.55s ease-out forwards;
+  pointer-events: none;
+  user-select: none;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.9));
+}
+
+/* Board Impact Juice Rumble */
+@keyframes board-rumble-anim {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1.5px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, 0.5px); }
+  100% { transform: translate(0, 0); }
+}
+
+.board-rumble {
+  animation: board-rumble-anim 0.16s ease-out forwards;
 }
 
 /* Pop-in animation for board sweep (Compositor Only) */
@@ -234,4 +343,48 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
-}
+}
+
+/* Dialog & Modal Backdrop & Entrance (Zero Framebuffer Readback Blur) */
+dialog {
+  border: none;
+  background: transparent;
+}
+
+dialog::backdrop {
+  background: rgba(3, 4, 10, 0.88);
+  animation: backdrop-fade-in 0.18s ease-out forwards;
+}
+
+dialog[open] {
+  animation: dialog-pop-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes backdrop-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dialog-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Screen state transitions */
+.screen-view {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.screen-view.hidden-screen {
+  opacity: 0;
+  pointer-events: none;
+  display: none !important;
+}
+

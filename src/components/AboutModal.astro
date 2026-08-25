@@ -1,0 +1,76 @@
+---
+---
+
+<dialog
+  id="dialog-about"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 max-w-md w-[calc(100vw-1rem)]"
+  aria-labelledby="about-dialog-title"
+>
+  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/30 text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[85vh] overflow-y-auto">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm shadow-[0_0_12px_rgba(0,229,255,0.3)]">
+          ℹ️
+        </div>
+        <div>
+          <span class="text-[9px] font-['Press_Start_2P'] text-cyan-300 block">GAME HERITAGE</span>
+          <h2 id="about-dialog-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-['Outfit']">
+            About Hexxagon Online
+          </h2>
+        </div>
+      </div>
+      <button
+        id="btn-close-about"
+        type="button"
+        class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+        aria-label="Close about dialog"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- About Content -->
+    <div class="flex flex-col gap-3 text-xs leading-relaxed text-slate-300 font-mono">
+      <p>
+        <strong class="text-white font-['Outfit'] text-sm">Online Hex Board Game</strong> is a modern recreation of the legendary 1993 board game <em>Hexxagon</em>, originally created by Software Creations.
+      </p>
+      
+      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex flex-col gap-1.5 text-[11px] text-slate-400">
+        <span class="text-cyan-300 font-bold font-['Outfit']">Engineering Highlights:</span>
+        <ul class="list-disc list-inside flex flex-col gap-1">
+          <li>Pure SVG Axial Vector Geometry & O(1) Lookups</li>
+          <li>Hardware-Accelerated Web Audio Synthesizer</li>
+          <li>Minimax AI with Alpha-Beta Pruning</li>
+          <li>Zero-Scroll Adaptive Resolution Architecture</li>
+        </ul>
+      </div>
+
+      <!-- Legal Links -->
+      <div class="flex items-center justify-center gap-4 pt-1 text-slate-400">
+        <a href="/privacy-policy" target="_blank" class="hover:text-cyan-300 underline underline-offset-2 transition-colors">Privacy Policy</a>
+        <span>•</span>
+        <a href="/terms" target="_blank" class="hover:text-cyan-300 underline underline-offset-2 transition-colors">Terms of Service</a>
+      </div>
+
+      <div class="text-center text-[10px] text-slate-500 pt-1">
+        &copy; {new Date().getFullYear()} hexboardgame.com. All rights reserved.
+      </div>
+    </div>
+
+    <!-- Footer Action -->
+    <div class="flex justify-end pt-1 border-t border-cyan-500/20">
+      <button
+        id="btn-confirm-about"
+        type="button"
+        class="nes-btn-primary px-4 py-2 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
+      >
+        DISMISS
+      </button>
+    </div>
+
+  </div>
+</dialog>

@@ -1,0 +1,103 @@
+---
+---
+
+<dialog
+  id="dialog-strategy"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 max-w-xl w-[calc(100vw-1rem)]"
+  aria-labelledby="strategy-dialog-title"
+>
+  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-purple-400/30 text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[85vh] overflow-y-auto">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-purple-500/20 pb-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-sm shadow-[0_0_12px_rgba(192,132,252,0.3)]">
+          ⚡
+        </div>
+        <div>
+          <span class="text-[9px] font-['Press_Start_2P'] text-purple-300 block">TACTICAL PLAYBOOK</span>
+          <h2 id="strategy-dialog-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-['Outfit']">
+            Grandmaster Strategies & Pro Tips
+          </h2>
+        </div>
+      </div>
+      <button
+        id="btn-close-strategy"
+        type="button"
+        class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple-400"
+        aria-label="Close strategy guide dialog"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Strategy Cards -->
+    <div class="flex flex-col gap-3 text-xs leading-relaxed text-slate-300">
+      <p class="text-xs text-slate-400 font-mono">
+        Mastering hexagonal geometry requires spatial awareness and understanding the critical trade-off between territory growth (cloning) and aggressive leaps (jumping).
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300">
+        
+        <!-- Tip 1: Edge & Corner Anchoring -->
+        <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800 font-mono text-[9px] font-bold">DEFENSE</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Edge & Corner Anchoring</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Hexes on outer perimeters have only 3 to 4 neighbors compared to 6 in the interior. Anchoring along edges prevents opponents from surrounding and converting your clusters.
+          </p>
+        </div>
+
+        <!-- Tip 2: The Jump Trap -->
+        <div class="p-3 rounded-xl bg-[#050814] border border-amber-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800 font-mono text-[9px] font-bold">CAUTION</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Beware the Reckless Jump</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Leaping into open territory leaves an isolated token exposed to counter-infections. Prefer cloning over jumping unless the capture yields a 3+ piece swing or seals an endgame cluster.
+          </p>
+        </div>
+
+        <!-- Tip 3: Denial & Bottleneck Control -->
+        <div class="p-3 rounded-xl bg-[#050814] border border-rose-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-1.5 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800 font-mono text-[9px] font-bold">CONTROL</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Choke Points & Bridges</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            In maps like Donut Void or Hourglass, controlling narrow bridges cuts off the opponent's expansion, forcing them to jump blindly into your traps.
+          </p>
+        </div>
+
+        <!-- Tip 4: Late Game Sweep -->
+        <div class="p-3 rounded-xl bg-[#050814] border border-emerald-500/25 flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800 font-mono text-[9px] font-bold">ENDGAME</span>
+            <h3 class="text-xs font-bold text-white font-['Outfit']">Chain Conversions</h3>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            When the board is over 80% full, single moves can convert up to 6 adjacent hexes at once. Calculate multiple moves ahead to ensure your conversion cannot be immediately recaptured.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer Action -->
+    <div class="flex justify-end pt-1 border-t border-purple-500/20">
+      <button
+        id="btn-confirm-strategy"
+        type="button"
+        class="nes-btn-primary px-4 py-2 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
+      >
+        GOT IT
+      </button>
+    </div>
+
+  </div>
+</dialog>

@@ -1,37 +1,45 @@
 /**
  * Lightweight, High-Performance Particle Engine for Hexxagon
- * - On-demand animation loop (0% idle CPU/GPU consumption)
- * - Zero heavy canvas shadowBlur filters for butter-smooth 60/120 FPS
+ * - Precision 1:1 SVG coordinate matching (0..700 space)
+ * - On-demand requestAnimationFrame loop (0% idle CPU/GPU consumption)
+ * - Hardware-accelerated composite rendering
  */
 
 export class ParticleEngine {
     constructor(canvas) {
         this.canvas = canvas;
-        this.ctx = canvas ? canvas.getContext('2d') : null;
+        this.ctx = canvas ? canvas.getContext('2d', { alpha: true }) : null;
         this.particles = [];
         this.shockwaves = [];
         this.animId = null;
         this.isRunning = false;
         this.width = 700;
         this.height = 700;
+        this.dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1;
+
         this.resize();
 
         this.onResize = () => this.resize();
-        window.addEventListener('resize', this.onResize, { passive: true });
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', this.onResize, { passive: true });
+        }
+        if (typeof ResizeObserver !== 'undefined' && canvas) {
+            this.resizeObserver = new ResizeObserver(() => this.resize());
+            this.resizeObserver.observe(canvas);
+        }
         this.loop = this.loop.bind(this);
     }
 
     resize() {
         if (!this.canvas || !this.ctx) return;
-        const dpr = window.devicePixelRatio || 1;
+        this.dpr = window.devicePixelRatio || 1;
 
-        this.canvas.width = 700 * dpr;
-        this.canvas.height = 700 * dpr;
-        this.canvas.style.width = '100%';
-        this.canvas.style.height = '100%';
+        // Internal resolution matches the 700x700 SVG coordinate grid with DPR clarity
+        this.canvas.width = Math.round(700 * this.dpr);
+        this.canvas.height = Math.round(700 * this.dpr);
 
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.scale(dpr, dpr);
+        this.ctx.scale(this.dpr, this.dpr);
         this.width = 700;
         this.height = 700;
     }
@@ -49,10 +57,53 @@ export class ParticleEngine {
             radius: 8,
             maxRadius,
             color,
-            alpha: 0.8,
-            speed: 3.0,
+            alpha: 0.85,
+            speed: 3.2,
             lineWidth: 2.5
         });
+        this.startLoop();
+    }
+
+    createCaptureBurst(x, y, color = '#ff3366') {
+        // 1. Expanding conversion shockwave ring
+        this.shockwaves.push({
+            x, y,
+            radius: 6,
+            maxRadius: 36,
+            color,
+            alpha: 1.0,
+            speed: 2.8,
+            lineWidth: 3.0
+        });
+
+        // 2. Radiating conversion gem sparks
+        for (let i = 0; i < 10; i++) {
+            const angle = (i / 10) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+            const speed = Math.random() * 2.5 + 2.0;
+            this.particles.push({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                color,
+                alpha: 1.0,
+                size: Math.random() * 2.5 + 2.0,
+                decay: 0.04,
+                drag: 0.93
+            });
+        }
+
+        // 3. Central bright flash sparkle
+        this.particles.push({
+            x, y,
+            vx: 0,
+            vy: 0,
+            color: '#ffffff',
+            alpha: 0.9,
+            size: 6,
+            decay: 0.08,
+            drag: 1.0
+        });
+
         this.startLoop();
     }
 
@@ -65,27 +116,27 @@ export class ParticleEngine {
                 vx: Math.cos(angle) * speed,
                 vy: Math.sin(angle) * speed,
                 color,
-                alpha: 0.9,
+                alpha: 0.95,
                 size: Math.random() * 2 + 1.5,
-                decay: 0.04,
+                decay: 0.045,
                 drag: 0.94
             });
         }
         this.startLoop();
     }
 
-    createJumpTrail(fromX, fromY, toX, toY, color = '#00e5ff', count = 8) {
+    createJumpTrail(fromX, fromY, toX, toY, color = '#00e5ff', count = 10) {
         for (let i = 0; i < count; i++) {
             const t = Math.random();
-            const x = fromX + (toX - fromX) * t + (Math.random() - 0.5) * 12;
-            const y = fromY + (toY - fromY) * t + (Math.random() - 0.5) * 12;
+            const x = fromX + (toX - fromX) * t + (Math.random() - 0.5) * 14;
+            const y = fromY + (toY - fromY) * t + (Math.random() - 0.5) * 14;
             this.particles.push({
                 x, y,
                 vx: (Math.random() - 0.5) * 1.5,
                 vy: (Math.random() - 0.5) * 1.5,
                 color,
-                alpha: 0.75,
-                size: Math.random() * 2 + 1,
+                alpha: 0.8,
+                size: Math.random() * 2 + 1.2,
                 decay: 0.045,
                 drag: 0.95
             });
@@ -180,8 +231,12 @@ export class ParticleEngine {
 
     destroy() {
         if (this.animId) cancelAnimationFrame(this.animId);
-        if (this.onResize) window.removeEventListener('resize', this.onResize);
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('resize', this.onResize);
+        }
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        }
         this.isRunning = false;
     }
 }
-
