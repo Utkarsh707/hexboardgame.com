@@ -7,7 +7,7 @@
 export class ParticleEngine {
     constructor(canvas) {
         this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
+        this.ctx = canvas ? canvas.getContext('2d') : null;
         this.particles = [];
         this.shockwaves = [];
         this.animId = null;
@@ -16,19 +16,20 @@ export class ParticleEngine {
         this.height = 700;
         this.resize();
 
-        window.addEventListener('resize', () => this.resize());
+        this.onResize = () => this.resize();
+        window.addEventListener('resize', this.onResize, { passive: true });
         this.loop = this.loop.bind(this);
     }
 
     resize() {
-        if (!this.canvas) return;
+        if (!this.canvas || !this.ctx) return;
         const dpr = window.devicePixelRatio || 1;
-        
+
         this.canvas.width = 700 * dpr;
         this.canvas.height = 700 * dpr;
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
-        
+
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.scale(dpr, dpr);
         this.width = 700;
@@ -36,7 +37,7 @@ export class ParticleEngine {
     }
 
     startLoop() {
-        if (!this.isRunning) {
+        if (!this.isRunning && this.ctx) {
             this.isRunning = true;
             this.animId = requestAnimationFrame(this.loop);
         }
@@ -115,31 +116,35 @@ export class ParticleEngine {
     }
 
     loop() {
+        if (!this.ctx) return;
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         // 1. Render Shockwaves
-        for (let i = this.shockwaves.length - 1; i >= 0; i--) {
+        let activeShockwaves = 0;
+        for (let i = 0; i < this.shockwaves.length; i++) {
             const sw = this.shockwaves[i];
             sw.radius += sw.speed;
             sw.alpha *= 0.90;
             sw.lineWidth = Math.max(0.5, sw.lineWidth * 0.94);
 
-            this.ctx.save();
-            this.ctx.beginPath();
-            this.ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
-            this.ctx.strokeStyle = sw.color;
-            this.ctx.globalAlpha = Math.max(0, sw.alpha);
-            this.ctx.lineWidth = sw.lineWidth;
-            this.ctx.stroke();
-            this.ctx.restore();
+            if (sw.radius < sw.maxRadius && sw.alpha > 0.02) {
+                this.ctx.save();
+                this.ctx.beginPath();
+                this.ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+                this.ctx.strokeStyle = sw.color;
+                this.ctx.globalAlpha = Math.max(0, sw.alpha);
+                this.ctx.lineWidth = sw.lineWidth;
+                this.ctx.stroke();
+                this.ctx.restore();
 
-            if (sw.radius >= sw.maxRadius || sw.alpha <= 0.02) {
-                this.shockwaves.splice(i, 1);
+                this.shockwaves[activeShockwaves++] = sw;
             }
         }
+        this.shockwaves.length = activeShockwaves;
 
         // 2. Render Particles
-        for (let i = this.particles.length - 1; i >= 0; i--) {
+        let activeParticles = 0;
+        for (let i = 0; i < this.particles.length; i++) {
             const p = this.particles[i];
             p.x += p.vx;
             p.y += p.vy;
@@ -148,18 +153,19 @@ export class ParticleEngine {
             if (p.gravity) p.vy += p.gravity;
             p.alpha -= p.decay;
 
-            this.ctx.save();
-            this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            this.ctx.fillStyle = p.color;
-            this.ctx.globalAlpha = Math.max(0, p.alpha);
-            this.ctx.fill();
-            this.ctx.restore();
+            if (p.alpha > 0) {
+                this.ctx.save();
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                this.ctx.fillStyle = p.color;
+                this.ctx.globalAlpha = Math.max(0, p.alpha);
+                this.ctx.fill();
+                this.ctx.restore();
 
-            if (p.alpha <= 0) {
-                this.particles.splice(i, 1);
+                this.particles[activeParticles++] = p;
             }
         }
+        this.particles.length = activeParticles;
 
         // Stop loop when all effects have settled
         if (this.shockwaves.length === 0 && this.particles.length === 0) {
@@ -174,6 +180,8 @@ export class ParticleEngine {
 
     destroy() {
         if (this.animId) cancelAnimationFrame(this.animId);
+        if (this.onResize) window.removeEventListener('resize', this.onResize);
         this.isRunning = false;
     }
 }
+

@@ -3,22 +3,19 @@
 
 <dialog
   id="dialog-game-over"
-  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 backdrop:backdrop-blur-md max-w-md w-[calc(100vw-1rem)]"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 max-w-md w-[calc(100vw-1rem)]"
   aria-labelledby="game-over-title"
 >
-  <div class="nes-card rounded-2xl p-5 sm:p-7 border border-cyan-400/40 shadow-[0_0_50px_rgba(0,0,0,0.95)] text-slate-100 flex flex-col items-center text-center gap-4 sm:gap-5 relative overflow-hidden max-h-[88vh] overflow-y-auto">
+  <div class="nes-card rounded-2xl p-5 sm:p-7 border border-cyan-400/30 text-slate-100 flex flex-col items-center text-center gap-4 sm:gap-5 relative overflow-hidden max-h-[88vh] overflow-y-auto">
     
-    <!-- Ambient Win Glow -->
-    <div id="game-over-glow" class="absolute inset-0 pointer-events-none opacity-25 bg-gradient-to-b from-[#00e5ff]/30 via-transparent to-[#ff2d60]/30"></div>
-
     <!-- Trophy / Badge Icon -->
-    <div id="game-over-icon" class="w-16 h-16 rounded-2xl bg-[#090d1a] border-2 border-cyan-400/50 flex items-center justify-center text-3xl shadow-[0_0_25px_rgba(0,229,255,0.3)]">
+    <div id="game-over-icon" class="w-16 h-16 rounded-2xl bg-[#090d1a] border border-cyan-400/40 flex items-center justify-center text-3xl">
       🏆
     </div>
 
     <!-- Title & Subtitle -->
     <div class="flex flex-col gap-1">
-      <h2 id="game-over-title" class="text-xl sm:text-2xl font-black tracking-tight text-white font-['Outfit'] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+      <h2 id="game-over-title" class="text-xl sm:text-2xl font-black tracking-tight text-white font-['Outfit']">
         Match Concluded
       </h2>
       <p id="game-over-subtitle" class="text-xs text-slate-400 font-mono">
@@ -30,11 +27,11 @@
     <div class="w-full grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#050814] border border-cyan-500/30">
       <div class="flex flex-col items-center">
         <span class="text-[9px] font-['Press_Start_2P'] uppercase text-[#ff2d60]">RUBIES</span>
-        <span id="final-score-ruby" class="text-3xl font-black font-mono text-[#ff2d60] tabular-nums mt-1 drop-shadow-[0_0_8px_rgba(255,45,96,0.6)]">0</span>
+        <span id="final-score-ruby" class="text-3xl font-black font-mono text-[#ff2d60] tabular-nums mt-1">0</span>
       </div>
       <div class="flex flex-col items-center border-l border-cyan-500/20">
         <span class="text-[9px] font-['Press_Start_2P'] uppercase text-[#00e5ff]">PEARLS</span>
-        <span id="final-score-pearl" class="text-3xl font-black font-mono text-[#00e5ff] tabular-nums mt-1 drop-shadow-[0_0_8px_rgba(0,229,255,0.6)]">0</span>
+        <span id="final-score-pearl" class="text-3xl font-black font-mono text-[#00e5ff] tabular-nums mt-1">0</span>
       </div>
     </div>
 

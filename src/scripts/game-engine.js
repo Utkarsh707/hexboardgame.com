@@ -42,7 +42,8 @@ export class HexxagonGame {
             scoreChange: [],
             gameOver: [],
             aiThinking: [],
-            moveMade: []
+            moveMade: [],
+            soundToggle: []
         };
 
         this.initGame();
@@ -57,7 +58,10 @@ export class HexxagonGame {
 
     emit(event, data) {
         if (this.listeners[event]) {
-            this.listeners[event].forEach(cb => cb(data));
+            const list = this.listeners[event];
+            for (let i = 0; i < list.length; i++) {
+                list[i](data);
+            }
         }
     }
 
@@ -69,6 +73,7 @@ export class HexxagonGame {
 
         this.state = {
             cells: boardData.cells,
+            cellSet: new Set(boardData.cells),
             board: { ...boardData.initialPieces },
             obstacles: new Set(boardData.obstacles || []),
             players: preset.players,
@@ -111,12 +116,15 @@ export class HexxagonGame {
 
     calculateScores(board = this.state.board, players = this.state.players) {
         const scores = {};
-        players.forEach(p => scores[p] = 0);
-        Object.values(board).forEach(p => {
+        for (let i = 0; i < players.length; i++) {
+            scores[players[i]] = 0;
+        }
+        for (const key in board) {
+            const p = board[key];
             if (scores[p] !== undefined) {
                 scores[p]++;
             }
-        });
+        }
         return scores;
     }
 
@@ -193,7 +201,9 @@ export class HexxagonGame {
         const movesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         movesGroup.setAttribute('id', 'hex-moves-group');
 
-        this.state.cells.forEach(key => {
+        const cells = this.state.cells;
+        for (let i = 0; i < cells.length; i++) {
+            const key = cells[i];
             const { q, r } = HexMath.parseKey(key);
             const { x, y } = HexMath.hexToPixel(q, r, this.cellSize, this.originX, this.originY);
             const points = HexMath.getHexPolygonPoints(x, y, this.cellSize - 1.5);
@@ -237,7 +247,7 @@ export class HexxagonGame {
                 this.pieceElements.set(key, pieceEl);
                 piecesGroup.appendChild(pieceEl);
             }
-        });
+        }
 
         this.svgContainer.appendChild(cellsGroup);
         this.svgContainer.appendChild(piecesGroup);
@@ -256,9 +266,9 @@ export class HexxagonGame {
         // 1. Soft Ambient Drop Shadow
         const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
         shadow.setAttribute('cx', x);
-        shadow.setAttribute('cy', y + this.cellSize * 0.40);
-        shadow.setAttribute('rx', this.cellSize * 0.44);
-        shadow.setAttribute('ry', this.cellSize * 0.16);
+        shadow.setAttribute('cy', y + this.cellSize * 0.38);
+        shadow.setAttribute('rx', this.cellSize * 0.42);
+        shadow.setAttribute('ry', this.cellSize * 0.14);
         shadow.setAttribute('fill', 'rgba(0, 0, 0, 0.55)');
 
         // 2. 3D Spherical Crystal Gem Body
@@ -267,37 +277,26 @@ export class HexxagonGame {
         circle.setAttribute('cy', y);
         circle.setAttribute('r', this.cellSize * 0.54);
         circle.setAttribute('fill', `url(#grad-${owner})`);
-        circle.setAttribute('stroke', 'rgba(255, 255, 255, 0.4)');
+        circle.setAttribute('stroke', 'rgba(255, 255, 255, 0.45)');
         circle.setAttribute('stroke-width', '1.2');
 
-        // 3. Specular Curved Glass Highlight
-        const glossCrescent = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-        glossCrescent.setAttribute('cx', x - this.cellSize * 0.16);
-        glossCrescent.setAttribute('cy', y - this.cellSize * 0.16);
-        glossCrescent.setAttribute('rx', this.cellSize * 0.24);
-        glossCrescent.setAttribute('ry', this.cellSize * 0.13);
-        glossCrescent.setAttribute('transform', `rotate(-28 ${x - this.cellSize * 0.16} ${y - this.cellSize * 0.16})`);
-        glossCrescent.setAttribute('fill', 'rgba(255, 255, 255, 0.72)');
+        // 3. Crisp Specular Glass Highlight
+        const glossHighlight = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        glossHighlight.setAttribute('cx', x - this.cellSize * 0.18);
+        glossHighlight.setAttribute('cy', y - this.cellSize * 0.18);
+        glossHighlight.setAttribute('r', this.cellSize * 0.14);
+        glossHighlight.setAttribute('fill', 'rgba(255, 255, 255, 0.7)');
 
-        const glossDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        glossDot.setAttribute('cx', x - this.cellSize * 0.22);
-        glossDot.setAttribute('cy', y - this.cellSize * 0.22);
-        glossDot.setAttribute('r', this.cellSize * 0.07);
-        glossDot.setAttribute('fill', 'rgba(255, 255, 255, 0.95)');
-
-        // 4. Subtle Bottom Ambient Light Reflection
-        const bottomRim = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-        bottomRim.setAttribute('cx', x);
-        bottomRim.setAttribute('cy', y + this.cellSize * 0.36);
-        bottomRim.setAttribute('rx', this.cellSize * 0.24);
-        bottomRim.setAttribute('ry', this.cellSize * 0.08);
-        bottomRim.setAttribute('fill', 'rgba(255, 255, 255, 0.22)');
+        const glossCore = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        glossCore.setAttribute('cx', x - this.cellSize * 0.20);
+        glossCore.setAttribute('cy', y - this.cellSize * 0.20);
+        glossCore.setAttribute('r', this.cellSize * 0.06);
+        glossCore.setAttribute('fill', '#ffffff');
 
         group.appendChild(shadow);
         group.appendChild(circle);
-        group.appendChild(bottomRim);
-        group.appendChild(glossCrescent);
-        group.appendChild(glossDot);
+        group.appendChild(glossHighlight);
+        group.appendChild(glossCore);
 
         group.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -365,7 +364,7 @@ export class HexxagonGame {
                 this.selectedCell = key;
                 const from = HexMath.parseKey(key);
                 const reachables = HexMath.getReachableHexes(from, 2);
-                const validCells = new Set(this.state.cells);
+                const validCells = this.state.cellSet;
 
                 this.validMoves = reachables
                     .filter(t => {
@@ -608,7 +607,7 @@ export class HexxagonGame {
                         const { x, y } = HexMath.hexToPixel(bestMove.to.q, bestMove.to.r, this.cellSize, this.originX, this.originY);
                         const isClone = bestMove.type === 'clone';
                         const color = isClone ? '#00e676' : '#ffab00';
-                        
+
                         const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                         ring.setAttribute('cx', x);
                         ring.setAttribute('cy', y);
@@ -637,8 +636,8 @@ export class HexxagonGame {
                         }
                     }
 
-                    // 4. Clear 550ms visual window so user clearly sees the AI move intention & affected balls
-                    await new Promise(resolve => setTimeout(resolve, 550));
+                    // 4. Clear 500ms visual window so user clearly sees the AI move intention & affected balls
+                    await new Promise(resolve => setTimeout(resolve, 500));
 
                     this.clearCapturePreviews();
                     this.isAiTurn = false;
@@ -785,10 +784,10 @@ export class HexxagonGame {
     setupEventListeners() {
         if (typeof window === 'undefined') return;
 
-        window.addEventListener('keydown', (e) => {
+        this.onKeyDown = (e) => {
             if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
 
-            if (e.code === 'Space') {
+            if (e.code === 'Space' || e.key === 'r' || e.key === 'R') {
                 e.preventDefault();
                 this.initGame();
             } else if (e.key === 'u' || e.key === 'U') {
@@ -798,7 +797,26 @@ export class HexxagonGame {
                 e.preventDefault();
                 const muted = sound.toggleMute();
                 this.emit('soundToggle', muted);
+            } else if (e.key === 'Escape') {
+                if (this.selectedCell) {
+                    this.selectedCell = null;
+                    this.validMoves = [];
+                    this.updateHighlights();
+                    sound.playDeselect();
+                }
             }
-        });
+        };
+
+        window.addEventListener('keydown', this.onKeyDown);
+    }
+
+    destroy() {
+        if (typeof window !== 'undefined' && this.onKeyDown) {
+            window.removeEventListener('keydown', this.onKeyDown);
+        }
+        if (this.particleEngine) {
+            this.particleEngine.destroy();
+        }
     }
 }
+

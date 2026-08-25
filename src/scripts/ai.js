@@ -17,13 +17,13 @@ export class HexxagonAI {
     static getLegalMoves(state, player) {
         const moves = [];
         const { board, cells } = state;
-        const validCells = new Set(cells);
+        const validCells = state.cellSet || (state.cellSet = new Set(cells));
 
         for (const [key, pieceOwner] of Object.entries(board)) {
             if (pieceOwner !== player) continue;
             const from = HexMath.parseKey(key);
-
             const reachables = HexMath.getReachableHexes(from, 2);
+
             for (let i = 0; i < reachables.length; i++) {
                 const target = reachables[i];
                 const targetKey = HexMath.key(target.q, target.r);
@@ -47,11 +47,12 @@ export class HexxagonAI {
     static getCaptures(state, target, player) {
         const captures = [];
         const neighbors = HexMath.getNeighbors(target);
+        const board = state.board;
 
-        for (let i = 0; i < neighbors.length; i++) {
-            const neighbor = neighbors[i];
-            const key = HexMath.key(neighbor.q, neighbor.r);
-            const owner = state.board[key];
+        for (let i = 0; i < 6; i++) {
+            const n = neighbors[i];
+            const key = HexMath.key(n.q, n.r);
+            const owner = board[key];
             if (owner && owner !== player && owner !== 'obstacle') {
                 captures.push(key);
             }
@@ -67,28 +68,35 @@ export class HexxagonAI {
         }
         nextBoard[move.toKey] = player;
 
-        for (let i = 0; i < move.captures.length; i++) {
-            nextBoard[move.captures[i]] = player;
+        const caps = move.captures;
+        for (let i = 0; i < caps.length; i++) {
+            nextBoard[caps[i]] = player;
         }
 
         return {
             ...state,
-            board: nextBoard
+            board: nextBoard,
+            cellSet: state.cellSet
         };
     }
 
     /**
-     * Ultra-fast Static Board Evaluation O(N)
+     * Ultra-fast Static Board Evaluation O(N) with fast axial distance
      */
     static evaluate(state, maximizingPlayer, opponent) {
         const board = state.board;
         let myScore = 0;
         let oppScore = 0;
 
-        for (const [key, owner] of Object.entries(board)) {
+        for (const key in board) {
+            const owner = board[key];
             if (owner === 'obstacle') continue;
-            const pos = HexMath.parseKey(key);
-            const distCenter = Math.max(Math.abs(pos.q), Math.abs(pos.r), Math.abs(pos.s));
+
+            const commaIdx = key.indexOf(',');
+            const q = parseInt(key.substring(0, commaIdx), 10);
+            const r = parseInt(key.substring(commaIdx + 1), 10);
+            const s = -q - r;
+            const distCenter = Math.max(Math.abs(q), Math.abs(r), Math.abs(s));
             const weight = distCenter >= 3 ? 14 : 10;
 
             if (owner === maximizingPlayer) {
@@ -162,13 +170,18 @@ export class HexxagonAI {
     }
 
     async getBestMove(state, player, allPlayers) {
+        // Ensure cellSet is cached
+        if (!state.cellSet) {
+            state.cellSet = new Set(state.cells);
+        }
+
         const moves = HexxagonAI.getLegalMoves(state, player);
         if (moves.length === 0) return null;
 
         const opponent = allPlayers.find(p => p !== player) || 'ruby';
 
-        // Non-blocking micro-delay
-        await new Promise(resolve => setTimeout(resolve, 240 + Math.random() * 100));
+        // Non-blocking natural micro-delay for realistic pacing
+        await new Promise(resolve => setTimeout(resolve, 220 + Math.random() * 80));
 
         if (this.difficulty === 'easy') {
             if (Math.random() < 0.35) {
@@ -187,10 +200,11 @@ export class HexxagonAI {
             return result.move || moves[0];
         }
 
-        // Master AI: Fast 3-ply lookahead with tactical beam pruning
+        // Master AI: Fast lookahead with tactical beam pruning
         const emptyCount = state.cells.length - Object.keys(state.board).length;
         const depth = (moves.length <= 10 || emptyCount <= 8) ? 4 : 3;
         const result = HexxagonAI.minimax(state, depth, -Infinity, Infinity, true, player, opponent, allPlayers);
         return result.move || moves[0];
     }
 }
+

@@ -10,28 +10,21 @@ export function initGameUI() {
     // Controls & Select Elements
     const selectGameMode = document.getElementById('select-game-mode');
     const selectBoardPreset = document.getElementById('select-board-preset');
-    const selectGameModeMobile = document.getElementById('select-game-mode-mobile');
-    const selectBoardPresetMobile = document.getElementById('select-board-preset-mobile');
 
-    // Always reset UI dropdowns to Stage 1 (Classic) & VS CPU on fresh page load/refresh
+    // Reset UI dropdowns to defaults on load
     if (selectBoardPreset) selectBoardPreset.value = 'classic';
-    if (selectBoardPresetMobile) selectBoardPresetMobile.value = 'classic';
     if (selectGameMode) selectGameMode.value = 'pve';
-    if (selectGameModeMobile) selectGameModeMobile.value = 'pve';
 
     const game = new HexxagonGame({
         presetId: 'classic',
         gameMode: 'pve-medium'
     });
 
-    // DOM Elements
+    // Score & Telemetry DOM Elements
     const stageBannerText = document.getElementById('stage-banner-text');
-    const hudTurnGlow = document.getElementById('hud-turn-glow');
     const scoreRuby = document.getElementById('score-ruby');
     const scorePearl = document.getElementById('score-pearl');
     const scoreEmerald = document.getElementById('score-emerald');
-    const scoreRubyMobile = document.getElementById('score-ruby-mobile');
-    const scorePearlMobile = document.getElementById('score-pearl-mobile');
     const cardRuby = document.getElementById('card-player-ruby');
     const cardPearl = document.getElementById('card-player-pearl');
     const cardEmerald = document.getElementById('card-player-emerald');
@@ -39,19 +32,14 @@ export function initGameUI() {
     const turnDotRubySolid = document.getElementById('turn-dot-ruby-solid');
     const turnDotPearl = document.getElementById('turn-dot-pearl');
     const turnDotPearlSolid = document.getElementById('turn-dot-pearl-solid');
-    const turnDotEmerald = document.getElementById('turn-dot-emerald');
-    const turnDotEmeraldSolid = document.getElementById('turn-dot-emerald-solid');
     const turnStatusIndicator = document.getElementById('turn-status-indicator');
     const turnStatusText = document.getElementById('turn-status-text');
-    const turnStatusIndicatorMobile = document.getElementById('turn-status-indicator-mobile');
-    const turnStatusTextMobile = document.getElementById('turn-status-text-mobile');
     const labelPlayerPearl = document.getElementById('label-player-pearl');
     const hudMoveCount = document.getElementById('hud-move-count');
 
     // Controls Buttons
     const btnRestartGame = document.getElementById('btn-restart-game');
     const btnHudUndo = document.getElementById('btn-hud-undo');
-    const btnHudUndoMobile = document.getElementById('btn-hud-undo-mobile');
     const btnToggleSound = document.getElementById('btn-toggle-sound');
     const iconSoundOn = document.getElementById('icon-sound-on');
     const iconSoundOff = document.getElementById('icon-sound-off');
@@ -84,6 +72,24 @@ export function initGameUI() {
     const btnGameOverRematch = document.getElementById('btn-game-over-rematch');
     const btnGameOverClose = document.getElementById('btn-game-over-close');
 
+    // Backdrop click-to-close handler for all HTML dialogs
+    [dialogHowToPlay, dialogStats, dialogShortcuts, dialogGameOver].forEach(dlg => {
+        if (dlg) {
+            dlg.addEventListener('click', (e) => {
+                const rect = dlg.getBoundingClientRect();
+                const isInDialog = (
+                    rect.top <= e.clientY &&
+                    e.clientY <= rect.top + rect.height &&
+                    rect.left <= e.clientX &&
+                    e.clientX <= rect.left + rect.width
+                );
+                if (!isInDialog) {
+                    dlg.close();
+                }
+            });
+        }
+    });
+
     // Sound UI Sync
     function syncSoundUI(muted) {
         if (muted) {
@@ -106,9 +112,7 @@ export function initGameUI() {
     // Event: Score Change
     game.on('scoreChange', ({ scores }) => {
         if (scoreRuby) scoreRuby.textContent = scores.ruby || 0;
-        if (scoreRubyMobile) scoreRubyMobile.textContent = scores.ruby || 0;
         if (scorePearl) scorePearl.textContent = scores.pearl || 0;
-        if (scorePearlMobile) scorePearlMobile.textContent = scores.pearl || 0;
         if (scoreEmerald && scores.emerald !== undefined) {
             scoreEmerald.textContent = scores.emerald || 0;
         }
@@ -120,58 +124,52 @@ export function initGameUI() {
         syncDifficultyLock(moveCount);
 
         // Reset turn dots & borders
-        [turnDotRuby, turnDotRubySolid, turnDotPearl, turnDotPearlSolid, turnDotEmerald, turnDotEmeraldSolid].forEach(el => el?.classList.add('hidden'));
-        [cardRuby, cardPearl, cardEmerald].forEach(el => {
-            if (el) {
-                el.classList.remove('border-[#ff2d60]', 'border-[#00e5ff]', 'border-[#10b981]', 'bg-white/5');
-            }
-        });
+        turnDotRuby?.classList.add('hidden');
+        turnDotRubySolid?.classList.add('hidden');
+        turnDotPearl?.classList.add('hidden');
+        turnDotPearlSolid?.classList.add('hidden');
 
-        const playerInfo = PLAYERS[currentPlayer];
+        cardRuby?.classList.remove('border-[#ff2d60]', 'bg-white/5');
+        cardPearl?.classList.remove('border-[#00e5ff]', 'bg-white/5');
+        cardEmerald?.classList.remove('border-[#10b981]', 'bg-white/5');
 
         if (currentPlayer === 'ruby') {
             turnDotRuby?.classList.remove('hidden');
             turnDotRubySolid?.classList.remove('hidden');
             cardRuby?.classList.add('border-[#ff2d60]', 'bg-white/5');
-            if (hudTurnGlow) hudTurnGlow.style.background = 'radial-gradient(circle at 15% 50%, rgba(255, 45, 96, 0.25), transparent 70%)';
-            if (turnStatusIndicator) turnStatusIndicator.style.backgroundColor = '#ff2d60';
-            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.style.backgroundColor = '#ff2d60';
-            const text = selectGameMode?.value === 'pvp' ? "Player 1's Turn" : "Your Turn (Rubies)";
+            if (turnStatusIndicator) {
+                turnStatusIndicator.style.backgroundColor = '#ff2d60';
+                turnStatusIndicator.style.boxShadow = '0 0 8px #ff2d60';
+            }
+            const text = selectGameMode?.value === 'pvp' ? "Player 1's Turn" : "Your Turn";
             if (turnStatusText) turnStatusText.textContent = text;
-            if (turnStatusTextMobile) turnStatusTextMobile.textContent = text;
         } else if (currentPlayer === 'pearl') {
             turnDotPearl?.classList.remove('hidden');
             turnDotPearlSolid?.classList.remove('hidden');
             cardPearl?.classList.add('border-[#00e5ff]', 'bg-white/5');
-            if (hudTurnGlow) hudTurnGlow.style.background = 'radial-gradient(circle at 85% 50%, rgba(0, 229, 255, 0.25), transparent 70%)';
-            if (turnStatusIndicator) turnStatusIndicator.style.backgroundColor = '#00e5ff';
-            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.style.backgroundColor = '#00e5ff';
-            const text = isAi ? 'AI Opponent Thinking…' : "Player 2's Turn";
+            if (turnStatusIndicator) {
+                turnStatusIndicator.style.backgroundColor = '#00e5ff';
+                turnStatusIndicator.style.boxShadow = '0 0 8px #00e5ff';
+            }
+            const text = isAi ? 'AI Thinking…' : "Player 2's Turn";
             if (turnStatusText) turnStatusText.textContent = text;
-            if (turnStatusTextMobile) turnStatusTextMobile.textContent = text;
         } else if (currentPlayer === 'emerald') {
-            turnDotEmerald?.classList.remove('hidden');
-            turnDotEmeraldSolid?.classList.remove('hidden');
             cardEmerald?.classList.add('border-[#10b981]', 'bg-white/5');
-            if (hudTurnGlow) hudTurnGlow.style.background = 'radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.25), transparent 70%)';
-            if (turnStatusIndicator) turnStatusIndicator.style.backgroundColor = '#10b981';
-            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.style.backgroundColor = '#10b981';
-            const text = "Player 3's Turn";
-            if (turnStatusText) turnStatusText.textContent = text;
-            if (turnStatusTextMobile) turnStatusTextMobile.textContent = text;
+            if (turnStatusIndicator) {
+                turnStatusIndicator.style.backgroundColor = '#10b981';
+                turnStatusIndicator.style.boxShadow = '0 0 8px #10b981';
+            }
+            if (turnStatusText) turnStatusText.textContent = "Player 3's Turn";
         }
     });
 
     // Event: AI Thinking
     game.on('aiThinking', (thinking) => {
         if (thinking) {
-            if (turnStatusIndicator) turnStatusIndicator.classList.add('animate-spin');
-            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.classList.add('animate-spin');
-            if (turnStatusText) turnStatusText.textContent = 'AI Calculating Move…';
-            if (turnStatusTextMobile) turnStatusTextMobile.textContent = 'AI Thinking…';
+            turnStatusIndicator?.classList.add('animate-spin');
+            if (turnStatusText) turnStatusText.textContent = 'AI Calculating…';
         } else {
-            if (turnStatusIndicator) turnStatusIndicator.classList.remove('animate-spin');
-            if (turnStatusIndicatorMobile) turnStatusIndicatorMobile.classList.remove('animate-spin');
+            turnStatusIndicator?.classList.remove('animate-spin');
         }
     });
 
@@ -187,11 +185,11 @@ export function initGameUI() {
             if (gameOverSubtitle) gameOverSubtitle.textContent = `Both players finished tied with ${scores.ruby} gems each in ${moveCount} moves.`;
             if (gameOverIcon) gameOverIcon.textContent = '🤝';
         } else if (winner === 'ruby') {
-            if (gameOverTitle) gameOverTitle.textContent = selectGameMode?.value === 'pvp' ? 'Player 1 (Rubies) Wins!' : 'Victory! You Won!';
+            if (gameOverTitle) gameOverTitle.textContent = selectGameMode?.value === 'pvp' ? 'Player 1 Wins!' : 'Victory! You Won!';
             if (gameOverSubtitle) gameOverSubtitle.textContent = `Rubies dominated the board with ${scores.ruby} gems over Pearls (${scores.pearl}) in ${moveCount} moves.`;
             if (gameOverIcon) gameOverIcon.textContent = '🏆';
         } else if (winner === 'pearl') {
-            if (gameOverTitle) gameOverTitle.textContent = selectGameMode?.value === 'pvp' ? 'Player 2 (Pearls) Wins!' : 'AI Opponent Wins!';
+            if (gameOverTitle) gameOverTitle.textContent = selectGameMode?.value === 'pvp' ? 'Player 2 Wins!' : 'AI Opponent Wins!';
             if (gameOverSubtitle) gameOverSubtitle.textContent = `Pearls secured victory with ${scores.pearl} gems vs Rubies (${scores.ruby}) in ${moveCount} moves.`;
             if (gameOverIcon) gameOverIcon.textContent = selectGameMode?.value === 'pvp' ? '🏆' : '💀';
         }
@@ -199,14 +197,11 @@ export function initGameUI() {
         dialogGameOver.showModal();
     });
 
-    // Difficulty and Mode Setup
+    // Difficulty Setup
     let currentDifficulty = 'medium';
     const containerAiDifficulty = document.getElementById('container-ai-difficulty');
-    const containerAiDifficultyMobile = document.getElementById('container-ai-difficulty-mobile');
-    const labelCurrentDiff = document.getElementById('label-current-diff');
     const diffLockBadge = document.getElementById('diff-lock-badge');
-    const diffLockBadgeMobile = document.getElementById('diff-lock-badge-mobile');
-    const diffButtons = document.querySelectorAll('.btn-difficulty, .btn-diff-mobile');
+    const diffButtons = document.querySelectorAll('.btn-difficulty');
 
     function syncDifficultyLock(moveCount) {
         const isGameStarted = moveCount > 0 && !game.isGameOver;
@@ -230,31 +225,14 @@ export function initGameUI() {
                 diffLockBadge.classList.add('hidden');
             }
         }
-        if (diffLockBadgeMobile) {
-            if (isGameStarted) {
-                diffLockBadgeMobile.classList.remove('hidden');
-            } else {
-                diffLockBadgeMobile.classList.add('hidden');
-            }
-        }
     }
 
     function setDifficulty(diff) {
-        // Prevent changing difficulty if match has already started
         if (game.state && game.state.moveCount > 0 && !game.isGameOver) {
             return;
         }
 
         currentDifficulty = diff;
-
-        if (labelCurrentDiff) {
-            const labels = {
-                easy: 'EASY (NOVICE)',
-                medium: 'MEDIUM (TACTICAL)',
-                master: 'MASTER (GRANDMASTER)'
-            };
-            labelCurrentDiff.textContent = labels[diff] || diff.toUpperCase();
-        }
 
         diffButtons.forEach(btn => {
             if (btn.getAttribute('data-diff') === diff) {
@@ -281,18 +259,15 @@ export function initGameUI() {
         });
     });
 
-    // Unified Mode & Preset Handlers (Desktop & Mobile Sync)
+    // Unified Mode & Preset Handlers
     function handleModeChange(mode, playSound = true) {
         if (selectGameMode) selectGameMode.value = mode;
-        if (selectGameModeMobile) selectGameModeMobile.value = mode;
 
         if (mode === 'pve') {
             containerAiDifficulty?.classList.remove('opacity-30', 'pointer-events-none');
-            containerAiDifficultyMobile?.classList.remove('opacity-30', 'pointer-events-none');
             game.setGameMode(`pve-${currentDifficulty}`);
         } else {
             containerAiDifficulty?.classList.add('opacity-30', 'pointer-events-none');
-            containerAiDifficultyMobile?.classList.add('opacity-30', 'pointer-events-none');
             game.setGameMode(mode);
         }
 
@@ -309,7 +284,7 @@ export function initGameUI() {
         }
 
         if (labelPlayerPearl) {
-            labelPlayerPearl.textContent = mode === 'pvp' ? 'Player 2' : (mode === 'trio' ? 'Player 2' : 'AI // PEARL');
+            labelPlayerPearl.textContent = mode === 'pvp' ? 'Player 2' : (mode === 'trio' ? 'Player 2' : 'Pearls');
         }
 
         if (playSound) sound.playSelect();
@@ -317,15 +292,12 @@ export function initGameUI() {
 
     function handlePresetChange(preset, playSound = true) {
         if (selectBoardPreset) selectBoardPreset.value = preset;
-        if (selectBoardPresetMobile) selectBoardPresetMobile.value = preset;
 
         if (preset === 'trio') {
             if (selectGameMode) selectGameMode.value = 'trio';
-            if (selectGameModeMobile) selectGameModeMobile.value = 'trio';
             cardEmerald?.classList.remove('hidden');
             cardEmerald?.classList.add('flex');
             containerAiDifficulty?.classList.add('opacity-30', 'pointer-events-none');
-            containerAiDifficultyMobile?.classList.add('opacity-30', 'pointer-events-none');
         }
 
         if (stageBannerText && BOARD_PRESETS[preset]) {
@@ -342,10 +314,7 @@ export function initGameUI() {
     handleModeChange('pve', false);
 
     selectGameMode?.addEventListener('change', (e) => handleModeChange(e.target.value));
-    selectGameModeMobile?.addEventListener('change', (e) => handleModeChange(e.target.value));
-
     selectBoardPreset?.addEventListener('change', (e) => handlePresetChange(e.target.value));
-    selectBoardPresetMobile?.addEventListener('change', (e) => handlePresetChange(e.target.value));
 
     // Restart Button
     btnRestartGame?.addEventListener('click', () => {
@@ -354,11 +323,8 @@ export function initGameUI() {
         syncDifficultyLock(0);
     });
 
-    // Undo Button (Desktop & Mobile)
+    // Undo Button
     btnHudUndo?.addEventListener('click', () => {
-        game.undo();
-    });
-    btnHudUndoMobile?.addEventListener('click', () => {
         game.undo();
     });
 
@@ -436,3 +402,4 @@ export function initGameUI() {
 
     window.hexxagonInstance = game;
 }
+

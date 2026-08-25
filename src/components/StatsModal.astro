@@ -3,15 +3,15 @@
 
 <dialog
   id="dialog-stats"
-  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 backdrop:backdrop-blur-md max-w-md w-[calc(100vw-1rem)]"
+  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 max-w-md w-[calc(100vw-1rem)]"
   aria-labelledby="stats-dialog-title"
 >
-  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/40 shadow-[0_0_50px_rgba(0,0,0,0.95)] text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[88vh] overflow-y-auto">
+  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/30 text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[88vh] overflow-y-auto">
     
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm shadow-[0_0_12px_rgba(0,229,255,0.3)]">
+        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm">
           📊
         </div>
         <h2 id="stats-dialog-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-['Press_Start_2P'] text-[11px] sm:text-xs text-cyan-300">
@@ -39,17 +39,17 @@
 
       <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/25 flex flex-col items-center">
         <span class="text-[10px] uppercase tracking-wider text-slate-400">Win Rate</span>
-        <span id="stat-win-rate" class="text-2xl font-black text-emerald-400 tabular-nums mt-0.5 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">0%</span>
+        <span id="stat-win-rate" class="text-2xl font-black text-emerald-400 tabular-nums mt-0.5">0%</span>
       </div>
 
       <div class="p-3 rounded-xl bg-[#050814] border border-rose-500/30 flex flex-col items-center">
         <span class="text-[10px] uppercase tracking-wider text-[#ff2d60]">Ruby Wins</span>
-        <span id="stat-ruby-wins" class="text-2xl font-black text-[#ff2d60] tabular-nums mt-0.5 drop-shadow-[0_0_8px_rgba(255,45,96,0.5)]">0</span>
+        <span id="stat-ruby-wins" class="text-2xl font-black text-[#ff2d60] tabular-nums mt-0.5">0</span>
       </div>
 
       <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/30 flex flex-col items-center">
         <span class="text-[10px] uppercase tracking-wider text-[#00e5ff]">Pearl Wins</span>
-        <span id="stat-pearl-wins" class="text-2xl font-black text-[#00e5ff] tabular-nums mt-0.5 drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]">0</span>
+        <span id="stat-pearl-wins" class="text-2xl font-black text-[#00e5ff] tabular-nums mt-0.5">0</span>
       </div>
     </div>
 
