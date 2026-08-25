@@ -160,5 +160,68 @@ export const BOARD_PRESETS = {
 
             return { cells: Array.from(cells), initialPieces, obstacles: [] };
         }
+    },
+
+    warp: {
+        id: 'warp',
+        stageNumber: 5,
+        stageTitle: 'STAGE 5 // WARP NEXUS',
+        name: 'Stage 5: Warp Nexus (84 Cells • Dynamic Wormholes)',
+        description: 'An expansive cosmic arena with shifting Quantum Wormholes that spawn and despawn dynamically across the rift!',
+        radius: 5,
+        cellSize: 31,
+        players: ['ruby', 'pearl'],
+        generate: () => {
+            const cells = new Set();
+            const obstacles = new Set();
+            const radius = 5;
+
+            // Cosmic void rift channels
+            const voidTiles = new Set([
+                HexMath.key(0, 0),
+                HexMath.key(1, -1),
+                HexMath.key(-1, 1),
+                HexMath.key(2, -2),
+                HexMath.key(-2, 2),
+                HexMath.key(0, -2),
+                HexMath.key(0, 2)
+            ]);
+
+            for (let q = -radius; q <= radius; q++) {
+                const r1 = Math.max(-radius, -q - radius);
+                const r2 = Math.min(radius, -q + radius);
+                for (let r = r1; r <= r2; r++) {
+                    const key = HexMath.key(q, r);
+                    if (voidTiles.has(key)) {
+                        obstacles.add(key);
+                    } else {
+                        cells.add(key);
+                    }
+                }
+            }
+
+            // 4 Starting Pieces per side across the outer wings and flanks
+            const initialPieces = {
+                // Rubies (Player 1)
+                [HexMath.key(0, -5)]: 'ruby',
+                [HexMath.key(-5, 5)]: 'ruby',
+                [HexMath.key(5, 0)]: 'ruby',
+                [HexMath.key(-2, -3)]: 'ruby',
+
+                // Pearls (AI / Player 2)
+                [HexMath.key(0, 5)]: 'pearl',
+                [HexMath.key(5, -5)]: 'pearl',
+                [HexMath.key(-5, 0)]: 'pearl',
+                [HexMath.key(2, 3)]: 'pearl'
+            };
+
+            // Dynamic wormhole pairs will be spawned on initialization and periodically
+            return {
+                cells: Array.from(cells),
+                initialPieces,
+                obstacles: Array.from(obstacles),
+                specialTiles: {}
+            };
+        }
     }
 };

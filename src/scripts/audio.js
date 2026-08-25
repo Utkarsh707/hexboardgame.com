@@ -510,6 +510,59 @@ export class SoundEngine {
         } catch (e) { }
     }
 
+    // 4.5. QUANTUM WARP: Cosmic Teleport Frequency Sweep & Crystal Dispersal
+    playWarp() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx || !this.sfxGain) return;
+
+        try {
+            const now = this.ctx.currentTime;
+
+            // 1. Ascending & Descending Frequency Rift Sweep
+            const osc = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(320, now);
+            osc.frequency.exponentialRampToValueAtTime(1840, now + 0.12);
+            osc.frequency.exponentialRampToValueAtTime(440, now + 0.28);
+
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(800, now);
+            filter.frequency.exponentialRampToValueAtTime(3600, now + 0.12);
+            filter.frequency.exponentialRampToValueAtTime(900, now + 0.28);
+            filter.Q.value = 5.0;
+
+            gain.gain.setValueAtTime(0.28, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.29);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.sfxGain);
+
+            osc.start(now);
+            osc.stop(now + 0.30);
+
+            // 2. Crystal Harmonic Chime Ring
+            const chime = this.ctx.createOscillator();
+            const chimeGain = this.ctx.createGain();
+            chime.type = 'triangle';
+            chime.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+            chime.frequency.exponentialRampToValueAtTime(1760, now + 0.25);
+
+            chimeGain.gain.setValueAtTime(0.20, now + 0.08);
+            chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.30);
+
+            chime.connect(chimeGain);
+            chimeGain.connect(this.sfxGain);
+
+            chime.start(now + 0.08);
+            chime.stop(now + 0.31);
+        } catch (e) { }
+    }
+
     // 5. CAPTURE / INFECTION: Authentic 8-Bit Explosion Sound Effects (Multi-Variation)
     // Inspired by classic 8-Bit Explosions (Laser chirp, filtered noise crunch, sub thump & harmonic ringout)
     playCapture(count = 1) {

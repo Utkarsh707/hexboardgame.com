@@ -11,10 +11,15 @@ import { PLAYERS, BOARD_PRESETS } from './boards.js';
 
 export function initGameUI() {
     // Screen Elements
-    const screenSplash = document.getElementById('screen-splash');
+    const screenTitle = document.getElementById('screen-title');
+    const screenSetup = document.getElementById('screen-setup');
     const screenGame = document.getElementById('screen-game');
 
-    // Splash Screen Controls
+    // Title Screen Controls
+    const btnTitlePlay = document.getElementById('btn-title-play');
+
+    // Setup Screen Controls
+    const btnSetupBack = document.getElementById('btn-setup-back');
     const splashSelectMode = document.getElementById('splash-select-mode');
     const splashSelectPreset = document.getElementById('splash-select-preset');
     const splashContainerDiff = document.getElementById('splash-container-difficulty');
@@ -111,7 +116,7 @@ export function initGameUI() {
 
     // Start Menu BGM on first interaction
     const initMusicOnInteraction = () => {
-        if (!game || !screenSplash?.classList.contains('hidden-screen')) {
+        if (!game || screenGame?.classList.contains('hidden-screen')) {
             sound.startMusic('menu');
         }
         window.removeEventListener('pointerdown', initMusicOnInteraction);
@@ -317,18 +322,51 @@ export function initGameUI() {
         sound.playSelect();
     });
 
+    // Reset Menu Selections to Defaults (PvE, Classic, Medium AI)
+    function resetMenuSelections() {
+        selectedMode = 'pve';
+        selectedPreset = 'classic';
+        selectedDiff = 'medium';
+
+        if (splashSelectMode) splashSelectMode.value = 'pve';
+        if (splashSelectPreset) splashSelectPreset.value = 'classic';
+        splashContainerDiff?.classList.remove('opacity-30', 'pointer-events-none');
+
+        splashDiffButtons.forEach(b => {
+            if (b.getAttribute('data-diff') === 'medium') {
+                b.className = 'btn-splash-diff active py-1.5 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-lg cursor-pointer';
+            } else {
+                b.className = 'btn-splash-diff py-1.5 text-xs font-mono font-bold text-slate-400 rounded-lg transition-colors hover:text-cyan-300 cursor-pointer';
+            }
+        });
+    }
+
+    // Initialize defaults on fresh load
+    resetMenuSelections();
+
     // Screen State Transition Functions
-    function showSplashScreen() {
+    function showTitleScreen() {
+        resetMenuSelections();
         screenGame?.classList.add('hidden-screen');
-        screenSplash?.classList.remove('hidden-screen');
+        screenSetup?.classList.add('hidden-screen');
+        screenTitle?.classList.remove('hidden-screen');
         sound.startMusic('menu');
         sound.playDeselect();
+    }
+
+    function showSetupScreen() {
+        screenGame?.classList.add('hidden-screen');
+        screenTitle?.classList.add('hidden-screen');
+        screenSetup?.classList.remove('hidden-screen');
+        sound.startMusic('menu');
+        sound.playSelect();
     }
 
     function launchBattle() {
         sound.playSelect();
         sound.startMusic('game');
-        screenSplash?.classList.add('hidden-screen');
+        screenTitle?.classList.add('hidden-screen');
+        screenSetup?.classList.add('hidden-screen');
         screenGame?.classList.remove('hidden-screen');
 
         const modeKey = selectedMode === 'pve' ? `pve-${selectedDiff}` : selectedMode;
@@ -460,11 +498,17 @@ export function initGameUI() {
         });
     }
 
-    // Launch Button from Splash
+    // Title Screen: Animated "PLAY!" button -> Opens Setup Screen
+    btnTitlePlay?.addEventListener('click', showSetupScreen);
+
+    // Setup Screen: Back to Title button
+    btnSetupBack?.addEventListener('click', showTitleScreen);
+
+    // Setup Screen: Start Battle CTA button
     btnSplashStartGame?.addEventListener('click', launchBattle);
 
-    // Return to Menu Button from Game Arena
-    btnNavMenu?.addEventListener('click', showSplashScreen);
+    // Return to Menu / Title Screen Button from Game Arena Header
+    btnNavMenu?.addEventListener('click', showTitleScreen);
 
     // Restart Button inside Arena
     btnRestartGame?.addEventListener('click', () => {

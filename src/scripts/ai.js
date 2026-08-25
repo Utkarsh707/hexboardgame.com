@@ -14,9 +14,17 @@ export class HexxagonAI {
         this.difficulty = diff;
     }
 
+    getLegalMoves(state, player) {
+        return HexxagonAI.getLegalMoves(state, player);
+    }
+
+    getCaptures(state, target, player) {
+        return HexxagonAI.getCaptures(state, target, player);
+    }
+
     static getLegalMoves(state, player) {
         const moves = [];
-        const { board, cells } = state;
+        const { board, cells, specialTiles } = state;
         const validCells = state.cellSet || (state.cellSet = new Set(cells));
 
         for (const [key, pieceOwner] of Object.entries(board)) {
@@ -29,12 +37,24 @@ export class HexxagonAI {
                 const targetKey = HexMath.key(target.q, target.r);
 
                 if (validCells.has(targetKey) && !board[targetKey]) {
-                    const captures = HexxagonAI.getCaptures(state, target, player);
+                    // Check for Quantum Warp Tile
+                    let warpToKey = null;
+                    let finalTarget = target;
+                    if (specialTiles && specialTiles[targetKey]?.type === 'warp') {
+                        const warpTargetKey = specialTiles[targetKey].target;
+                        if (!board[warpTargetKey]) {
+                            warpToKey = warpTargetKey;
+                            finalTarget = HexMath.parseKey(warpTargetKey);
+                        }
+                    }
+
+                    const captures = HexxagonAI.getCaptures(state, finalTarget, player);
                     moves.push({
                         from,
                         to: target,
                         fromKey: key,
                         toKey: targetKey,
+                        warpToKey,
                         type: target.type,
                         captures
                     });
@@ -66,7 +86,9 @@ export class HexxagonAI {
         if (move.type === 'jump') {
             delete nextBoard[move.fromKey];
         }
-        nextBoard[move.toKey] = player;
+
+        const landingKey = move.warpToKey || move.toKey;
+        nextBoard[landingKey] = player;
 
         const caps = move.captures;
         for (let i = 0; i < caps.length; i++) {

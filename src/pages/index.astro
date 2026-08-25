@@ -24,15 +24,15 @@ import '../styles/global.css';
     <Header />
 
     <!-- MAIN GAME ARENA (Centered, Responsive, Zero-Scroll) -->
-    <main id="game-main" class="flex-1 w-full max-w-4xl mx-auto px-2 sm:px-4 flex flex-col items-center justify-between py-1.5 sm:py-2.5 min-h-0 overflow-hidden">
+    <main id="game-main" class="flex-1 w-full max-w-4xl mx-auto px-1 sm:px-4 flex flex-col items-center justify-between py-1 sm:py-2.5 min-h-0 overflow-hidden">
       
       <!-- TOP SCOREBOARD & TURN HEADER -->
-      <div class="w-full max-w-xl flex items-center justify-between gap-2 px-3 py-1.5 sm:py-2 rounded-2xl bg-[#090c14] border border-slate-800/80 shadow-[0_4px_20px_rgba(0,0,0,0.5)] shrink-0">
+      <div class="w-full max-w-xl flex items-center justify-between gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-2 rounded-2xl bg-[#090c14] border border-slate-800/80 shadow-[0_4px_20px_rgba(0,0,0,0.5)] shrink-0">
         
         <!-- Player 1: Rubies -->
-        <div id="card-player-ruby" class="flex items-center gap-2 sm:gap-3 px-2.5 py-1 rounded-xl border border-transparent transition-all duration-300">
+        <div id="card-player-ruby" class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl border border-transparent transition-all duration-300">
           <!-- 3D Ruby Sphere Icon -->
-          <div class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0">
+          <div class="relative w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0">
             <svg viewBox="0 0 100 100" class="w-full h-full">
               <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.5)"></ellipse>
               <circle cx="50" cy="48" r="44" fill="url(#grad-ruby-hud)" stroke="rgba(255,255,255,0.4)" stroke-width="2"></circle>
@@ -51,23 +51,23 @@ import '../styles/global.css';
             <span id="turn-dot-ruby-solid" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#ff0844] ring-2 ring-black"></span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#ff4b72] font-['Outfit']">Rubies</span>
-            <span id="score-ruby" class="text-xl sm:text-3xl font-black font-mono text-white leading-none tracking-tight">3</span>
+            <span class="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-[#ff4b72] font-['Outfit']">Rubies</span>
+            <span id="score-ruby" class="text-lg sm:text-3xl font-black font-mono text-white leading-none tracking-tight">3</span>
           </div>
         </div>
 
         <!-- Center Status & Turn Pill -->
-        <div class="flex flex-col items-center gap-1 shrink-0">
-          <div id="turn-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#04060c] border border-slate-700/80 text-cyan-200 shadow-inner">
-            <span id="turn-status-indicator" class="w-2 h-2 rounded-full bg-[#ff0844] shadow-[0_0_8px_#ff0844]"></span>
-            <span id="turn-status-text" class="uppercase tracking-wider text-[10px] sm:text-[11px] font-['Outfit'] font-bold">Your Turn</span>
+        <div class="flex flex-col items-center gap-0.5 sm:gap-1 shrink-0">
+          <div id="turn-status-badge" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-mono font-bold bg-[#04060c] border border-slate-700/80 text-cyan-200 shadow-inner">
+            <span id="turn-status-indicator" class="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-[#ff0844] shadow-[0_0_8px_#ff0844]"></span>
+            <span id="turn-status-text" class="uppercase tracking-wider text-[9px] sm:text-[11px] font-['Outfit'] font-bold">Your Turn</span>
           </div>
           
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2">
             <button
               id="btn-hud-undo"
               type="button"
-              class="inline-flex items-center gap-1 text-[10px] font-mono text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-2 py-0.5 rounded-md transition-colors border border-slate-700 cursor-pointer"
+              class="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-mono text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-1.5 sm:px-2 py-0.5 rounded-md transition-colors border border-slate-700 cursor-pointer"
               title="Undo Last Move"
             >
               <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,18 +75,18 @@ import '../styles/global.css';
               </svg>
               <span>Undo</span>
             </button>
-            <span class="text-[10px] font-mono text-slate-500">Move <strong id="hud-move-count" class="text-slate-300">0</strong></span>
+            <span class="text-[9px] sm:text-[10px] font-mono text-slate-500">Move <strong id="hud-move-count" class="text-slate-300">0</strong></span>
           </div>
         </div>
 
         <!-- Player 2 / AI: Pearls -->
-        <div id="card-player-pearl" class="flex items-center gap-2 sm:gap-3 px-2.5 py-1 rounded-xl border border-transparent transition-all duration-300 text-right">
+        <div id="card-player-pearl" class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl border border-transparent transition-all duration-300 text-right">
           <div class="flex flex-col items-end">
-            <span id="label-player-pearl" class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-cyan-300 font-['Outfit']">Pearls</span>
-            <span id="score-pearl" class="text-xl sm:text-3xl font-black font-mono text-white leading-none tracking-tight">3</span>
+            <span id="label-player-pearl" class="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-cyan-300 font-['Outfit']">Pearls</span>
+            <span id="score-pearl" class="text-lg sm:text-3xl font-black font-mono text-white leading-none tracking-tight">3</span>
           </div>
           <!-- 3D Pearl Sphere Icon -->
-          <div class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0">
+          <div class="relative w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0">
             <svg viewBox="0 0 100 100" class="w-full h-full">
               <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.5)"></ellipse>
               <circle cx="50" cy="48" r="44" fill="url(#grad-pearl-hud)" stroke="rgba(255,255,255,0.5)" stroke-width="2"></circle>
@@ -110,16 +110,16 @@ import '../styles/global.css';
       </div>
 
       <!-- 3-PLAYER (EMERALD) SCORE CARD (Hidden in 2P, Shown in 3P) -->
-      <div id="card-player-emerald" class="hidden w-full max-w-xl items-center justify-between px-3 py-1.5 rounded-xl bg-[#090c14] border border-emerald-500/30 shrink-0">
+      <div id="card-player-emerald" class="hidden w-full max-w-xl items-center justify-between px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#090c14] border border-emerald-500/30 shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-base">🟢</span>
           <span class="text-xs font-bold text-emerald-400 font-['Outfit']">Emeralds (Player 3)</span>
         </div>
-        <span id="score-emerald" class="text-xl font-black font-mono text-emerald-400">2</span>
+        <span id="score-emerald" class="text-lg sm:text-xl font-black font-mono text-emerald-400">2</span>
       </div>
 
-      <!-- THE HERO FLOATING HEXAGONAL ARENA (Frameless Organic Arena, Zero Scroll) -->
-      <div class="relative w-full aspect-square max-h-[min(510px,calc(100dvh-145px))] flex items-center justify-center min-h-0 my-auto">
+      <!-- THE HERO FLOATING HEXAGONAL ARENA (Frameless Organic Arena, Zero Scroll, Maximized Mobile Scale) -->
+      <div class="relative w-full aspect-square max-h-[min(540px,calc(100dvh-120px))] flex items-center justify-center min-h-0 my-auto">
         
         <!-- Ambient Arena Energy Aura (Floating radial light centered on the hex honeycomb) -->
         <div class="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.08)_0%,rgba(255,45,96,0.04)_40%,transparent_70%)] pointer-events-none"></div>

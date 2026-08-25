@@ -30,18 +30,37 @@ export class ParticleEngine {
         this.loop = this.loop.bind(this);
     }
 
+    setViewBox(vx = 0, vy = 0, vw = 700, vh = 700) {
+        this.vx = vx;
+        this.vy = vy;
+        this.vw = vw;
+        this.vh = vh;
+        this.resize();
+    }
+
     resize() {
         if (!this.canvas || !this.ctx) return;
         this.dpr = window.devicePixelRatio || 1;
+        const rect = this.canvas.getBoundingClientRect();
+        const displayWidth = rect.width || 700;
+        const displayHeight = rect.height || 700;
 
-        // Internal resolution matches the 700x700 SVG coordinate grid with DPR clarity
-        this.canvas.width = Math.round(700 * this.dpr);
-        this.canvas.height = Math.round(700 * this.dpr);
+        this.canvas.width = Math.round(displayWidth * this.dpr);
+        this.canvas.height = Math.round(displayHeight * this.dpr);
+
+        const vw = this.vw || 700;
+        const vh = this.vh || 700;
+        const vx = this.vx || 0;
+        const vy = this.vy || 0;
+
+        const scaleX = (displayWidth * this.dpr) / vw;
+        const scaleY = (displayHeight * this.dpr) / vh;
 
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.scale(this.dpr, this.dpr);
-        this.width = 700;
-        this.height = 700;
+        this.ctx.scale(scaleX, scaleY);
+        this.ctx.translate(-vx, -vy);
+        this.width = vw;
+        this.height = vh;
     }
 
     startLoop() {

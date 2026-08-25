@@ -81,6 +81,45 @@
   color: #ffffff;
 }
 
+/* Playful Grow & Shrink Bounce Animation for Play Button */
+@keyframes playful-play-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  28% {
+    transform: scale(1.10, 1.08) translateY(-3px);
+  }
+  42% {
+    transform: scale(0.95, 0.96) translateY(1px);
+  }
+  56% {
+    transform: scale(1.05, 1.04) translateY(-1.5px);
+  }
+  70% {
+    transform: scale(0.98, 0.99) translateY(0.5px);
+  }
+  84% {
+    transform: scale(1.01, 1.01);
+  }
+}
+
+.btn-hero-play {
+  animation: playful-play-bounce 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
+  will-change: transform;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 208, 0, 0.35);
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-hero-play:hover {
+  animation-play-state: paused;
+  transform: scale(1.12) translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 208, 0, 0.55);
+}
+
+.btn-hero-play:active {
+  transform: scale(0.94) translateY(2px);
+}
+
 /* Hexxagon Hexagonal Grid Cells (Hardware-Accelerated Floating Cyber-Arena) */
 .hex-cell {
   transition: fill 0.15s ease, stroke 0.15s ease, stroke-width 0.15s ease;
@@ -178,49 +217,106 @@
   will-change: transform;
 }
 
-/* Infection Energy Laser Arcs between Landing & Captured Piece */
+/* ==========================================================================
+   REVAMPED HARDWARE-ACCELERATED VECTOR PARTICLE & VFX SYSTEM
+   - 100% coordinate locking in SVG space (zero offset, zero canvas desync)
+   - High-performance Compositor-Thread CSS Animations (60/120 FPS)
+   ========================================================================== */
+
+/* SVG Vector Infection Arc Beam */
 @keyframes infection-beam-pulse {
   0% {
-    stroke-dashoffset: 40;
+    stroke-dashoffset: 60;
     opacity: 1;
-    stroke-width: 3.5px;
+    stroke-width: 4px;
   }
-  60% {
+  50% {
     stroke-dashoffset: 0;
     opacity: 0.95;
-    stroke-width: 2.5px;
+    stroke-width: 2.8px;
   }
   100% {
-    stroke-dashoffset: -30;
     opacity: 0;
-    stroke-width: 1px;
+    stroke-width: 0.5px;
   }
 }
 
 .svg-infection-beam {
-  stroke-dasharray: 10 5;
-  animation: infection-beam-pulse 0.35s ease-out forwards;
+  stroke-dasharray: 8 4;
+  animation: infection-beam-pulse 0.38s ease-out forwards;
   pointer-events: none;
 }
 
-/* SVG Vector Conversion Shockwave Ring */
-@keyframes capture-ring-expand {
+/* SVG Jump Trajectory Laser Arc */
+@keyframes jump-trail-dash {
   0% {
-    r: 10px;
+    stroke-dashoffset: 80;
     opacity: 1;
     stroke-width: 4px;
   }
+  50% {
+    stroke-dashoffset: 0;
+    opacity: 0.85;
+    stroke-width: 2.5px;
+  }
   100% {
-    r: 44px;
     opacity: 0;
-    stroke-width: 0.8px;
+    stroke-width: 0.5px;
   }
 }
 
-.svg-capture-ring {
-  animation: capture-ring-expand 0.38s cubic-bezier(0.15, 0.85, 0.35, 1.2) forwards;
+.svg-jump-trail {
+  stroke-dasharray: 6 4;
+  animation: jump-trail-dash 0.42s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
   pointer-events: none;
-  transform-box: view-box;
+}
+
+/* SVG Expanding Shockwave Rings */
+@keyframes shockwave-grow-fast {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+    stroke-width: 4.5px;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+    stroke-width: 0.6px;
+  }
+}
+
+@keyframes shockwave-grow-outer {
+  0% {
+    transform: scale(0.3);
+    opacity: 0.75;
+    stroke-width: 3px;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+    stroke-width: 0.4px;
+  }
+}
+
+.svg-shockwave-ring {
+  animation: shockwave-grow-fast 0.38s cubic-bezier(0.15, 0.85, 0.35, 1.2) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.svg-shockwave-ring-outer {
+  animation: shockwave-grow-outer 0.48s cubic-bezier(0.1, 0.9, 0.3, 1) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.svg-capture-ring {
+  animation: shockwave-grow-fast 0.4s cubic-bezier(0.15, 0.85, 0.35, 1.2) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+  pointer-events: none;
 }
 
 /* SVG Diamond Spark Burst */
@@ -230,15 +326,16 @@
     opacity: 1;
   }
   100% {
-    transform: translate(var(--tx, 15px), var(--ty, 15px)) scale(0) rotate(180deg);
+    transform: translate(var(--tx, 16px), var(--ty, 16px)) scale(0) rotate(180deg);
     opacity: 0;
   }
 }
 
 .svg-gem-spark {
-  animation: gem-spark-burst 0.42s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+  animation: gem-spark-burst 0.44s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
   pointer-events: none;
-  transform-box: view-box;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 /* Floating +1 Score Pop */
@@ -248,11 +345,11 @@
     opacity: 0;
   }
   30% {
-    transform: translateY(-8px) scale(1.2);
+    transform: translateY(-8px) scale(1.25);
     opacity: 1;
   }
   100% {
-    transform: translateY(-28px) scale(1);
+    transform: translateY(-28px) scale(0.9);
     opacity: 0;
   }
 }
@@ -264,6 +361,76 @@
   font-family: 'Outfit', sans-serif;
   font-weight: 900;
   filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.9));
+}
+
+/* Quantum Warp Wormhole Portal Styling */
+.hex-cell-warp {
+  fill: #0d0e22 !important;
+  stroke: #a855f7 !important;
+  stroke-width: 1.8px !important;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.65));
+}
+
+@keyframes warp-portal-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.warp-vortex-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: warp-portal-spin 6s linear infinite;
+}
+
+/* Lightning Warp Beam */
+@keyframes warp-lightning-flash {
+  0% {
+    stroke-dashoffset: 120;
+    opacity: 1;
+    stroke-width: 6px;
+  }
+  50% {
+    stroke-dashoffset: 0;
+    opacity: 0.95;
+    stroke-width: 4px;
+  }
+  100% {
+    opacity: 0;
+    stroke-width: 1px;
+  }
+}
+
+.svg-warp-beam {
+  stroke-dasharray: 12 6;
+  animation: warp-lightning-flash 0.48s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Quantum Wormhole Portal Collapse / Despawn */
+@keyframes warp-portal-collapse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.25) rotate(90deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.svg-warp-collapse {
+  animation: warp-portal-collapse 0.38s ease-in forwards;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 /* Board Impact Juice Rumble */

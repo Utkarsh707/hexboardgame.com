@@ -69,6 +69,7 @@ export class HexxagonGame {
         this.clearCapturePreviews();
         this.presetId = presetId;
         const preset = BOARD_PRESETS[presetId] || BOARD_PRESETS.classic;
+        this.cellSize = preset.cellSize || 38;
         const boardData = preset.generate();
 
         this.state = {
@@ -76,6 +77,7 @@ export class HexxagonGame {
             cellSet: new Set(boardData.cells),
             board: { ...boardData.initialPieces },
             obstacles: new Set(boardData.obstacles || []),
+            specialTiles: { ...(boardData.specialTiles || {}) },
             players: preset.players,
             currentTurnIndex: 0,
             scores: this.calculateScores(boardData.initialPieces, preset.players),
@@ -94,7 +96,14 @@ export class HexxagonGame {
             this.ai.setDifficulty(diff);
         }
 
+        this.warpCooldown = 0;
         this.renderBoard();
+
+        // Spawn 1 initial dynamic wormhole pair on Warp Nexus
+        if (this.presetId === 'warp') {
+            this.spawnWormholePair(false);
+        }
+
         this.notifyState();
     }
 
@@ -195,6 +204,9 @@ export class HexxagonGame {
         const cellsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         cellsGroup.setAttribute('id', 'hex-cells-group');
 
+        const warpsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        warpsGroup.setAttribute('id', 'hex-warps-group');
+
         const piecesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         piecesGroup.setAttribute('id', 'hex-pieces-group');
 
@@ -204,11 +216,20 @@ export class HexxagonGame {
         const effectsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         effectsGroup.setAttribute('id', 'hex-effects-group');
 
+        let minX = Infinity, maxX = -Infinity;
+        let minY = Infinity, maxY = -Infinity;
+
         const cells = this.state.cells;
         for (let i = 0; i < cells.length; i++) {
             const key = cells[i];
             const { q, r } = HexMath.parseKey(key);
             const { x, y } = HexMath.hexToPixel(q, r, this.cellSize, this.originX, this.originY);
+
+            minX = Math.min(minX, x - this.cellSize);
+            maxX = Math.max(maxX, x + this.cellSize);
+            minY = Math.min(minY, y - this.cellSize);
+            maxY = Math.max(maxY, y + this.cellSize);
+
             const points = HexMath.getHexPolygonPoints(x, y, this.cellSize - 1.5);
 
             const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
@@ -245,12 +266,205 @@ export class HexxagonGame {
             }
         }
 
+        // Tight-fit Dynamic ViewBox: Eliminates dead black margin borders, expands hex cells by ~25%-55% on mobile screens
+        const pad = 16;
+        const boxWidth = (maxX - minX) + pad * 2;
+        const boxHeight = (maxY - minY) + pad * 2;
+        const squareSize = Math.max(boxWidth, boxHeight);
+        const centerX = (minX + maxX) / 2;
+        const centerY = (minY + maxY) / 2;
+        const viewBoxX = Math.round(centerX - squareSize / 2);
+        const viewBoxY = Math.round(centerY - squareSize / 2);
+        const viewBoxSize = Math.round(squareSize);
+
+        this.svgContainer.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxSize} ${viewBoxSize}`);
+
+        if (this.particleEngine) {
+            this.particleEngine.setViewBox(viewBoxX, viewBoxY, viewBoxSize, viewBoxSize);
+        }
+
         this.svgContainer.appendChild(cellsGroup);
+        this.svgContainer.appendChild(warpsGroup);
         this.svgContainer.appendChild(piecesGroup);
         this.svgContainer.appendChild(movesGroup);
         this.svgContainer.appendChild(effectsGroup);
 
+        this.renderWarpPortals();
         this.updateHighlights();
+    }
+
+    renderWarpPortals() {
+        const warpsGroup = document.getElementById('hex-warps-group');
+        if (!warpsGroup) return;
+        warpsGroup.innerHTML = '';
+
+        // Reset warp class on all cells
+        this.cellElements.forEach(poly => poly.classList.remove('hex-cell-warp'));
+
+        const specialTiles = this.state.specialTiles || {};
+        for (const key in specialTiles) {
+            const warp = specialTiles[key];
+            if (warp && warp.type === 'warp') {
+                const poly = this.cellElements.get(key);
+                if (poly) poly.classList.add('hex-cell-warp');
+
+                const { q, r } = HexMath.parseKey(key);
+                const { x, y } = HexMath.hexToPixel(q, r, this.cellSize, this.originX, this.originY);
+
+                const warpGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                warpGroup.setAttribute('class', 'warp-portal-glyph');
+                warpGroup.style.pointerEvents = 'none';
+
+                // Spinning dashed vortex ring
+                const vortex = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                vortex.setAttribute('cx', x);
+                vortex.setAttribute('cy', y);
+                vortex.setAttribute('r', this.cellSize * 0.38);
+                vortex.setAttribute('fill', 'none');
+                vortex.setAttribute('stroke', warp.color || '#a855f7');
+                vortex.setAttribute('stroke-width', '2');
+                vortex.setAttribute('stroke-dasharray', '5 3');
+                vortex.setAttribute('class', 'warp-vortex-ring');
+
+                // Inner core dot
+                const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                core.setAttribute('cx', x);
+                core.setAttribute('cy', y);
+                core.setAttribute('r', this.cellSize * 0.14);
+                core.setAttribute('fill', warp.color || '#a855f7');
+
+                warpGroup.appendChild(vortex);
+                warpGroup.appendChild(core);
+                warpsGroup.appendChild(warpGroup);
+            }
+        }
+    }
+
+    spawnWormholePair(animate = true) {
+        if (this.presetId !== 'warp' || this.isGameOver) return;
+        if (!this.state.specialTiles) this.state.specialTiles = {};
+
+        // Maintain exactly 1 active linked wormhole pair at a time for high-stakes tactical focus
+        if (Object.keys(this.state.specialTiles).length >= 2) return;
+
+        // Find free, unoccupied cells that do not already have a piece or special tile
+        const freeCells = this.state.cells.filter(key => 
+            !this.state.board[key] && 
+            !this.state.specialTiles[key]
+        );
+
+        if (freeCells.length < 2) return;
+
+        // Pick cell A at random from free cells
+        const idxA = Math.floor(Math.random() * freeCells.length);
+        const keyA = freeCells[idxA];
+        const posA = HexMath.parseKey(keyA);
+
+        // Pick cell B across the rift (distance >= 4 for great cross-board jumps, fallback to >= 3)
+        let candidatesB = freeCells.filter(key => {
+            if (key === keyA) return false;
+            const posB = HexMath.parseKey(key);
+            return HexMath.distance(posA, posB) >= 4;
+        });
+
+        if (candidatesB.length === 0) {
+            candidatesB = freeCells.filter(key => {
+                if (key === keyA) return false;
+                const posB = HexMath.parseKey(key);
+                return HexMath.distance(posA, posB) >= 3;
+            });
+        }
+
+        const poolB = candidatesB.length > 0 ? candidatesB : freeCells.filter(k => k !== keyA);
+        if (poolB.length === 0) return;
+
+        const keyB = poolB[Math.floor(Math.random() * poolB.length)];
+        const posB = HexMath.parseKey(keyB);
+
+        // Assign linked pair: Portal α (Purple) & Portal β (Cyan)
+        const pairId = 'warp_' + Math.random().toString(36).substr(2, 9);
+        const colorAlpha = '#c084fc';
+        const colorBeta = '#38bdf8';
+
+        this.state.specialTiles[keyA] = { type: 'warp', target: keyB, pairId, color: colorAlpha, label: 'WARP α' };
+        this.state.specialTiles[keyB] = { type: 'warp', target: keyA, pairId, color: colorBeta, label: 'WARP β' };
+
+        this.renderWarpPortals();
+
+        if (animate) {
+            const coordsA = HexMath.hexToPixel(posA.q, posA.r, this.cellSize, this.originX, this.originY);
+            const coordsB = HexMath.hexToPixel(posB.q, posB.r, this.cellSize, this.originX, this.originY);
+            this.triggerWarpSpawnVFX(coordsA.x, coordsA.y, colorAlpha);
+            this.triggerWarpSpawnVFX(coordsB.x, coordsB.y, colorBeta);
+        }
+    }
+
+    despawnWormholePair(pairId) {
+        if (!this.state.specialTiles || !pairId) return;
+
+        // Animate cosmic collapse at both portals before removing
+        for (const key in this.state.specialTiles) {
+            const warp = this.state.specialTiles[key];
+            if (warp?.pairId === pairId) {
+                const { q, r } = HexMath.parseKey(key);
+                const coords = HexMath.hexToPixel(q, r, this.cellSize, this.originX, this.originY);
+                this.triggerWarpCollapseVFX(coords.x, coords.y, warp.color || '#c084fc');
+                delete this.state.specialTiles[key];
+            }
+        }
+
+        // 1-turn cooldown before a new pair opens on a different rift location
+        this.warpCooldown = 1;
+        this.renderWarpPortals();
+    }
+
+    triggerWarpSpawnVFX(x, y, color = '#c084fc') {
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (!effectsGroup) return;
+
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', x);
+        ring.setAttribute('cy', y);
+        ring.setAttribute('r', '6');
+        ring.setAttribute('fill', 'none');
+        ring.setAttribute('stroke', color);
+        ring.setAttribute('stroke-width', '3');
+        ring.setAttribute('class', 'svg-capture-ring');
+        effectsGroup.appendChild(ring);
+
+        for (let i = 0; i < 6; i++) {
+            const angle = (i * 60) * Math.PI / 180;
+            const tx = Math.cos(angle) * 18;
+            const ty = Math.sin(angle) * 18;
+            const spark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const s = 3;
+            spark.setAttribute('points', `${x},${y - s} ${x + s},${y} ${x},${y + s} ${x - s},${y}`);
+            spark.setAttribute('fill', color);
+            spark.setAttribute('class', 'svg-gem-spark');
+            spark.style.setProperty('--tx', `${tx}px`);
+            spark.style.setProperty('--ty', `${ty}px`);
+            effectsGroup.appendChild(spark);
+            setTimeout(() => spark.remove(), 450);
+        }
+
+        setTimeout(() => ring.remove(), 480);
+    }
+
+    triggerWarpCollapseVFX(x, y, color = '#c084fc') {
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (!effectsGroup) return;
+
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', x);
+        ring.setAttribute('cy', y);
+        ring.setAttribute('r', this.cellSize * 0.4);
+        ring.setAttribute('fill', 'none');
+        ring.setAttribute('stroke', color);
+        ring.setAttribute('stroke-width', '2.5');
+        ring.setAttribute('class', 'svg-warp-collapse');
+        effectsGroup.appendChild(ring);
+
+        setTimeout(() => ring.remove(), 400);
     }
 
     createPieceElement(key, owner, x, y) {
@@ -306,6 +520,122 @@ export class HexxagonGame {
         return group;
     }
 
+    triggerCloneVFX(x, y, color) {
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (!effectsGroup) return;
+
+        // 1. Dual Concentric Vector Shockwave Rings
+        const innerRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        innerRing.setAttribute('cx', x);
+        innerRing.setAttribute('cy', y);
+        innerRing.setAttribute('r', '24');
+        innerRing.setAttribute('fill', 'none');
+        innerRing.setAttribute('stroke', color);
+        innerRing.setAttribute('class', 'svg-shockwave-ring');
+        effectsGroup.appendChild(innerRing);
+
+        const outerRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        outerRing.setAttribute('cx', x);
+        outerRing.setAttribute('cy', y);
+        outerRing.setAttribute('r', '20');
+        outerRing.setAttribute('fill', 'none');
+        outerRing.setAttribute('stroke', color);
+        outerRing.setAttribute('class', 'svg-shockwave-ring-outer');
+        effectsGroup.appendChild(outerRing);
+
+        // 2. 8 Directional Diamond Sparks
+        for (let i = 0; i < 8; i++) {
+            const angle = (i * 45) * Math.PI / 180;
+            const dist = 24 + (i % 2 === 0 ? 8 : 0);
+            const tx = Math.cos(angle) * dist;
+            const ty = Math.sin(angle) * dist;
+
+            const spark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const s = 3;
+            spark.setAttribute('points', `${x},${y - s} ${x + s},${y} ${x},${y + s} ${x - s},${y}`);
+            spark.setAttribute('fill', color);
+            spark.setAttribute('class', 'svg-gem-spark');
+            spark.style.setProperty('--tx', `${tx}px`);
+            spark.style.setProperty('--ty', `${ty}px`);
+            effectsGroup.appendChild(spark);
+            setTimeout(() => spark.remove(), 450);
+        }
+
+        setTimeout(() => {
+            innerRing.remove();
+            outerRing.remove();
+        }, 500);
+    }
+
+    triggerJumpVFX(fromX, fromY, toX, toY, color) {
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (!effectsGroup) return;
+
+        // 1. Trajectory Laser Arc
+        const trail = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        trail.setAttribute('x1', fromX);
+        trail.setAttribute('y1', fromY);
+        trail.setAttribute('x2', toX);
+        trail.setAttribute('y2', toY);
+        trail.setAttribute('stroke', color);
+        trail.setAttribute('class', 'svg-jump-trail');
+        effectsGroup.appendChild(trail);
+
+        // 2. Origin Departure Pulse Ring
+        const originRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        originRing.setAttribute('cx', fromX);
+        originRing.setAttribute('cy', fromY);
+        originRing.setAttribute('r', '18');
+        originRing.setAttribute('fill', 'none');
+        originRing.setAttribute('stroke', color);
+        originRing.setAttribute('class', 'svg-shockwave-ring');
+        effectsGroup.appendChild(originRing);
+
+        // 3. Landing Impact Dual Shockwave
+        const landingRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        landingRing.setAttribute('cx', toX);
+        landingRing.setAttribute('cy', toY);
+        landingRing.setAttribute('r', '28');
+        landingRing.setAttribute('fill', 'none');
+        landingRing.setAttribute('stroke', color);
+        landingRing.setAttribute('class', 'svg-shockwave-ring');
+        effectsGroup.appendChild(landingRing);
+
+        const outerRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        outerRing.setAttribute('cx', toX);
+        outerRing.setAttribute('cy', toY);
+        outerRing.setAttribute('r', '22');
+        outerRing.setAttribute('fill', 'none');
+        outerRing.setAttribute('stroke', color);
+        outerRing.setAttribute('class', 'svg-shockwave-ring-outer');
+        effectsGroup.appendChild(outerRing);
+
+        // 4. Landing Impact Diamond Gem Sparks (10 rays)
+        for (let i = 0; i < 10; i++) {
+            const angle = (i * 36 + (Math.random() - 0.5) * 12) * Math.PI / 180;
+            const dist = 28 + Math.random() * 8;
+            const tx = Math.cos(angle) * dist;
+            const ty = Math.sin(angle) * dist;
+
+            const spark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const s = 3.2;
+            spark.setAttribute('points', `${toX},${toY - s} ${toX + s},${toY} ${toX},${toY + s} ${toX - s},${toY}`);
+            spark.setAttribute('fill', color);
+            spark.setAttribute('class', 'svg-gem-spark');
+            spark.style.setProperty('--tx', `${tx}px`);
+            spark.style.setProperty('--ty', `${ty}px`);
+            effectsGroup.appendChild(spark);
+            setTimeout(() => spark.remove(), 450);
+        }
+
+        setTimeout(() => {
+            trail.remove();
+            originRing.remove();
+            landingRing.remove();
+            outerRing.remove();
+        }, 520);
+    }
+
     triggerCaptureVFX(fromX, fromY, toX, toY, color) {
         const effectsGroup = document.getElementById('hex-effects-group');
         if (!effectsGroup) return;
@@ -317,7 +647,6 @@ export class HexxagonGame {
         beam.setAttribute('x2', toX);
         beam.setAttribute('y2', toY);
         beam.setAttribute('stroke', color);
-        beam.setAttribute('stroke-width', '3');
         beam.setAttribute('stroke-linecap', 'round');
         beam.setAttribute('class', 'svg-infection-beam');
         effectsGroup.appendChild(beam);
@@ -326,10 +655,9 @@ export class HexxagonGame {
         const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         ring.setAttribute('cx', toX);
         ring.setAttribute('cy', toY);
-        ring.setAttribute('r', '10');
+        ring.setAttribute('r', '24');
         ring.setAttribute('fill', 'none');
         ring.setAttribute('stroke', color);
-        ring.setAttribute('stroke-width', '3.5');
         ring.setAttribute('class', 'svg-capture-ring');
         effectsGroup.appendChild(ring);
 
@@ -341,7 +669,7 @@ export class HexxagonGame {
             const ty = Math.sin(angle) * dist;
 
             const spark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-            const s = 3.5;
+            const s = 3.2;
             spark.setAttribute('points', `${toX},${toY - s} ${toX + s},${toY} ${toX},${toY + s} ${toX - s},${toY}`);
             spark.setAttribute('fill', color);
             spark.setAttribute('class', 'svg-gem-spark');
@@ -371,6 +699,37 @@ export class HexxagonGame {
         }, 580);
     }
 
+    triggerWarpBeam(fromX, fromY, toX, toY, color = '#a855f7') {
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (!effectsGroup) return;
+
+        // 1. Quantum Lightning Warp Line
+        const beam = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        beam.setAttribute('x1', fromX);
+        beam.setAttribute('y1', fromY);
+        beam.setAttribute('x2', toX);
+        beam.setAttribute('y2', toY);
+        beam.setAttribute('stroke', color);
+        beam.setAttribute('stroke-linecap', 'round');
+        beam.setAttribute('class', 'svg-warp-beam');
+        effectsGroup.appendChild(beam);
+
+        // 2. Expanding Rings at Entry and Exit
+        [{ x: fromX, y: fromY }, { x: toX, y: toY }].forEach(pt => {
+            const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            ring.setAttribute('cx', pt.x);
+            ring.setAttribute('cy', pt.y);
+            ring.setAttribute('r', '24');
+            ring.setAttribute('fill', 'none');
+            ring.setAttribute('stroke', color);
+            ring.setAttribute('class', 'svg-capture-ring');
+            effectsGroup.appendChild(ring);
+            setTimeout(() => ring.remove(), 480);
+        });
+
+        setTimeout(() => beam.remove(), 520);
+    }
+
     triggerBoardShake() {
         if (typeof window !== 'undefined' && localStorage.getItem('hexxagon_shake') === 'false') return;
         const boardViewport = document.getElementById('board-viewport');
@@ -387,19 +746,30 @@ export class HexxagonGame {
         this.currentHoveredKey = targetKey;
 
         const move = this.validMoves.find(m => m.toKey === targetKey);
-        if (move && move.captures && move.captures.length > 0) {
-            for (let i = 0; i < move.captures.length; i++) {
-                const capKey = move.captures[i];
-                const pieceEl = this.pieceElements.get(capKey);
-                if (pieceEl) {
-                    pieceEl.classList.add('piece-capture-threat');
-                    this.activeThreatPieceElements.push(pieceEl);
+        if (move) {
+            // Highlight exit portal if move is a Quantum Warp
+            if (move.warpToKey) {
+                const exitCell = this.cellElements.get(move.warpToKey);
+                if (exitCell) {
+                    exitCell.classList.add('hex-cell-capture-threat');
+                    this.activeThreatCellElements.push(exitCell);
                 }
+            }
 
-                const cellEl = this.cellElements.get(capKey);
-                if (cellEl) {
-                    cellEl.classList.add('hex-cell-capture-threat');
-                    this.activeThreatCellElements.push(cellEl);
+            if (move.captures && move.captures.length > 0) {
+                for (let i = 0; i < move.captures.length; i++) {
+                    const capKey = move.captures[i];
+                    const pieceEl = this.pieceElements.get(capKey);
+                    if (pieceEl) {
+                        pieceEl.classList.add('piece-capture-threat');
+                        this.activeThreatPieceElements.push(pieceEl);
+                    }
+
+                    const cellEl = this.cellElements.get(capKey);
+                    if (cellEl) {
+                        cellEl.classList.add('hex-cell-capture-threat');
+                        this.activeThreatCellElements.push(cellEl);
+                    }
                 }
             }
         }
@@ -421,52 +791,31 @@ export class HexxagonGame {
         }
     }
 
+    showValidMoves(fromKey) {
+        this.validMoves = HexxagonAI.getLegalMoves(this.state, this.getCurrentPlayer())
+            .filter(m => m.fromKey === fromKey);
+
+        this.updateHighlights();
+    }
+
     handleCellClick(key) {
         if (this.isGameOver || this.isAiTurn) return;
-        this.clearCapturePreviews();
 
-        const pieceOwner = this.state.board[key];
-        const currentTurn = this.getCurrentPlayer();
+        const player = this.getCurrentPlayer();
+        const owner = this.state.board[key];
 
-        // 1. If clicking own piece -> select it
-        if (pieceOwner === currentTurn) {
-            if (this.selectedCell === key) {
-                // Deselect
-                this.selectedCell = null;
-                this.validMoves = [];
-                sound.playDeselect();
-            } else {
-                this.selectedCell = key;
-                const from = HexMath.parseKey(key);
-                const reachables = HexMath.getReachableHexes(from, 2);
-                const validCells = this.state.cellSet;
-
-                this.validMoves = reachables
-                    .filter(t => {
-                        const targetKey = HexMath.key(t.q, t.r);
-                        return validCells.has(targetKey) && !this.state.board[targetKey];
-                    })
-                    .map(t => ({
-                        from,
-                        to: t,
-                        fromKey: key,
-                        toKey: HexMath.key(t.q, t.r),
-                        type: t.type,
-                        captures: HexxagonAI.getCaptures(this.state, t, currentTurn)
-                    }));
-
-                sound.playSelect();
-            }
-            this.updateHighlights();
-            return;
-        }
-
-        // 2. If a piece is already selected and clicking a valid target -> make move
-        if (this.selectedCell) {
+        if (owner === player) {
+            // Select Piece
+            this.selectedCell = key;
+            sound.playSelect();
+            this.showValidMoves(key);
+        } else if (this.selectedCell) {
+            // Try move to target cell
             const move = this.validMoves.find(m => m.toKey === key);
             if (move) {
                 this.executeMove(move);
             } else {
+                // Deselect
                 this.selectedCell = null;
                 this.validMoves = [];
                 sound.playDeselect();
@@ -484,6 +833,10 @@ export class HexxagonGame {
         // Update Cell polygon highlights
         this.cellElements.forEach((poly, key) => {
             poly.setAttribute('class', 'hex-cell hex-cell-empty');
+            if (this.state.specialTiles && this.state.specialTiles[key]?.type === 'warp') {
+                poly.classList.add('hex-cell-warp');
+            }
+
             if (key === this.selectedCell) {
                 poly.classList.add('hex-cell-selected');
                 const owner = this.state.board[key];
@@ -505,8 +858,8 @@ export class HexxagonGame {
         this.validMoves.forEach(move => {
             const { x, y } = HexMath.hexToPixel(move.to.q, move.to.r, this.cellSize, this.originX, this.originY);
             const isClone = move.type === 'clone';
-            const color = isClone ? '#00e676' : '#ffab00';
-            const fillColor = isClone ? 'rgba(0, 230, 118, 0.22)' : 'rgba(255, 171, 0, 0.22)';
+            const color = move.warpToKey ? '#c084fc' : (isClone ? '#00e676' : '#ffab00');
+            const fillColor = move.warpToKey ? 'rgba(192, 132, 252, 0.28)' : (isClone ? 'rgba(0, 230, 118, 0.22)' : 'rgba(255, 171, 0, 0.22)');
 
             const markerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             markerGroup.style.cursor = 'pointer';
@@ -568,52 +921,85 @@ export class HexxagonGame {
 
         const piecesGroup = document.getElementById('hex-pieces-group');
 
-        if (move.type === 'clone') {
-            sound.playClone();
-            if (this.particleEngine) {
-                this.particleEngine.createShockwave(toCoords.x, toCoords.y, playerColor, 45);
-                this.particleEngine.createSparks(toCoords.x, toCoords.y, playerColor, 8, 1.0);
+        if (move.warpToKey) {
+            const usedPairId = this.state.specialTiles?.[move.toKey]?.pairId;
+
+            // Quantum Warp Move
+            sound.playWarp();
+            const warpPos = HexMath.parseKey(move.warpToKey);
+            const warpCoords = HexMath.hexToPixel(warpPos.q, warpPos.r, this.cellSize, this.originX, this.originY);
+
+            // Animate quantum lightning connection
+            this.triggerWarpBeam(toCoords.x, toCoords.y, warpCoords.x, warpCoords.y, '#a855f7');
+
+            if (move.type === 'jump') {
+                const jumpingPiece = this.pieceElements.get(move.fromKey);
+                this.pieceElements.delete(move.fromKey);
+                if (jumpingPiece && piecesGroup) jumpingPiece.remove();
             }
 
-            // Create cloned piece element with pop-in animation
-            const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
+            const newPiece = this.createPieceElement(move.warpToKey, player, warpCoords.x, warpCoords.y);
             newPiece.classList.add('piece-popping-in');
-            this.pieceElements.set(move.toKey, newPiece);
+            this.pieceElements.set(move.warpToKey, newPiece);
             if (piecesGroup) piecesGroup.appendChild(newPiece);
+
+            // Despawn used wormhole pair immediately
+            if (usedPairId) {
+                this.despawnWormholePair(usedPairId);
+            }
 
         } else {
-            // Jump move
-            sound.playJump();
-            if (this.particleEngine) {
-                this.particleEngine.createJumpTrail(fromCoords.x, fromCoords.y, toCoords.x, toCoords.y, playerColor, 12);
-                this.particleEngine.createShockwave(toCoords.x, toCoords.y, playerColor, 50);
-                this.particleEngine.createSparks(toCoords.x, toCoords.y, playerColor, 8, 1.0);
+            // If piece lands on a wormhole tile directly, despawn the pair so no piece covers it
+            if (this.state.specialTiles?.[move.toKey]?.pairId) {
+                const pairId = this.state.specialTiles[move.toKey].pairId;
+                this.despawnWormholePair(pairId);
             }
 
-            // Move existing piece element
-            const jumpingPiece = this.pieceElements.get(move.fromKey);
-            this.pieceElements.delete(move.fromKey);
+            if (move.type === 'clone') {
+                sound.playClone();
+                this.triggerCloneVFX(toCoords.x, toCoords.y, playerColor);
 
-            if (jumpingPiece && piecesGroup) {
-                jumpingPiece.remove();
+                // Create cloned piece element with pop-in animation
+                const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
+                newPiece.classList.add('piece-popping-in');
+                this.pieceElements.set(move.toKey, newPiece);
+                if (piecesGroup) piecesGroup.appendChild(newPiece);
+
+            } else {
+                // Jump move
+                sound.playJump();
+                this.triggerJumpVFX(fromCoords.x, fromCoords.y, toCoords.x, toCoords.y, playerColor);
+
+                // Move existing piece element
+                const jumpingPiece = this.pieceElements.get(move.fromKey);
+                this.pieceElements.delete(move.fromKey);
+
+                if (jumpingPiece && piecesGroup) {
+                    jumpingPiece.remove();
+                }
+
+                const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
+                newPiece.classList.add('piece-popping-in');
+                this.pieceElements.set(move.toKey, newPiece);
+                if (piecesGroup) piecesGroup.appendChild(newPiece);
             }
-
-            const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
-            newPiece.classList.add('piece-popping-in');
-            this.pieceElements.set(move.toKey, newPiece);
-            if (piecesGroup) piecesGroup.appendChild(newPiece);
         }
 
         // Apply Move State
         this.lastMove = {
             fromKey: move.fromKey,
             toKey: move.toKey,
+            warpToKey: move.warpToKey,
             type: move.type,
             player
         };
 
         this.state = HexxagonAI.applyMove(this.state, move, player);
         this.state.moveCount++;
+
+        const landingCoords = (move.warpToKey) 
+            ? HexMath.hexToPixel(HexMath.parseKey(move.warpToKey).q, HexMath.parseKey(move.warpToKey).r, this.cellSize, this.originX, this.originY)
+            : toCoords;
 
         // Staggered conversion audio & native vector animation
         if (move.captures.length > 0) {
@@ -640,7 +1026,7 @@ export class HexxagonGame {
                     sound.playCaptureStep(idx, move.captures.length);
 
                     // Trigger Native Vector VFX (Beam, Shockwave Ring, Sparks, Floating +1)
-                    this.triggerCaptureVFX(toCoords.x, toCoords.y, capCoords.x, capCoords.y, playerColor);
+                    this.triggerCaptureVFX(landingCoords.x, landingCoords.y, capCoords.x, capCoords.y, playerColor);
                 }, idx * 60);
             });
 
@@ -700,6 +1086,18 @@ export class HexxagonGame {
             }
             this.handleGameOver();
             return;
+        }
+
+        // Dynamic Wormhole Resupply on Warp Nexus (1 turn cooldown after a pair collapses)
+        if (this.presetId === 'warp' && !this.isGameOver) {
+            if (this.warpCooldown > 0) {
+                this.warpCooldown--;
+            } else {
+                const activePairs = Object.keys(this.state.specialTiles || {}).length / 2;
+                if (activePairs === 0) {
+                    this.spawnWormholePair(true);
+                }
+            }
         }
 
         this.notifyState();
