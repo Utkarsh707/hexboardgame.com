@@ -618,7 +618,6 @@ export class HexxagonGame {
         // Staggered conversion audio & native vector animation
         if (move.captures.length > 0) {
             this.triggerBoardShake();
-            sound.playCapture(move.captures.length);
 
             move.captures.forEach((capKey, idx) => {
                 setTimeout(() => {
@@ -637,12 +636,15 @@ export class HexxagonGame {
                     const capPos = HexMath.parseKey(capKey);
                     const capCoords = HexMath.hexToPixel(capPos.q, capPos.r, this.cellSize, this.originX, this.originY);
 
+                    // Trigger 8-Bit Retro Explosion Sound Variation for this chain step
+                    sound.playCaptureStep(idx, move.captures.length);
+
                     // Trigger Native Vector VFX (Beam, Shockwave Ring, Sparks, Floating +1)
                     this.triggerCaptureVFX(toCoords.x, toCoords.y, capCoords.x, capCoords.y, playerColor);
-                }, idx * 55);
+                }, idx * 60);
             });
 
-            await new Promise(resolve => setTimeout(resolve, Math.min(500, move.captures.length * 55 + 180)));
+            await new Promise(resolve => setTimeout(resolve, Math.min(500, move.captures.length * 60 + 180)));
         }
 
         this.updateHighlights();

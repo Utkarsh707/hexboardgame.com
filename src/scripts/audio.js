@@ -510,66 +510,252 @@ export class SoundEngine {
         } catch (e) { }
     }
 
-    // 5. CAPTURE / INFECTION: Street Fighter impact crunch + Space Invaders kill chord
+    // 5. CAPTURE / INFECTION: Authentic 8-Bit Explosion Sound Effects (Multi-Variation)
+    // Inspired by classic 8-Bit Explosions (Laser chirp, filtered noise crunch, sub thump & harmonic ringout)
     playCapture(count = 1) {
         if (this.muted) return;
         this.init();
         if (!this.ctx || !this.sfxGain) return;
 
+        // Choose explosion style based on capture count (single pop, double boom, or mega explosion)
+        if (count === 1) {
+            this.play8BitExplosionPop(0);
+        } else if (count === 2) {
+            this.play8BitArcadeBoom(0);
+        } else {
+            this.play8BitMegaExplosion(count);
+        }
+    }
+
+    // Capture Chain Step Explosion (for staggered chain conversions)
+    playCaptureStep(stepIndex = 0, totalCaptures = 1) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx || !this.sfxGain) return;
+
+        if (totalCaptures >= 3 && stepIndex === totalCaptures - 1) {
+            // Climax explosion on final piece of a combo
+            this.play8BitMegaExplosion(totalCaptures, stepIndex);
+        } else if (stepIndex >= 1) {
+            this.play8BitArcadeBoom(stepIndex);
+        } else {
+            this.play8BitExplosionPop(stepIndex);
+        }
+    }
+
+    // Variation A: Crisp 8-Bit Laser Pop & Crackle (Single target blast)
+    play8BitExplosionPop(pitchStep = 0) {
+        if (!this.ctx || !this.sfxGain) return;
         try {
-            // Ascending pentatonic chord sequence for satisfying combo feedback
-            const scale = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
-            const numPieces = Math.min(count, scale.length);
+            const now = this.ctx.currentTime;
+            const pitchMult = Math.pow(1.12, pitchStep);
 
-            for (let i = 0; i < numPieces; i++) {
-                const startTime = this.ctx.currentTime + i * 0.055;
-                const freq = scale[i];
+            // 1. Initial Fast 8-Bit Laser Chirp
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(1400 * pitchMult, now);
+            osc.frequency.exponentialRampToValueAtTime(160 * pitchMult, now + 0.045);
 
-                // 1. Crunchy Noise Transient (Street Fighter hit impact)
-                if (this.noiseBuffer) {
-                    const noise = this.ctx.createBufferSource();
-                    noise.buffer = this.noiseBuffer;
+            oscGain.gain.setValueAtTime(0.25, now);
+            oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
 
-                    const nFilter = this.ctx.createBiquadFilter();
-                    nFilter.type = 'bandpass';
-                    nFilter.frequency.setValueAtTime(2400, startTime);
-                    nFilter.Q.value = 2.5;
+            osc.connect(oscGain);
+            oscGain.connect(this.sfxGain);
 
-                    const nGain = this.ctx.createGain();
-                    nGain.gain.setValueAtTime(0.25, startTime);
-                    nGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.09);
+            osc.start(now);
+            osc.stop(now + 0.07);
 
-                    noise.connect(nFilter);
-                    nFilter.connect(nGain);
-                    nGain.connect(this.sfxGain);
+            // 2. 8-Bit Filtered Noise Sizzle Crunch
+            if (this.noiseBuffer) {
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = this.noiseBuffer;
 
-                    noise.start(startTime);
-                    noise.stop(startTime + 0.10);
-                }
-
-                // 2. Resonant Square Infection Tone
-                const osc = this.ctx.createOscillator();
                 const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(2600 * pitchMult, now);
+                filter.frequency.exponentialRampToValueAtTime(300, now + 0.11);
+                filter.Q.value = 2.4;
 
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(freq, startTime);
-                osc.frequency.exponentialRampToValueAtTime(freq * 1.35, startTime + 0.14);
+                const noiseGain = this.ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.30, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(freq * 2.8, startTime);
-                filter.Q.value = 3.0;
+                noise.connect(filter);
+                filter.connect(noiseGain);
+                noiseGain.connect(this.sfxGain);
 
-                gain.gain.setValueAtTime(0.22, startTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.16);
-
-                osc.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.sfxGain);
-
-                osc.start(startTime);
-                osc.stop(startTime + 0.17);
+                noise.start(now);
+                noise.stop(now + 0.13);
             }
+
+            // 3. Sub Impact Punch
+            const sub = this.ctx.createOscillator();
+            const subGain = this.ctx.createGain();
+            sub.type = 'triangle';
+            sub.frequency.setValueAtTime(120 * pitchMult, now);
+            sub.frequency.exponentialRampToValueAtTime(35, now + 0.07);
+
+            subGain.gain.setValueAtTime(0.24, now);
+            subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+            sub.connect(subGain);
+            subGain.connect(this.sfxGain);
+
+            sub.start(now);
+            sub.stop(now + 0.09);
+        } catch (e) { }
+    }
+
+    // Variation B: Deep 8-Bit Arcade Boom & Shockwave (Heavy double blast)
+    play8BitArcadeBoom(pitchStep = 0) {
+        if (!this.ctx || !this.sfxGain) return;
+        try {
+            const now = this.ctx.currentTime;
+            const pitchMult = Math.pow(1.10, pitchStep);
+
+            // 1. Dual-Sawtooth Power Sweep
+            const osc = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
+            const oscGain = this.ctx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(1100 * pitchMult, now);
+            osc.frequency.exponentialRampToValueAtTime(75, now + 0.12);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(3400 * pitchMult, now);
+            filter.frequency.exponentialRampToValueAtTime(180, now + 0.14);
+            filter.Q.value = 3.8;
+
+            oscGain.gain.setValueAtTime(0.28, now);
+            oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+            osc.connect(filter);
+            filter.connect(oscGain);
+            oscGain.connect(this.sfxGain);
+
+            osc.start(now);
+            osc.stop(now + 0.16);
+
+            // 2. Deep 8-Bit Crunchy Noise Rumble
+            if (this.noiseBuffer) {
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = this.noiseBuffer;
+
+                const nFilter = this.ctx.createBiquadFilter();
+                nFilter.type = 'lowpass';
+                nFilter.frequency.setValueAtTime(2000 * pitchMult, now);
+                nFilter.frequency.exponentialRampToValueAtTime(120, now + 0.18);
+                nFilter.Q.value = 2.8;
+
+                const noiseGain = this.ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.35, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+
+                noise.connect(nFilter);
+                nFilter.connect(noiseGain);
+                noiseGain.connect(this.sfxGain);
+
+                noise.start(now);
+                noise.stop(now + 0.20);
+            }
+
+            // 3. Sub Kick Punch
+            const sub = this.ctx.createOscillator();
+            const subGain = this.ctx.createGain();
+            sub.type = 'triangle';
+            sub.frequency.setValueAtTime(95, now);
+            sub.frequency.exponentialRampToValueAtTime(28, now + 0.11);
+
+            subGain.gain.setValueAtTime(0.30, now);
+            subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+            sub.connect(subGain);
+            subGain.connect(this.sfxGain);
+
+            sub.start(now);
+            sub.stop(now + 0.13);
+        } catch (e) { }
+    }
+
+    // Variation C: Heavy 8-Bit Super Explosion (3+ piece Mega Combo)
+    play8BitMegaExplosion(comboCount = 3, pitchStep = 0) {
+        if (!this.ctx || !this.sfxGain) return;
+        try {
+            const now = this.ctx.currentTime;
+            const pitchMult = Math.pow(1.12, pitchStep);
+
+            // 1. Initial 8-Bit Laser Crack
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(1800 * pitchMult, now);
+            osc.frequency.exponentialRampToValueAtTime(60, now + 0.10);
+
+            oscGain.gain.setValueAtTime(0.32, now);
+            oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+            osc.connect(oscGain);
+            oscGain.connect(this.sfxGain);
+
+            osc.start(now);
+            osc.stop(now + 0.13);
+
+            // 2. Roaring Multi-Band 8-Bit Noise Detonation
+            if (this.noiseBuffer) {
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = this.noiseBuffer;
+
+                const nFilter = this.ctx.createBiquadFilter();
+                nFilter.type = 'bandpass';
+                nFilter.frequency.setValueAtTime(4200 * pitchMult, now);
+                nFilter.frequency.exponentialRampToValueAtTime(160, now + 0.25);
+                nFilter.Q.value = 3.2;
+
+                const noiseGain = this.ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.40, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+
+                noise.connect(nFilter);
+                nFilter.connect(noiseGain);
+                noiseGain.connect(this.sfxGain);
+
+                noise.start(now);
+                noise.stop(now + 0.27);
+            }
+
+            // 3. Resonant Harmonic Ringout (Triumphant Arcade Chime)
+            const ringOsc = this.ctx.createOscillator();
+            const ringGain = this.ctx.createGain();
+            ringOsc.type = 'triangle';
+            ringOsc.frequency.setValueAtTime(587.33 * pitchMult, now + 0.04);
+            ringOsc.frequency.exponentialRampToValueAtTime(880 * pitchMult, now + 0.22);
+
+            ringGain.gain.setValueAtTime(0.22, now + 0.04);
+            ringGain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+            ringOsc.connect(ringGain);
+            ringGain.connect(this.sfxGain);
+
+            ringOsc.start(now + 0.04);
+            ringOsc.stop(now + 0.25);
+
+            // 4. Heavy Sub Boom
+            const sub = this.ctx.createOscillator();
+            const subGain = this.ctx.createGain();
+            sub.type = 'sine';
+            sub.frequency.setValueAtTime(110, now);
+            sub.frequency.exponentialRampToValueAtTime(24, now + 0.16);
+
+            subGain.gain.setValueAtTime(0.35, now);
+            subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+            sub.connect(subGain);
+            subGain.connect(this.sfxGain);
+
+            sub.start(now);
+            sub.stop(now + 0.19);
         } catch (e) { }
     }
 
