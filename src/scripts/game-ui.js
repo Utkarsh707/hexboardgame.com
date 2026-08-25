@@ -67,6 +67,7 @@ export function initGameUI() {
     const btnSplashSettings = document.getElementById('btn-splash-settings');
     const btnCloseSettings = document.getElementById('btn-close-settings');
     const btnConfirmSettings = document.getElementById('btn-confirm-settings');
+    const settingToggleMusic = document.getElementById('setting-toggle-music');
     const settingToggleSound = document.getElementById('setting-toggle-sound');
     const settingVolumeSlider = document.getElementById('setting-volume-slider');
     const settingVolumeLabel = document.getElementById('setting-volume-label');
@@ -108,6 +109,17 @@ export function initGameUI() {
     let screenShakeEnabled = localStorage.getItem('hexxagon_shake') !== 'false';
     let reduceFlashesEnabled = localStorage.getItem('hexxagon_reduce_flashes') === 'true';
 
+    // Start Menu BGM on first interaction
+    const initMusicOnInteraction = () => {
+        if (!game || !screenSplash?.classList.contains('hidden-screen')) {
+            sound.startMusic('menu');
+        }
+        window.removeEventListener('pointerdown', initMusicOnInteraction);
+        window.removeEventListener('keydown', initMusicOnInteraction);
+    };
+    window.addEventListener('pointerdown', initMusicOnInteraction, { once: true });
+    window.addEventListener('keydown', initMusicOnInteraction, { once: true });
+
     // Auto-close dialogs on backdrop click
     const allDialogs = [
         dialogHowToPlay,
@@ -136,7 +148,7 @@ export function initGameUI() {
         }
     });
 
-    // Sound UI Synchronization
+    // Sound & Music UI Synchronization
     function syncSoundUI(muted) {
         if (muted) {
             iconSoundOn?.classList.add('hidden');
@@ -145,7 +157,7 @@ export function initGameUI() {
             if (splashSoundText) splashSoundText.textContent = 'AUDIO MUTED';
             if (settingToggleSound) {
                 settingToggleSound.textContent = 'MUTED';
-                settingToggleSound.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-rose-500/20 border border-rose-400 text-rose-300 hover:bg-rose-500/30';
+                settingToggleSound.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-rose-500/20 border border-rose-400 text-rose-300 hover:bg-rose-500/30 cursor-pointer';
             }
         } else {
             iconSoundOn?.classList.remove('hidden');
@@ -154,11 +166,25 @@ export function initGameUI() {
             if (splashSoundText) splashSoundText.textContent = 'AUDIO ON';
             if (settingToggleSound) {
                 settingToggleSound.textContent = 'ENABLED';
-                settingToggleSound.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-emerald-500/20 border border-emerald-400 text-emerald-300 hover:bg-emerald-500/30';
+                settingToggleSound.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-emerald-500/20 border border-emerald-400 text-emerald-300 hover:bg-emerald-500/30 cursor-pointer';
             }
         }
     }
+
+    function syncMusicUI(musicMuted) {
+        if (settingToggleMusic) {
+            if (musicMuted) {
+                settingToggleMusic.textContent = 'MUTED';
+                settingToggleMusic.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-rose-500/20 border border-rose-400 text-rose-300 hover:bg-rose-500/30 cursor-pointer';
+            } else {
+                settingToggleMusic.textContent = 'ENABLED';
+                settingToggleMusic.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-emerald-500/20 border border-emerald-400 text-emerald-300 hover:bg-emerald-500/30 cursor-pointer';
+            }
+        }
+    }
+
     syncSoundUI(sound.muted);
+    syncMusicUI(sound.musicMuted);
 
     btnToggleSound?.addEventListener('click', () => {
         const isMuted = sound.toggleMute();
@@ -175,6 +201,17 @@ export function initGameUI() {
         const isMuted = sound.toggleMute();
         syncSoundUI(isMuted);
         if (!isMuted) sound.playSelect();
+    });
+
+    settingToggleMusic?.addEventListener('click', () => {
+        const isMusicMuted = sound.toggleMusic();
+        syncMusicUI(isMusicMuted);
+        if (!isMusicMuted) {
+            sound.playSelect();
+            if (!sound.isPlayingMusic) {
+                sound.startMusic(screenSplash?.classList.contains('hidden-screen') ? 'game' : 'menu');
+            }
+        }
     });
 
     // Volume Slider
@@ -284,11 +321,13 @@ export function initGameUI() {
     function showSplashScreen() {
         screenGame?.classList.add('hidden-screen');
         screenSplash?.classList.remove('hidden-screen');
+        sound.startMusic('menu');
         sound.playDeselect();
     }
 
     function launchBattle() {
         sound.playSelect();
+        sound.startMusic('game');
         screenSplash?.classList.add('hidden-screen');
         screenGame?.classList.remove('hidden-screen');
 

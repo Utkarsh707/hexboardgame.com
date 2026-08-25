@@ -118,36 +118,29 @@ import '../styles/global.css';
         <span id="score-emerald" class="text-xl font-black font-mono text-emerald-400">2</span>
       </div>
 
-      <!-- THE HERO HEXAGONAL BOARD (Centered, Adaptive Size, Zero Scroll) -->
-      <div class="relative w-full aspect-square max-h-[min(480px,calc(100dvh-175px))] flex items-center justify-center p-1 sm:p-2 min-h-0">
+      <!-- THE HERO FLOATING HEXAGONAL ARENA (Frameless Organic Arena, Zero Scroll) -->
+      <div class="relative w-full aspect-square max-h-[min(510px,calc(100dvh-145px))] flex items-center justify-center min-h-0 my-auto">
         
-        <!-- Ambient Outer Glow -->
-        <div class="absolute inset-0 rounded-[2.5rem] bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.06)_0%,transparent_70%)] pointer-events-none"></div>
+        <!-- Ambient Arena Energy Aura (Floating radial light centered on the hex honeycomb) -->
+        <div class="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.08)_0%,rgba(255,45,96,0.04)_40%,transparent_70%)] pointer-events-none"></div>
 
-        <!-- Hexxagon Glass Board Platform -->
-        <div class="relative w-full h-full rounded-3xl bg-[#070910] border border-slate-800/80 shadow-[0_8px_32px_rgba(0,0,0,0.7)] flex items-center justify-center overflow-hidden">
-          
-          <!-- Subtle Grid Floor Light -->
-          <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(30,41,59,0.3)_0%,transparent_70%)] pointer-events-none"></div>
+        <!-- 1:1 Frameless Board Viewport (SVG & Overlay stacked directly on the celestial canvas) -->
+        <div id="board-viewport" class="relative w-full h-full aspect-square flex items-center justify-center">
+          <!-- SVG Hexagon Board -->
+          <svg
+            id="board-svg"
+            viewBox="0 0 700 700"
+            class="absolute inset-0 w-full h-full select-none touch-manipulation z-10 [filter:drop-shadow(0_12px_32px_rgba(0,0,0,0.85))]"
+            aria-label="Hexxagon Board Game Grid"
+          ></svg>
 
-          <!-- Exact 1:1 Board Viewport (SVG, Canvas, and Overlays stacked with exact matching dimensions) -->
-          <div id="board-viewport" class="relative w-full h-full aspect-square flex items-center justify-center">
-            <!-- SVG Hexagon Board -->
-            <svg
-              id="board-svg"
-              viewBox="0 0 700 700"
-              class="absolute inset-0 w-full h-full select-none touch-manipulation z-10"
-              aria-label="Hexxagon Board Game Grid"
-            ></svg>
+          <!-- Dynamic Particle Canvas -->
+          <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
 
-            <!-- Dynamic Particle Canvas -->
-            <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
-
-            <!-- Arcade Combo Floating Badge Overlay -->
-            <div id="combo-callout-overlay" class="absolute inset-0 pointer-events-none z-40 overflow-hidden"></div>
-          </div>
-
+          <!-- Arcade Combo Floating Badge Overlay -->
+          <div id="combo-callout-overlay" class="absolute inset-0 pointer-events-none z-40 overflow-hidden"></div>
         </div>
+
       </div>
 
       <!-- ACTION LEGEND BAR (Clone vs Jump vs Infect + Stage info) -->

@@ -1,14 +1,31 @@
 /**
- * Procedural Web Audio API Sound Synthesizer for Hexxagon
- * Click-free exponential envelopes, master gain routing, and seamless autoplay unlock.
+ * Retro Arcade Chiptune Synthesizer & Sound Engine for Hexxagon
+ * - Inspired by classic 80s/90s arcade legends (Space Invaders, Street Fighter, Galaga)
+ * - Rock-solid lookahead Web Audio sequencer for jitter-free 128/138 BPM retro game music
+ * - Crunchy noise-layer impacts, laser jumps, resonant square-wave combos, and victory fanfares
  */
 
 export class SoundEngine {
     constructor() {
         this.ctx = null;
         this.masterGain = null;
+        this.sfxGain = null;
+        this.musicGain = null;
+
         this.muted = typeof window !== 'undefined' && localStorage.getItem('hexxagon_muted') === 'true';
+        this.musicMuted = typeof window !== 'undefined' && localStorage.getItem('hexxagon_music_muted') === 'true';
         this.volume = typeof window !== 'undefined' ? parseFloat(localStorage.getItem('hexxagon_volume') || '0.7') : 0.7;
+
+        // Music Sequencer State
+        this.currentTrack = null;
+        this.isPlayingMusic = false;
+        this.schedulerTimer = null;
+        this.currentStep = 0;
+        this.nextStepTime = 0;
+        this.tempo = 132; // BPM
+
+        // Noise Buffer Cache for Arcade Drums & Impact Crunches
+        this.noiseBuffer = null;
 
         if (typeof window !== 'undefined') {
             const unlock = () => {
@@ -29,13 +46,38 @@ export class SoundEngine {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (AudioContextClass) {
                 this.ctx = new AudioContextClass();
+
+                // Master Bus
                 this.masterGain = this.ctx.createGain();
                 this.masterGain.gain.setValueAtTime(this.muted ? 0 : this.volume, this.ctx.currentTime);
                 this.masterGain.connect(this.ctx.destination);
+
+                // SFX Sub-bus
+                this.sfxGain = this.ctx.createGain();
+                this.sfxGain.gain.setValueAtTime(1.0, this.ctx.currentTime);
+                this.sfxGain.connect(this.masterGain);
+
+                // Music Sub-bus
+                this.musicGain = this.ctx.createGain();
+                this.musicGain.gain.setValueAtTime(this.musicMuted ? 0 : 0.38, this.ctx.currentTime);
+                this.musicGain.connect(this.masterGain);
+
+                // Precompute 1-second white noise buffer for retro percussion and impact crunch
+                this.generateNoiseBuffer();
             }
         }
         if (this.ctx && this.ctx.state === 'suspended') {
             this.ctx.resume().catch(() => {});
+        }
+    }
+
+    generateNoiseBuffer() {
+        if (!this.ctx) return;
+        const bufferSize = this.ctx.sampleRate;
+        this.noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const output = this.noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
         }
     }
 
@@ -50,6 +92,17 @@ export class SoundEngine {
         return this.muted;
     }
 
+    toggleMusic() {
+        this.musicMuted = !this.musicMuted;
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('hexxagon_music_muted', String(this.musicMuted));
+        }
+        if (this.musicGain && this.ctx) {
+            this.musicGain.gain.setValueAtTime(this.musicMuted ? 0 : 0.38, this.ctx.currentTime);
+        }
+        return this.musicMuted;
+    }
+
     setVolume(val) {
         this.volume = Math.max(0, Math.min(1, val));
         if (typeof window !== 'undefined') {
@@ -60,150 +113,459 @@ export class SoundEngine {
         }
     }
 
-    playTone(freq, type = 'sine', duration = 0.1, gainVal = 0.3, pitchDrop = 0) {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx || !this.masterGain) return;
+    /* =========================================================================
+       RETRO CHIPTUNE BGM TRACKER (Street Fighter / Space Invaders Inspired)
+       ========================================================================= */
 
+    startMusic(trackName = 'game') {
+        this.init();
+        if (this.currentTrack === trackName && this.isPlayingMusic) return;
+
+        this.stopMusic();
+        this.currentTrack = trackName;
+        this.isPlayingMusic = true;
+        this.currentStep = 0;
+
+        if (!this.ctx) return;
+        this.nextStepTime = this.ctx.currentTime + 0.05;
+        this.tempo = trackName === 'menu' ? 122 : 136;
+
+        this.scheduler();
+    }
+
+    stopMusic() {
+        this.isPlayingMusic = false;
+        if (this.schedulerTimer) {
+            clearTimeout(this.schedulerTimer);
+            this.schedulerTimer = null;
+        }
+    }
+
+    scheduler() {
+        if (!this.isPlayingMusic || !this.ctx) return;
+
+        const secondsPerStep = 60 / (this.tempo * 4); // 16th note duration
+        const scheduleAheadTime = 0.12;
+
+        while (this.nextStepTime < this.ctx.currentTime + scheduleAheadTime) {
+            this.playStep(this.currentStep, this.nextStepTime);
+            this.nextStepTime += secondsPerStep;
+            this.currentStep = (this.currentStep + 1) % 32; // 2-bar 32-step loop
+        }
+
+        this.schedulerTimer = setTimeout(() => this.scheduler(), 25);
+    }
+
+    playStep(step, time) {
+        if (!this.ctx || this.musicMuted || this.muted) return;
+
+        if (this.currentTrack === 'menu') {
+            this.playMenuTrackStep(step, time);
+        } else {
+            this.playGameTrackStep(step, time);
+        }
+    }
+
+    // MENU BGM: Atmospheric Cyberpunk Arcade Select Screen (D Minor)
+    playMenuTrackStep(step, time) {
+        const step16 = step % 16;
+
+        // 1. Hypnotic 8-bit Pulse Bassline (D minor / Bb / C)
+        const bassNotes = [
+            146.83, 0, 146.83, 0, 116.54, 0, 130.81, 146.83, // D3, Bb2, C3, D3
+            146.83, 0, 174.61, 0, 130.81, 0, 116.54, 130.81  // D3, F3, C3, Bb2
+        ];
+        const bassFreq = bassNotes[step16];
+        if (bassFreq > 0) {
+            this.playChiptuneNote(bassFreq, 'sawtooth', time, 0.12, 0.18, 500);
+        }
+
+        // 2. Arpeggiated Space Chime (Pentatonic Celestial Echo)
+        const arpNotes = [
+            293.66, 349.23, 440.00, 523.25, 587.33, 440.00, 349.23, 293.66,
+            349.23, 440.00, 523.25, 659.25, 587.33, 523.25, 440.00, 349.23
+        ];
+        const arpFreq = arpNotes[step16];
+        if (arpFreq && step % 2 === 0) {
+            this.playChiptuneNote(arpFreq, 'triangle', time, 0.10, 0.14, 1800);
+        }
+
+        // 3. Crisp Chiptune Hi-Hat Tick
+        if (step % 2 === 0) {
+            this.playRetroNoise(time, 0.03, 0.08, 6000);
+        }
+        // Soft kick on beat 1 and 3
+        if (step16 === 0 || step16 === 8) {
+            this.playRetroKick(time, 0.22);
+        }
+    }
+
+    // GAME BGM: Fast, Addicting 136 BPM Arcade Tactical Loop (A Minor / Street Fighter Style)
+    playGameTrackStep(step, time) {
+        const step16 = step % 16;
+        const bar = Math.floor(step / 16);
+
+        // 1. Driving Slap-Bass Pulse (A1 -> C2 -> D2 -> F2 -> E2)
+        const bassLine = [
+            110.00, 110.00, 0, 110.00, 130.81, 0, 146.83, 110.00, // A2, C3, D3
+            110.00, 110.00, 0, 174.61, 164.81, 0, 130.81, 146.83  // F3, E3, C3
+        ];
+        const bassFreq = bassLine[step16];
+        if (bassFreq > 0) {
+            this.playChiptuneNote(bassFreq, 'square', time, 0.09, 0.22, 900);
+        }
+
+        // 2. High-Energy Arcade Melody & Arpeggio (Pulse Wave)
+        const leadNotes = (bar === 0) ? [
+            440.00, 0, 523.25, 0, 659.25, 0, 880.00, 0,
+            783.99, 0, 659.25, 0, 587.33, 523.25, 440.00, 0
+        ] : [
+            523.25, 0, 659.25, 0, 783.99, 0, 1046.50, 0,
+            880.00, 0, 783.99, 0, 659.25, 587.33, 523.25, 659.25
+        ];
+
+        const leadFreq = leadNotes[step16];
+        if (leadFreq > 0) {
+            this.playChiptuneNote(leadFreq, 'square', time, 0.08, 0.16, 2400);
+        }
+
+        // 3. Arcade Percussion (Kick, Snare, Hi-Hat)
+        // Hi-Hat on every 16th note
+        this.playRetroNoise(time, 0.025, 0.06, 8000);
+
+        // Punchy Chiptune Snare on beats 2 and 4 (step 4, 12)
+        if (step16 === 4 || step16 === 12) {
+            this.playRetroSnare(time, 0.26);
+        }
+
+        // 8-bit Pitch-Dropped Kick on beats 1 and 3 (step 0, 8, and syncopated step 14)
+        if (step16 === 0 || step16 === 8 || step16 === 14) {
+            this.playRetroKick(time, 0.28);
+        }
+    }
+
+    playChiptuneNote(freq, type, time, duration, gainVal, filterFreq = 2000) {
+        if (!this.ctx || !this.musicGain) return;
         try {
-            const now = this.ctx.currentTime;
             const osc = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
 
             osc.type = type;
-            osc.frequency.setValueAtTime(freq, now);
-            if (pitchDrop !== 0) {
-                osc.frequency.exponentialRampToValueAtTime(Math.max(20, freq + pitchDrop), now + duration);
-            }
+            osc.frequency.setValueAtTime(freq, time);
 
-            gain.gain.setValueAtTime(gainVal, now);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(filterFreq, time);
 
-            osc.connect(gain);
-            gain.connect(this.masterGain);
+            gain.gain.setValueAtTime(gainVal, time);
+            gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
 
-            osc.start(now);
-            osc.stop(now + duration + 0.01);
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.musicGain);
+
+            osc.start(time);
+            osc.stop(time + duration + 0.02);
         } catch (e) { }
     }
 
-    playSelect() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx || !this.masterGain) return;
-
+    playRetroKick(time, gainVal = 0.3) {
+        if (!this.ctx || !this.musicGain) return;
         try {
-            const now = this.ctx.currentTime;
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
 
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(520, now);
-            osc.frequency.exponentialRampToValueAtTime(780, now + 0.08);
+            osc.frequency.setValueAtTime(140, time);
+            osc.frequency.exponentialRampToValueAtTime(32, time + 0.12);
 
-            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.setValueAtTime(gainVal, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.13);
+
+            osc.connect(gain);
+            gain.connect(this.musicGain);
+
+            osc.start(time);
+            osc.stop(time + 0.14);
+        } catch (e) { }
+    }
+
+    playRetroSnare(time, gainVal = 0.25) {
+        if (!this.ctx || !this.musicGain || !this.noiseBuffer) return;
+        try {
+            // Noise component (crunch)
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = this.noiseBuffer;
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2200, time);
+            filter.Q.value = 1.5;
+
+            const noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(gainVal, time);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.14);
+
+            noise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(this.musicGain);
+
+            // Tonal snap component
+            const osc = this.ctx.createOscillator();
+            const toneGain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(240, time);
+            osc.frequency.exponentialRampToValueAtTime(80, time + 0.08);
+
+            toneGain.gain.setValueAtTime(gainVal * 0.7, time);
+            toneGain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+
+            osc.connect(toneGain);
+            toneGain.connect(this.musicGain);
+
+            noise.start(time);
+            noise.stop(time + 0.15);
+            osc.start(time);
+            osc.stop(time + 0.09);
+        } catch (e) { }
+    }
+
+    playRetroNoise(time, duration, gainVal, filterFreq = 5000) {
+        if (!this.ctx || !this.musicGain || !this.noiseBuffer) return;
+        try {
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = this.noiseBuffer;
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.setValueAtTime(filterFreq, time);
+
+            const gain = this.ctx.createGain();
+            gain.gain.setValueAtTime(gainVal, time);
+            gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.musicGain);
+
+            noise.start(time);
+            noise.stop(time + duration + 0.01);
+        } catch (e) { }
+    }
+
+    /* =========================================================================
+       RETRO ARCADE SFX (Space Invaders, Street Fighter, Galaga Inspired)
+       ========================================================================= */
+
+    // 1. SELECT PIECE: Classic Street Fighter / Galaga crisp 2-tone cursor chirp
+    playSelect() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx || !this.sfxGain) return;
+
+        try {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(587.33, now); // D5
+            osc.frequency.setValueAtTime(880.00, now + 0.035); // A5
+
+            gain.gain.setValueAtTime(0.18, now);
             gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
 
             osc.connect(gain);
-            gain.connect(this.masterGain);
+            gain.connect(this.sfxGain);
 
             osc.start(now);
             osc.stop(now + 0.09);
         } catch (e) { }
     }
 
+    // 2. DESELECT: Retro down-blip
     playDeselect() {
-        this.playTone(320, 'sine', 0.06, 0.15, -80);
-    }
-
-    playClone() {
         if (this.muted) return;
         this.init();
-        if (!this.ctx || !this.masterGain) return;
+        if (!this.ctx || !this.sfxGain) return;
 
         try {
             const now = this.ctx.currentTime;
-            const freqs = [587.33, 880, 1174.66];
-            for (let i = 0; i < freqs.length; i++) {
-                const startTime = now + i * 0.035;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
 
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freqs[i], startTime);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(440, now);
+            osc.frequency.exponentialRampToValueAtTime(220, now + 0.06);
 
-                gain.gain.setValueAtTime(0.22, startTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.16);
+            gain.gain.setValueAtTime(0.14, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
 
-                osc.connect(gain);
-                gain.connect(this.masterGain);
+            osc.connect(gain);
+            gain.connect(this.sfxGain);
 
-                osc.start(startTime);
-                osc.stop(startTime + 0.17);
-            }
+            osc.start(now);
+            osc.stop(now + 0.07);
         } catch (e) { }
     }
 
-    playJump() {
+    // 3. CLONE MOVE: Space Invaders laser-pulse & crystal duplicate pop
+    playClone() {
         if (this.muted) return;
         this.init();
-        if (!this.ctx || !this.masterGain) return;
+        if (!this.ctx || !this.sfxGain) return;
 
         try {
             const now = this.ctx.currentTime;
+
+            // Retro laser chirp
+            const osc1 = this.ctx.createOscillator();
+            const gain1 = this.ctx.createGain();
+            osc1.type = 'square';
+            osc1.frequency.setValueAtTime(880, now);
+            osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.07);
+
+            gain1.gain.setValueAtTime(0.24, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+            osc1.connect(gain1);
+            gain1.connect(this.sfxGain);
+
+            // Resonant body ping
+            const osc2 = this.ctx.createOscillator();
+            const gain2 = this.ctx.createGain();
+            osc2.type = 'triangle';
+            osc2.frequency.setValueAtTime(1174.66, now + 0.03); // D6
+            osc2.frequency.exponentialRampToValueAtTime(1480, now + 0.14);
+
+            gain2.gain.setValueAtTime(0.20, now + 0.03);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+
+            osc2.connect(gain2);
+            gain2.connect(this.sfxGain);
+
+            osc1.start(now);
+            osc1.stop(now + 0.13);
+            osc2.start(now + 0.03);
+            osc2.stop(now + 0.17);
+        } catch (e) { }
+    }
+
+    // 4. JUMP MOVE: Street Fighter Hadouken / Galaga tractor leap whoosh
+    playJump() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx || !this.sfxGain) return;
+
+        try {
+            const now = this.ctx.currentTime;
+
+            // Pitch-bend saw sweep
             const osc = this.ctx.createOscillator();
             const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
 
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(220, now);
-            osc.frequency.exponentialRampToValueAtTime(940, now + 0.16);
+            osc.frequency.setValueAtTime(180, now);
+            osc.frequency.exponentialRampToValueAtTime(1100, now + 0.12);
+            osc.frequency.exponentialRampToValueAtTime(320, now + 0.22);
 
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(800, now);
-            filter.frequency.exponentialRampToValueAtTime(2800, now + 0.16);
+            filter.frequency.setValueAtTime(600, now);
+            filter.frequency.exponentialRampToValueAtTime(3200, now + 0.12);
+            filter.frequency.exponentialRampToValueAtTime(800, now + 0.22);
+            filter.Q.value = 4;
 
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
 
             osc.connect(filter);
             filter.connect(gain);
-            gain.connect(this.masterGain);
+            gain.connect(this.sfxGain);
 
             osc.start(now);
-            osc.stop(now + 0.21);
+            osc.stop(now + 0.24);
+
+            // Background whoosh noise burst
+            if (this.noiseBuffer) {
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = this.noiseBuffer;
+
+                const nFilter = this.ctx.createBiquadFilter();
+                nFilter.type = 'bandpass';
+                nFilter.frequency.setValueAtTime(1200, now);
+                nFilter.frequency.exponentialRampToValueAtTime(3800, now + 0.12);
+
+                const nGain = this.ctx.createGain();
+                nGain.gain.setValueAtTime(0.18, now);
+                nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+                noise.connect(nFilter);
+                nFilter.connect(nGain);
+                nGain.connect(this.sfxGain);
+
+                noise.start(now);
+                noise.stop(now + 0.19);
+            }
         } catch (e) { }
     }
 
+    // 5. CAPTURE / INFECTION: Street Fighter impact crunch + Space Invaders kill chord
     playCapture(count = 1) {
         if (this.muted) return;
         this.init();
-        if (!this.ctx || !this.masterGain) return;
+        if (!this.ctx || !this.sfxGain) return;
 
         try {
-            const baseFreqs = [440, 554.37, 659.25, 880, 1108.73, 1318.51];
-            const numPieces = Math.min(count, baseFreqs.length);
+            // Ascending pentatonic chord sequence for satisfying combo feedback
+            const scale = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+            const numPieces = Math.min(count, scale.length);
 
             for (let i = 0; i < numPieces; i++) {
-                const startTime = this.ctx.currentTime + i * 0.05;
+                const startTime = this.ctx.currentTime + i * 0.055;
+                const freq = scale[i];
+
+                // 1. Crunchy Noise Transient (Street Fighter hit impact)
+                if (this.noiseBuffer) {
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = this.noiseBuffer;
+
+                    const nFilter = this.ctx.createBiquadFilter();
+                    nFilter.type = 'bandpass';
+                    nFilter.frequency.setValueAtTime(2400, startTime);
+                    nFilter.Q.value = 2.5;
+
+                    const nGain = this.ctx.createGain();
+                    nGain.gain.setValueAtTime(0.25, startTime);
+                    nGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.09);
+
+                    noise.connect(nFilter);
+                    nFilter.connect(nGain);
+                    nGain.connect(this.sfxGain);
+
+                    noise.start(startTime);
+                    noise.stop(startTime + 0.10);
+                }
+
+                // 2. Resonant Square Infection Tone
                 const osc = this.ctx.createOscillator();
                 const filter = this.ctx.createBiquadFilter();
                 const gain = this.ctx.createGain();
 
                 osc.type = 'square';
-                osc.frequency.setValueAtTime(baseFreqs[i], startTime);
-                osc.frequency.exponentialRampToValueAtTime(baseFreqs[i] * 1.5, startTime + 0.12);
+                osc.frequency.setValueAtTime(freq, startTime);
+                osc.frequency.exponentialRampToValueAtTime(freq * 1.35, startTime + 0.14);
 
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(baseFreqs[i] * 1.8, startTime);
-                filter.Q.value = 3;
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(freq * 2.8, startTime);
+                filter.Q.value = 3.0;
 
-                gain.gain.setValueAtTime(0.18, startTime);
+                gain.gain.setValueAtTime(0.22, startTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.16);
 
                 osc.connect(filter);
                 filter.connect(gain);
-                gain.connect(this.masterGain);
+                gain.connect(this.sfxGain);
 
                 osc.start(startTime);
                 osc.stop(startTime + 0.17);
@@ -211,51 +573,82 @@ export class SoundEngine {
         } catch (e) { }
     }
 
+    // 6. PASS TURN: Retro arcade warning buzzer
     playPass() {
-        this.playTone(280, 'sine', 0.25, 0.2, -100);
-    }
-
-    playSweepPop(stepIndex, totalSteps = 20) {
         if (this.muted) return;
         this.init();
-        if (!this.ctx || !this.masterGain) return;
+        if (!this.ctx || !this.sfxGain) return;
 
         try {
             const now = this.ctx.currentTime;
-            const baseFreq = 280;
-            const pentatonic = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24, 26, 28];
-            const semitone = pentatonic[stepIndex % pentatonic.length] + Math.floor(stepIndex / pentatonic.length) * 12;
-            const freq = baseFreq * Math.pow(2, semitone / 12);
+            const osc1 = this.ctx.createOscillator();
+            const osc2 = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc1.type = 'sawtooth';
+            osc2.type = 'sawtooth';
+            osc1.frequency.setValueAtTime(220, now);
+            osc2.frequency.setValueAtTime(228, now); // Detuned for authentic buzzer beat
+
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(this.sfxGain);
+
+            osc1.start(now);
+            osc2.start(now);
+            osc1.stop(now + 0.23);
+            osc2.stop(now + 0.23);
+        } catch (e) { }
+    }
+
+    // 7. BOARD SWEEP POP: Ascending arcade arpeggio cascade
+    playSweepPop(stepIndex, totalSteps = 20) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx || !this.sfxGain) return;
+
+        try {
+            const now = this.ctx.currentTime;
+            const pentatonic = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+            const freq = pentatonic[stepIndex % pentatonic.length] * Math.pow(1.5, Math.floor(stepIndex / pentatonic.length));
 
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
 
-            osc.type = 'triangle';
+            osc.type = 'square';
             osc.frequency.setValueAtTime(freq, now);
-            osc.frequency.exponentialRampToValueAtTime(freq * 1.12, now + 0.07);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.15, now + 0.06);
 
-            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.setValueAtTime(0.24, now);
             gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
 
             osc.connect(gain);
-            gain.connect(this.masterGain);
+            gain.connect(this.sfxGain);
 
             osc.start(now);
             osc.stop(now + 0.08);
         } catch (e) { }
     }
 
+    // 8. VICTORY FANFARE: 8-bar triumphant Street Fighter arcade victory stinger
     playVictory() {
         if (this.muted) return;
         this.init();
-        if (!this.ctx || !this.masterGain) return;
+        if (!this.ctx || !this.sfxGain) return;
 
         try {
             const notes = [
-                { f: 523.25, d: 0.12, t: 0 },
-                { f: 659.25, d: 0.12, t: 0.12 },
-                { f: 783.99, d: 0.12, t: 0.24 },
-                { f: 1046.50, d: 0.45, t: 0.36 }
+                { f: 440.00, d: 0.10, t: 0 },
+                { f: 440.00, d: 0.10, t: 0.10 },
+                { f: 440.00, d: 0.10, t: 0.20 },
+                { f: 554.37, d: 0.28, t: 0.30 }, // C#5
+                { f: 493.88, d: 0.14, t: 0.58 }, // B4
+                { f: 554.37, d: 0.14, t: 0.72 }, // C#5
+                { f: 659.25, d: 0.45, t: 0.86 }, // E5
+                { f: 880.00, d: 0.70, t: 1.30 }  // A5
             ];
 
             for (let i = 0; i < notes.length; i++) {
@@ -264,32 +657,33 @@ export class SoundEngine {
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
 
-                osc.type = 'triangle';
+                osc.type = 'square';
                 osc.frequency.setValueAtTime(note.f, now);
 
-                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.setValueAtTime(0.26, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + note.d);
 
                 osc.connect(gain);
-                gain.connect(this.masterGain);
+                gain.connect(this.sfxGain);
 
                 osc.start(now);
-                osc.stop(now + note.d + 0.01);
+                osc.stop(now + note.d + 0.02);
             }
         } catch (e) { }
     }
 
+    // 9. DEFEAT: Classic 8-bit minor descent
     playDefeat() {
         if (this.muted) return;
         this.init();
-        if (!this.ctx || !this.masterGain) return;
+        if (!this.ctx || !this.sfxGain) return;
 
         try {
             const notes = [
-                { f: 440.00, d: 0.18, t: 0 },
-                { f: 415.30, d: 0.18, t: 0.18 },
-                { f: 392.00, d: 0.18, t: 0.36 },
-                { f: 329.63, d: 0.50, t: 0.54 }
+                { f: 440.00, d: 0.20, t: 0 },
+                { f: 415.30, d: 0.20, t: 0.20 },
+                { f: 392.00, d: 0.20, t: 0.40 },
+                { f: 329.63, d: 0.55, t: 0.60 }
             ];
 
             for (let i = 0; i < notes.length; i++) {
@@ -303,21 +697,20 @@ export class SoundEngine {
                 osc.frequency.setValueAtTime(note.f, now);
 
                 filter.type = 'lowpass';
-                filter.frequency.value = 600;
+                filter.frequency.value = 650;
 
-                gain.gain.setValueAtTime(0.22, now);
+                gain.gain.setValueAtTime(0.24, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + note.d);
 
                 osc.connect(filter);
                 filter.connect(gain);
-                gain.connect(this.masterGain);
+                gain.connect(this.sfxGain);
 
                 osc.start(now);
-                osc.stop(now + note.d + 0.01);
+                osc.stop(now + note.d + 0.02);
             }
         } catch (e) { }
     }
 }
 
 export const sound = new SoundEngine();
-
