@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#05070e"/>
+      <stop offset="50%" stop-color="#0a0f24"/>
+      <stop offset="100%" stop-color="#020307"/>
+    </linearGradient>
+    <radialGradient id="ruby-grad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ff7b96"/>
+      <stop offset="25%" stop-color="#ff0844"/>
+      <stop offset="70%" stop-color="#990022"/>
+      <stop offset="100%" stop-color="#240008"/>
+    </radialGradient>
+    <radialGradient id="pearl-grad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#b4ffff"/>
+      <stop offset="25%" stop-color="#00e5ff"/>
+      <stop offset="70%" stop-color="#006b99"/>
+      <stop offset="100%" stop-color="#001824"/>
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle Hex Grid Backdrop -->
+  <g opacity="0.12" stroke="#3b82f6" stroke-width="2" fill="none">
+    <polygon points="600,100 660,135 660,205 600,240 540,205 540,135"/>
+    <polygon points="480,100 540,135 540,205 480,240 420,205 420,135"/>
+    <polygon points="720,100 780,135 780,205 720,240 660,205 660,135"/>
+    <polygon points="540,205 600,240 600,310 540,345 480,310 480,240"/>
+    <polygon points="660,205 720,240 720,310 660,345 600,310 600,240"/>
+  </g>
+
+  <!-- Gem Orbs Visual -->
+  <g transform="translate(480, 210)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="55" fill="url(#ruby-grad)"/>
+    <ellipse cx="-15" cy="-18" rx="20" ry="12" transform="rotate(-30 -15 -18)" fill="rgba(255,255,255,0.7)"/>
+  </g>
+  <g transform="translate(720, 210)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="55" fill="url(#pearl-grad)"/>
+    <ellipse cx="-15" cy="-18" rx="20" ry="12" transform="rotate(-30 -15 -18)" fill="rgba(255,255,255,0.7)"/>
+  </g>
+  <text x="600" y="225" font-family="'JetBrains Mono', monospace" font-size="40" font-weight="bold" fill="#64748b" text-anchor="middle">VS</text>
+
+  <!-- Typography -->
+  <text x="600" y="380" font-family="'Outfit', sans-serif" font-size="64" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="-1">HEX BOARD GAME</text>
+  <text x="600" y="440" font-family="'Geist', sans-serif" font-size="28" font-weight="600" fill="#38bdf8" text-anchor="middle">HEXXAGON STRATEGY • DUPLICATE • JUMP • CONVERT</text>
+  <text x="600" y="490" font-family="'Geist', sans-serif" font-size="20" fill="#94a3b8" text-anchor="middle">Play Free Online Against AI or 2-Player Local Hotseat</text>
+
+  <!-- Domain Tag Badge -->
+  <rect x="500" y="530" width="200" height="40" rx="20" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="600" y="556" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="600" fill="#f8fafc" text-anchor="middle">hexboardgame.com</text>
+</svg>

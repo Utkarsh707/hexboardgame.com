@@ -1,0 +1,44 @@
+# Hex Board Game (Hexxagon Online)
+
+> Free, browser-based hexagonal strategy board game inspired by classic Hexxagon (1993). Play online against adaptive AI difficulty levels or 2-player local hotseat.
+
+## Overview
+- **Product Name**: Hex Board Game (Hexxagon Online)
+- **URL**: https://hexboardgame.com/
+- **Genre**: Turn-based Abstract Strategy Board Game
+- **Platform**: Web (Desktop, Tablet, Mobile / Responsive)
+- **Cost**: 100% Free, no registration required
+
+## Core Rules & Mechanics
+Hex Board Game is played on a hexagonal grid with 58 cells between two sides (Rubies vs. Pearls):
+
+1. **Duplication (1-Hex Step)**: Moving a piece to an adjacent empty hexagonal cell (distance 1) clones the piece, creating a new piece while keeping the original.
+2. **Jumping (2-Hex Leap)**: Moving a piece to an empty cell 2 steps away jumps the piece to the target destination, vacating the starting cell.
+3. **Cascade Infection (Capture)**: After moving to a target cell, all adjacent enemy pieces (within 1-hex radius) immediately convert to the active player's color.
+4. **End Game & Victory**: The match ends when the board is completely filled, one player loses all pieces, or no legal moves remain. The player with the highest piece count wins.
+
+## Game Modes & Features
+- **Player vs AI**: 4 AI difficulty settings:
+  - *Novice*: Random tactical moves, ideal for learning.
+  - *Tactician (Medium)*: Greedy heuristic targeting maximum captures.
+  - *Master (Hard)*: 2-ply Minimax evaluating board control, corner anchoring, and defensive vulnerability.
+  - *Grandmaster (Insane)*: Deep Minimax with alpha-beta pruning, mobility evaluation, and positional weighting.
+- **2-Player Local Pass & Play**: Play against a friend on the same screen or keyboard.
+- **Multiple Board Layouts**: Classic Hexagon, Diamond Arena, and Star Fortress.
+- **Accessibility & Controls**: Full keyboard navigation (WASD / Arrow Keys, Space/Enter to select, M for sound, ESC for pause), high-contrast board themes, and touch support.
+
+## Key Pages
+- [Play Online](https://hexboardgame.com/): Instant web game with zero loading screens.
+- [Privacy Policy](https://hexboardgame.com/privacy-policy): Privacy practices and analytics disclosure.
+- [Terms of Service](https://hexboardgame.com/terms): Terms and license info.
+
+## Frequently Asked Questions
+
+### What is the difference between a Duplicate move and a Jump move?
+In a Duplicate move (1 space away), your piece splits into two, adding a piece to the board. In a Jump move (2 spaces away), your piece leaps to the destination, leaving the original square empty.
+
+### How does capture work in Hexxagon?
+When your piece lands on a hex, any opponent pieces directly touching that hex (all 6 adjacent neighbors) instantly turn into your color through cascade infection.
+
+### Is Hex Board Game free to play?
+Yes, Hex Board Game is completely free to play directly in any modern web browser on mobile, tablet, or desktop with no downloads or sign-ups required.

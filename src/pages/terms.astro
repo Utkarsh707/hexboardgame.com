@@ -5,64 +5,235 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout
-  title="Terms of Service | Online Hex Board Game (hexboardgame.com)"
-  description="Terms of service and usage conditions for Online Hex Board Game (hexboardgame.com)."
+  title="Terms of Service | Hex Board Game (Hexxagon Online)"
+  description="Terms of service, acceptable use guidelines, intellectual property notices, and legal conditions for hexboardgame.com."
+  scrollable={true}
 >
-  <Header />
+  <Header isSubpage={true} />
 
-  <main class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-slate-300">
-    <div class="nes-card rounded-2xl p-6 sm:p-10 border border-cyan-400/30 flex flex-col gap-6">
+  <main id="main-content" class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 text-slate-300">
+    
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="mb-6 flex items-center gap-2 text-xs font-mono text-slate-400">
+      <a href="/" class="hover:text-cyan-300 transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-cyan-400">Terms of Service</span>
+    </nav>
+
+    <!-- Main Card Container -->
+    <div class="nes-card rounded-2xl p-6 sm:p-10 border border-cyan-400/30 flex flex-col gap-8 shadow-[0_8px_32px_rgba(0,0,0,0.7)] bg-[#050814]/90 backdrop-blur-md">
       
-      <div class="border-b border-cyan-500/20 pb-4">
-        <span class="text-[9px] font-['Press_Start_2P'] text-cyan-300">LEGAL & USAGE</span>
-        <h1 class="text-2xl sm:text-3xl font-bold text-white font-['Outfit'] mt-1">
+      <!-- Page Title & Header -->
+      <div class="border-b border-cyan-500/20 pb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-[10px] font-['Press_Start_2P'] text-cyan-300 mb-3 shadow-[0_0_12px_rgba(0,229,255,0.2)]">
+          LEGAL & USAGE CONDITIONS
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white font-['Outfit'] tracking-tight">
           Terms of Service
         </h1>
-        <p class="text-xs text-slate-400 font-mono mt-1">
-          Last Updated: August 2026
-        </p>
+        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 font-mono mt-2">
+          <span>Last Updated: August 2026</span>
+          <span>•</span>
+          <span>Website: <strong class="text-cyan-300">https://hexboardgame.com</strong></span>
+        </div>
       </div>
 
-      <div class="flex flex-col gap-5 text-xs sm:text-sm leading-relaxed text-slate-300 font-sans">
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">1. Acceptance of Terms</h2>
-          <p>
-            By accessing and playing games on <strong>hexboardgame.com</strong>, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may discontinue use of the website at any time.
-          </p>
-        </section>
-
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">2. Permitted Use</h2>
-          <p>
-            Online Hex Board Game is provided for free personal entertainment and educational use. Automated scraping, reverse engineering with malicious intent, or denial of service attacks against this platform are strictly prohibited.
-          </p>
-        </section>
-
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">3. Intellectual Property</h2>
-          <p>
-            The game code, animations, interface designs, sound synthesizer algorithms, and custom styling on <strong>hexboardgame.com</strong> are proprietary property. Hexxagon is an intellectual homage inspired by classic 1993 hexagonal strategy games.
-          </p>
-        </section>
-
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">4. Disclaimer of Warranties</h2>
-          <p>
-            This website is provided "as is" without warranties of any kind, whether express or implied. We do not guarantee uninterrupted or error-free gameplay.
-          </p>
-        </section>
-
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">5. Contact Information</h2>
-          <p>
-            For legal inquiries or questions regarding these terms, please contact: <span class="font-mono text-cyan-300">support@hexboardgame.com</span>.
-          </p>
-        </section>
+      <!-- Quick Summary Box -->
+      <div class="p-4 sm:p-5 rounded-xl bg-[#090e24] border border-cyan-500/30 flex flex-col gap-3 text-xs sm:text-sm">
+        <div class="flex items-center gap-2 text-cyan-300 font-['Outfit'] font-bold text-sm">
+          <span>⚡</span>
+          <span>Terms at a Glance</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-slate-300 text-xs font-sans">
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>Free Personal Entertainment:</strong> Play online directly in any modern browser.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>Fair Play & Integrity:</strong> Automated botting, click abuse, and unauthorized framing are prohibited.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>Original Assets Protected:</strong> Custom code, SVG vectors, and sound synthesis are protected.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>Standard Warranty:</strong> Service is provided "As Is" without commercial liabilities.</span>
+          </div>
+        </div>
       </div>
 
-      <div class="pt-4 border-t border-cyan-500/20">
-        <a href="/" class="nes-btn-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-mono font-bold">
-          ← Return to Game
+      <!-- Table of Contents -->
+      <nav aria-label="Table of Contents" class="p-4 rounded-xl bg-[#03050c] border border-slate-800 text-xs font-mono">
+        <span class="text-slate-400 uppercase tracking-wider text-[11px] block mb-2 font-bold">Table of Contents</span>
+        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-slate-300">
+          <li><a href="#terms-1" class="hover:text-cyan-300 transition-colors">1. Agreement to Terms</a></li>
+          <li><a href="#terms-2" class="hover:text-cyan-300 transition-colors">2. Permitted Use & License</a></li>
+          <li><a href="#terms-3" class="hover:text-cyan-300 transition-colors">3. Prohibited Activities & Acceptable Use</a></li>
+          <li><a href="#terms-4" class="hover:text-cyan-300 transition-colors">4. Intellectual Property & Heritage</a></li>
+          <li><a href="#terms-5" class="hover:text-cyan-300 transition-colors">5. Advertisements & Third-Party Links</a></li>
+          <li><a href="#terms-6" class="hover:text-cyan-300 transition-colors">6. Disclaimer of Warranties</a></li>
+          <li><a href="#terms-7" class="hover:text-cyan-300 transition-colors">7. Limitation of Liability</a></li>
+          <li><a href="#terms-8" class="hover:text-cyan-300 transition-colors">8. Indemnification</a></li>
+          <li><a href="#terms-9" class="hover:text-cyan-300 transition-colors">9. Modifications to the Service</a></li>
+          <li><a href="#terms-10" class="hover:text-cyan-300 transition-colors">10. Governing Law & Contact Information</a></li>
+        </ol>
+      </nav>
+
+      <!-- Legal Content Sections -->
+      <div class="flex flex-col gap-8 text-xs sm:text-sm leading-relaxed text-slate-300 font-sans">
+        
+        <!-- 1. Agreement to Terms -->
+        <section id="terms-1" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">01.</span> Agreement to Terms
+          </h2>
+          <p>
+            These Terms of Service ("Terms") govern your access to and use of <strong>hexboardgame.com</strong> ("Website", "Platform", "we", or "us"), including all associated browser games, graphics, audio, and tools.
+          </p>
+          <p>
+            By accessing or playing games on <strong>https://hexboardgame.com</strong>, you acknowledge that you have read, understood, and agree to be bound by these Terms and our <a href="/privacy-policy" class="text-cyan-400 underline hover:text-cyan-200">Privacy Policy</a>. If you do not agree to these Terms, please do not use the Website.
+          </p>
+        </section>
+
+        <!-- 2. Permitted Use & License -->
+        <section id="terms-2" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">02.</span> Permitted Use & License
+          </h2>
+          <p>
+            We grant you a personal, non-exclusive, non-transferable, revocable license to access and play games on <strong>hexboardgame.com</strong> solely for your personal, non-commercial entertainment and recreation via standard modern web browsers.
+          </p>
+          <div class="p-3.5 rounded-xl bg-[#04060e] border border-cyan-500/20 text-xs text-slate-400 flex flex-col gap-1.5">
+            <strong class="text-cyan-300 font-['Outfit']">Permitted Activities:</strong>
+            <ul class="list-disc pl-5 flex flex-col gap-0.5">
+              <li>Playing single-player matches against all AI difficulty levels (Novice, Medium, Master, Insane).</li>
+              <li>Playing two-player local pass-and-play matches with friends or family on shared devices.</li>
+              <li>Creating gameplay commentary, reviews, or live streams with clear attribution to <code>hexboardgame.com</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 3. Prohibited Activities -->
+        <section id="terms-3" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">03.</span> Prohibited Activities & Acceptable Use
+          </h2>
+          <p>
+            To maintain a safe and fair platform for all users, you agree not to engage in any of the following activities:
+          </p>
+          <ul class="list-disc pl-5 flex flex-col gap-1.5 text-slate-400 text-xs">
+            <li><strong>Automated Abuse & Scraping:</strong> Using automated bots, crawlers, or scrapers to extract game content, overload server bandwidth, or simulate fraudulent ad views/clicks.</li>
+            <li><strong>Security Violations:</strong> Attempting to probe, scan, or breach system security, launch Denial of Service (DoS/DDoS) attacks, or inject harmful scripts or malware.</li>
+            <li><strong>Unauthorized Redistribution:</strong> Framing, mirroring, copying, or embedding the game within third-party websites or commercial applications without prior written authorization.</li>
+            <li><strong>Fair Play Violations:</strong> Employing automated gameplay scripts or cheating tools that degrade the platform or impair the enjoyment of other players.</li>
+          </ul>
+        </section>
+
+        <!-- 4. Intellectual Property & Heritage -->
+        <section id="terms-4" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">04.</span> Intellectual Property & Heritage Attribution
+          </h2>
+          <p>
+            All custom source code, SVG vector mathematics, Web Audio sound synthesis algorithms, AI evaluation heuristics, UI designs, and branding on <strong>hexboardgame.com</strong> are the proprietary property of the site owner.
+          </p>
+          <div class="p-3.5 rounded-xl bg-[#090e24] border border-cyan-500/30 text-xs text-slate-300">
+            <strong class="text-cyan-300 font-['Outfit'] block text-xs mb-1">Historical Heritage:</strong>
+            <p class="text-slate-400 leading-relaxed">
+              <em>Hexxagon</em> was originally created in 1993 by Software Creations. <strong>hexboardgame.com</strong> is an independent modern web homage developed to celebrate and preserve classic hexagonal turn-based territory mechanics. All historical references are used for attribution and identification under fair use.
+            </p>
+          </div>
+        </section>
+
+        <!-- 5. Advertisements & Third-Party Content -->
+        <section id="terms-5" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">05.</span> Advertisements & Third-Party Links
+          </h2>
+          <p>
+            The Platform may display advertisements provided by third-party advertising partners, such as <strong>Google AdSense</strong>. We do not endorse, guarantee, or assume liability for the products, services, or claims advertised in third-party banners.
+          </p>
+          <p>
+            Your interactions with third-party advertisers or external websites linked from our Platform are solely between you and the respective third party.
+          </p>
+        </section>
+
+        <!-- 6. Disclaimer of Warranties -->
+        <section id="terms-6" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">06.</span> Disclaimer of Warranties ("As-Is")
+          </h2>
+          <div class="p-4 rounded-xl bg-[#04060e] border border-amber-500/30 text-xs text-slate-300 leading-relaxed">
+            <p class="uppercase font-bold text-amber-300 font-mono text-[11px] mb-1">Warranty Disclaimer:</p>
+            <p class="text-slate-400">
+              THE WEBSITE AND GAME ARE PROVIDED STRICTLY ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR UNINTERRUPTED ACCESSIBILITY. WE DO NOT WARRANT THAT THE SERVICE WILL BE ERROR-FREE OR COMPATIBLE WITH ALL BROWSERS OR DEVICES.
+            </p>
+          </div>
+        </section>
+
+        <!-- 7. Limitation of Liability -->
+        <section id="terms-7" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">07.</span> Limitation of Liability
+          </h2>
+          <p>
+            TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL <strong>HEXBOARDGAME.COM</strong> OR ITS OPERATORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF YOUR USE OF OR INABILITY TO USE THE PLATFORM.
+          </p>
+        </section>
+
+        <!-- 8. Indemnification -->
+        <section id="terms-8" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">08.</span> Indemnification
+          </h2>
+          <p>
+            You agree to hold harmless and indemnify <strong>hexboardgame.com</strong> and its operators from any third-party claims, liabilities, damages, and reasonable legal expenses arising from your violation of these Terms or misuse of the Website.
+          </p>
+        </section>
+
+        <!-- 9. Modifications to the Service -->
+        <section id="terms-9" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">09.</span> Modifications to the Service
+          </h2>
+          <p>
+            We reserve the right to modify, balance, update, or temporarily suspend features, game modes, AI difficulties, or board layouts at any time without prior notice or liability.
+          </p>
+        </section>
+
+        <!-- 10. Governing Law & Contact -->
+        <section id="terms-10" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">10.</span> Governing Law & Contact Information
+          </h2>
+          <p>
+            These Terms shall be interpreted and governed by applicable standard commercial and internet laws. If any provision is deemed unenforceable, that clause shall be severable without affecting the validity of the remaining provisions.
+          </p>
+          <div class="p-4 rounded-xl bg-[#04060e] border border-cyan-500/30 flex flex-col gap-2 mt-2">
+            <strong class="text-white font-['Outfit'] text-sm">Legal & Terms Support:</strong>
+            <p class="text-slate-400 text-xs">
+              For inquiries or questions regarding these Terms of Service, please reach out to:
+            </p>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-cyan-400 font-mono text-xs sm:text-sm font-bold bg-[#090e24] px-3 py-1.5 rounded-lg border border-cyan-500/40 select-all">
+                support@hexboardgame.com
+              </span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Return to Game Action -->
+      <div class="pt-6 border-t border-cyan-500/20 flex items-center justify-between flex-wrap gap-4">
+        <a href="/" class="nes-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-bold">
+          <span>🎮</span>
+          <span>Play Hex Board Game</span>
+        </a>
+        <a href="/privacy-policy" class="text-xs font-mono text-slate-400 hover:text-cyan-300 transition-colors">
+          View Privacy Policy →
         </a>
       </div>
 

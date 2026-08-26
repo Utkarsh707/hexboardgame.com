@@ -1,3 +1,4 @@
+# Allow standard search crawlers
 User-agent: *
 Allow: /
 
@@ -5,4 +6,28 @@ Allow: /
 User-agent: Mediapartners-Google
 Allow: /
 
+# AI Search & Retrieval Crawlers (Search & Citation Enabled)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemaps & Machine-Readable AI Context
 Sitemap: https://hexboardgame.com/sitemap.xml
+# AI Context File: https://hexboardgame.com/llms.txt

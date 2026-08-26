@@ -30,9 +30,9 @@
 
   html, body {
     height: 100%;
-    height: 100dvh;
-    overflow: hidden;
+    min-height: 100dvh;
     touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -40,6 +40,10 @@
     color: var(--text-primary);
     font-family: 'Outfit', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     letter-spacing: -0.01em;
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
   }
 }
 
@@ -87,13 +91,13 @@
     transform: scale(1);
   }
   28% {
-    transform: scale(1.10, 1.08) translateY(-3px);
+    transform: scale(1.08, 1.06) translateY(-2px);
   }
   42% {
-    transform: scale(0.95, 0.96) translateY(1px);
+    transform: scale(0.96, 0.97) translateY(1px);
   }
   56% {
-    transform: scale(1.05, 1.04) translateY(-1.5px);
+    transform: scale(1.04, 1.03) translateY(-1px);
   }
   70% {
     transform: scale(0.98, 0.99) translateY(0.5px);
@@ -112,15 +116,15 @@
 
 .btn-hero-play:hover {
   animation-play-state: paused;
-  transform: scale(1.12) translateY(-2px);
+  transform: scale(1.08) translateY(-2px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 208, 0, 0.55);
 }
 
 .btn-hero-play:active {
-  transform: scale(0.94) translateY(2px);
+  transform: scale(0.95) translateY(2px);
 }
 
-/* Hexxagon Hexagonal Grid Cells (Hardware-Accelerated Floating Cyber-Arena) */
+/* Hexxagon Hexagonal Grid Cells */
 .hex-cell {
   transition: fill 0.15s ease, stroke 0.15s ease, stroke-width 0.15s ease;
   cursor: pointer;
@@ -176,7 +180,7 @@
   stroke-dasharray: 4, 3;
 }
 
-/* Compositor-Thread Pulse Animations (Zero Repaints) */
+/* Compositor-Thread Pulse Animations */
 @keyframes pulse-marker {
   0%, 100% {
     opacity: 0.75;
@@ -196,7 +200,7 @@
   will-change: transform, opacity;
 }
 
-/* 3D Gem Piece Conversion Animation (Compositor Only) */
+/* 3D Gem Piece Conversion Animation */
 @keyframes piece-convert {
   0% {
     transform: scale(1);
@@ -217,13 +221,7 @@
   will-change: transform;
 }
 
-/* ==========================================================================
-   REVAMPED HARDWARE-ACCELERATED VECTOR PARTICLE & VFX SYSTEM
-   - 100% coordinate locking in SVG space (zero offset, zero canvas desync)
-   - High-performance Compositor-Thread CSS Animations (60/120 FPS)
-   ========================================================================== */
-
-/* SVG Vector Infection Arc Beam */
+/* SVG Vector Animation & Laser Arcs */
 @keyframes infection-beam-pulse {
   0% {
     stroke-dashoffset: 60;
@@ -247,206 +245,52 @@
   pointer-events: none;
 }
 
-/* SVG Jump Trajectory Laser Arc */
-@keyframes jump-trail-dash {
+@keyframes jump-arc-laser {
   0% {
-    stroke-dashoffset: 80;
+    stroke-dashoffset: 200;
     opacity: 1;
-    stroke-width: 4px;
   }
-  50% {
+  70% {
     stroke-dashoffset: 0;
-    opacity: 0.85;
-    stroke-width: 2.5px;
-  }
-  100% {
-    opacity: 0;
-    stroke-width: 0.5px;
-  }
-}
-
-.svg-jump-trail {
-  stroke-dasharray: 6 4;
-  animation: jump-trail-dash 0.42s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
-  pointer-events: none;
-}
-
-/* SVG Expanding Shockwave Rings */
-@keyframes shockwave-grow-fast {
-  0% {
-    transform: scale(0.2);
-    opacity: 1;
-    stroke-width: 4.5px;
-  }
-  100% {
-    transform: scale(1.65);
-    opacity: 0;
-    stroke-width: 0.6px;
-  }
-}
-
-@keyframes shockwave-grow-outer {
-  0% {
-    transform: scale(0.3);
-    opacity: 0.75;
-    stroke-width: 3px;
-  }
-  100% {
-    transform: scale(2.2);
-    opacity: 0;
-    stroke-width: 0.4px;
-  }
-}
-
-.svg-shockwave-ring {
-  animation: shockwave-grow-fast 0.38s cubic-bezier(0.15, 0.85, 0.35, 1.2) forwards;
-  transform-box: fill-box;
-  transform-origin: center;
-  pointer-events: none;
-}
-
-.svg-shockwave-ring-outer {
-  animation: shockwave-grow-outer 0.48s cubic-bezier(0.1, 0.9, 0.3, 1) forwards;
-  transform-box: fill-box;
-  transform-origin: center;
-  pointer-events: none;
-}
-
-.svg-capture-ring {
-  animation: shockwave-grow-fast 0.4s cubic-bezier(0.15, 0.85, 0.35, 1.2) forwards;
-  transform-box: fill-box;
-  transform-origin: center;
-  pointer-events: none;
-}
-
-/* SVG Diamond Spark Burst */
-@keyframes gem-spark-burst {
-  0% {
-    transform: translate(0, 0) scale(1) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--tx, 16px), var(--ty, 16px)) scale(0) rotate(180deg);
-    opacity: 0;
-  }
-}
-
-.svg-gem-spark {
-  animation: gem-spark-burst 0.44s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
-  pointer-events: none;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-/* Floating +1 Score Pop */
-@keyframes score-float-pop {
-  0% {
-    transform: translateY(0) scale(0.6);
-    opacity: 0;
-  }
-  30% {
-    transform: translateY(-8px) scale(1.25);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-28px) scale(0.9);
-    opacity: 0;
-  }
-}
-
-.svg-score-pop {
-  animation: score-float-pop 0.55s ease-out forwards;
-  pointer-events: none;
-  user-select: none;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.9));
-}
-
-/* Quantum Warp Wormhole Portal Styling */
-.hex-cell-warp {
-  fill: #0d0e22 !important;
-  stroke: #a855f7 !important;
-  stroke-width: 1.8px !important;
-  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.65));
-}
-
-@keyframes warp-portal-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.warp-vortex-ring {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: warp-portal-spin 6s linear infinite;
-}
-
-/* Lightning Warp Beam */
-@keyframes warp-lightning-flash {
-  0% {
-    stroke-dashoffset: 120;
-    opacity: 1;
-    stroke-width: 6px;
-  }
-  50% {
-    stroke-dashoffset: 0;
-    opacity: 0.95;
-    stroke-width: 4px;
-  }
-  100% {
-    opacity: 0;
-    stroke-width: 1px;
-  }
-}
-
-.svg-warp-beam {
-  stroke-dasharray: 12 6;
-  animation: warp-lightning-flash 0.48s ease-out forwards;
-  pointer-events: none;
-}
-
-/* Quantum Wormhole Portal Collapse / Despawn */
-@keyframes warp-portal-collapse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  40% {
-    transform: scale(1.25) rotate(90deg);
     opacity: 0.9;
   }
   100% {
-    transform: scale(0) rotate(360deg);
+    stroke-dashoffset: 0;
     opacity: 0;
   }
 }
 
-.svg-warp-collapse {
-  animation: warp-portal-collapse 0.38s ease-in forwards;
+.svg-jump-arc {
+  stroke-dasharray: 100 100;
+  animation: jump-arc-laser 0.36s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   pointer-events: none;
-  transform-box: fill-box;
-  transform-origin: center;
 }
 
-/* Board Impact Juice Rumble */
-@keyframes board-rumble-anim {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-2px, 1.5px); }
-  50% { transform: translate(2px, -1px); }
-  75% { transform: translate(-1px, 0.5px); }
-  100% { transform: translate(0, 0); }
+/* Float Badge Animations */
+@keyframes float-badge {
+  0% {
+    transform: translateY(0) scale(0.85);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-8px) scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-22px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-32px) scale(0.9);
+    opacity: 0;
+  }
 }
 
-.board-rumble {
-  animation: board-rumble-anim 0.16s ease-out forwards;
+.float-badge {
+  animation: float-badge 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  will-change: transform, opacity;
 }
 
-/* Pop-in animation for board sweep (Compositor Only) */
 @keyframes piece-pop-in {
   0% {
     transform: scale(0);
@@ -469,7 +313,6 @@
   will-change: transform, opacity;
 }
 
-/* Target Threat Highlight (Compositor Only, Zero Filter Overheads) */
 @keyframes piece-threat-pulse {
   0% {
     transform: scale(1);
@@ -496,8 +339,8 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -506,14 +349,14 @@
 
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #38bdf8;
 }
 
-/* Dialog & Modal Backdrop & Entrance (Zero Framebuffer Readback Blur) */
+/* Dialog & Modal Backdrop */
 dialog {
   border: none;
   background: transparent;
@@ -537,7 +380,7 @@ dialog[open] {
 @keyframes dialog-pop-in {
   from {
     opacity: 0;
-    transform: scale(0.94) translateY(6px);
+    transform: scale(0.95) translateY(6px);
   }
   to {
     opacity: 1;
@@ -547,7 +390,7 @@ dialog[open] {
 
 /* Screen state transitions */
 .screen-view {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .screen-view.hidden-screen {
@@ -555,4 +398,52 @@ dialog[open] {
   pointer-events: none;
   display: none !important;
 }
-
+
+/* ==========================================================================
+   RESPONSIVE ADAPTATIONS ACROSS BREAKPOINTS & ORIENTATIONS
+   ========================================================================== */
+
+/* Compact screens & Landscape phones (< 600px height) */
+@media (max-height: 600px) {
+  .hero-emblem-container {
+    height: 3.5rem !important;
+  }
+  .hero-emblem-gem {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+  }
+  .hero-title-text {
+    font-size: 1.5rem !important;
+  }
+  .hero-btn-play {
+    padding: 0.6rem 2rem !important;
+    font-size: 1.1rem !important;
+  }
+  .board-arena-container {
+    max-height: min(480px, calc(100dvh - 105px)) !important;
+  }
+  .action-legend-container {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+}
+
+/* Ultra-short landscape phones (< 440px height) */
+@media (max-height: 440px) {
+  .board-arena-container {
+    max-height: calc(100dvh - 90px) !important;
+  }
+  header {
+    height: 2.75rem !important;
+  }
+}
+
+/* Narrow mobile screens (< 375px width) */
+@media (max-width: 375px) {
+  .score-number {
+    font-size: 1.25rem !important;
+  }
+  .legend-item-text {
+    font-size: 0.65rem !important;
+  }
+}

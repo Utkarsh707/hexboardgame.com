@@ -5,69 +5,288 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout
-  title="Privacy Policy | Online Hex Board Game (hexboardgame.com)"
-  description="Privacy policy and Google AdSense third-party cookie disclosure for Online Hex Board Game (hexboardgame.com)."
+  title="Privacy Policy | Hex Board Game (Hexxagon Online)"
+  description="Privacy policy, cookie disclosures, Google AdSense compliance statements, GDPR, and California CCPA/CPRA rights for hexboardgame.com."
+  scrollable={true}
 >
-  <Header />
+  <Header isSubpage={true} />
 
-  <main class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-slate-300">
-    <div class="nes-card rounded-2xl p-6 sm:p-10 border border-cyan-400/30 flex flex-col gap-6">
+  <main id="main-content" class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 text-slate-300">
+    
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="mb-6 flex items-center gap-2 text-xs font-mono text-slate-400">
+      <a href="/" class="hover:text-cyan-300 transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-cyan-400">Privacy Policy</span>
+    </nav>
+
+    <!-- Main Card Container -->
+    <div class="nes-card rounded-2xl p-6 sm:p-10 border border-cyan-400/30 flex flex-col gap-8 shadow-[0_8px_32px_rgba(0,0,0,0.7)] bg-[#050814]/90 backdrop-blur-md">
       
-      <div class="border-b border-cyan-500/20 pb-4">
-        <span class="text-[9px] font-['Press_Start_2P'] text-cyan-300">LEGAL & COMPLIANCE</span>
-        <h1 class="text-2xl sm:text-3xl font-bold text-white font-['Outfit'] mt-1">
+      <!-- Page Title & Header -->
+      <div class="border-b border-cyan-500/20 pb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-[10px] font-['Press_Start_2P'] text-cyan-300 mb-3 shadow-[0_0_12px_rgba(0,229,255,0.2)]">
+          LEGAL & PRIVACY COMPLIANCE
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white font-['Outfit'] tracking-tight">
           Privacy Policy
         </h1>
-        <p class="text-xs text-slate-400 font-mono mt-1">
-          Last Updated: August 2026
-        </p>
+        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 font-mono mt-2">
+          <span>Last Updated: August 2026</span>
+          <span>•</span>
+          <span>Website: <strong class="text-cyan-300">https://hexboardgame.com</strong></span>
+        </div>
       </div>
 
-      <div class="flex flex-col gap-5 text-xs sm:text-sm leading-relaxed text-slate-300 font-sans">
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">1. Overview</h2>
+      <!-- Quick Summary Box -->
+      <div class="p-4 sm:p-5 rounded-xl bg-[#090e24] border border-cyan-500/30 flex flex-col gap-3 text-xs sm:text-sm">
+        <div class="flex items-center gap-2 text-cyan-300 font-['Outfit'] font-bold text-sm">
+          <span>⚡</span>
+          <span>Privacy at a Glance</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-slate-300 text-xs font-sans">
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>No Account Needed:</strong> Play all game modes without passwords or personal registration.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>Local Client Storage:</strong> High scores and sound settings are saved solely in your browser.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>Third-Party Ad Controls:</strong> Full transparency on advertising cookies and opt-out tools.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span><strong>Data Protection:</strong> Full compliance with global privacy regulations (GDPR, CCPA/CPRA, COPPA).</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table of Contents -->
+      <nav aria-label="Table of Contents" class="p-4 rounded-xl bg-[#03050c] border border-slate-800 text-xs font-mono">
+        <span class="text-slate-400 uppercase tracking-wider text-[11px] block mb-2 font-bold">Table of Contents</span>
+        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-slate-300">
+          <li><a href="#section-1" class="hover:text-cyan-300 transition-colors">1. Introduction & Scope</a></li>
+          <li><a href="#section-2" class="hover:text-cyan-300 transition-colors">2. Information Collection & Client Storage</a></li>
+          <li><a href="#section-3" class="hover:text-cyan-300 transition-colors">3. Third-Party Advertising & Cookie Policy</a></li>
+          <li><a href="#section-4" class="hover:text-cyan-300 transition-colors">4. Analytics, Web Vitals & Technical Logs</a></li>
+          <li><a href="#section-5" class="hover:text-cyan-300 transition-colors">5. European Privacy Rights (GDPR & UK GDPR)</a></li>
+          <li><a href="#section-6" class="hover:text-cyan-300 transition-colors">6. California Consumer Privacy Rights (CCPA/CPRA)</a></li>
+          <li><a href="#section-7" class="hover:text-cyan-300 transition-colors">7. Children's Online Privacy (COPPA Compliance)</a></li>
+          <li><a href="#section-8" class="hover:text-cyan-300 transition-colors">8. Security & Data Retention</a></li>
+          <li><a href="#section-9" class="hover:text-cyan-300 transition-colors">9. External Links & Services</a></li>
+          <li><a href="#section-10" class="hover:text-cyan-300 transition-colors">10. Policy Updates & Contact Information</a></li>
+        </ol>
+      </nav>
+
+      <!-- Legal Policy Content Sections -->
+      <div class="flex flex-col gap-8 text-xs sm:text-sm leading-relaxed text-slate-300 font-sans">
+        
+        <!-- 1. Introduction & Scope -->
+        <section id="section-1" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">01.</span> Introduction & Scope
+          </h2>
           <p>
-            Welcome to <strong>hexboardgame.com</strong> ("Online Hex Board Game"). We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we handle data and adhere to standard Google AdSense and global privacy compliance standards (GDPR, CCPA).
+            Welcome to <strong>hexboardgame.com</strong> ("Online Hex Board Game", "we", "our", or "us"). We provide a free, browser-based turn-based strategy board game inspired by the classic hexagonal title <em>Hexxagon</em>. We are dedicated to respecting and protecting the privacy of everyone who visits our site.
+          </p>
+          <p>
+            This Privacy Policy explains how information is collected, used, and protected when you visit or play on <strong>https://hexboardgame.com</strong> (the "Website"). By using our Website, you agree to the practices outlined in this policy.
           </p>
         </section>
 
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">2. Information We Collect</h2>
+        <!-- 2. Information Collection -->
+        <section id="section-2" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">02.</span> Information Collection & Client-Side Storage
+          </h2>
           <p>
-            We do not require account registration, usernames, or passwords to play. Gameplay telemetry, high scores, and sound preferences are stored locally on your device via standard browser <code>localStorage</code> and are never transmitted to our servers.
+            We believe in data minimization. You do not need to register, create an account, or provide personal information such as names, addresses, or payment details to play our games.
+          </p>
+          <div class="flex flex-col gap-3 pl-2 sm:pl-4 border-l-2 border-cyan-500/30 mt-2">
+            <div>
+              <strong class="text-white font-['Outfit'] block text-sm">A. Local Browser Storage (`localStorage`)</strong>
+              <p class="text-slate-400 text-xs mt-1">
+                To maintain your match progress and personal preferences across browser sessions, the game engine stores preference flags directly on your device using standard browser <code>localStorage</code>. This data resides solely on your computer or mobile device and is <strong>never transmitted to or stored on our servers</strong>:
+              </p>
+              <ul class="list-disc pl-5 mt-1 text-slate-400 text-xs flex flex-col gap-0.5">
+                <li>Sound synthesized volume settings and audio mute state.</li>
+                <li>Player battle win/loss tallies and combat statistics.</li>
+                <li>Preferred board geometry arena and default AI difficulty tier.</li>
+                <li>Visual piece theme preferences (e.g., Rubies vs Pearls).</li>
+              </ul>
+            </div>
+            <div>
+              <strong class="text-white font-['Outfit'] block text-sm">B. Direct Inquiries</strong>
+              <p class="text-slate-400 text-xs mt-1">
+                If you choose to contact us via email, we will only use the contact information you provide (such as your email address) to respond to your specific question or feedback.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Third-Party Advertising & Cookies -->
+        <section id="section-3" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">03.</span> Third-Party Advertising & Cookie Policy
+          </h2>
+          <p>
+            To keep <strong>hexboardgame.com</strong> free and accessible to players worldwide, we work with or may work with third-party advertising networks, including <strong>Google AdSense</strong>, to display advertisements when you visit our website.
+          </p>
+          
+          <div class="p-4 rounded-xl bg-[#04060e] border border-cyan-500/20 flex flex-col gap-2.5">
+            <span class="font-bold text-cyan-300 font-['Outfit'] text-xs uppercase tracking-wider">Required Advertising Disclosures:</span>
+            <ul class="list-disc pl-5 flex flex-col gap-1.5 text-slate-400 text-xs">
+              <li>
+                Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites.
+              </li>
+              <li>
+                Google's use of advertising cookies (such as the DoubleClick cookie) enables it and its partners to serve ads to users based on their visits to this site and/or other sites on the Internet.
+              </li>
+              <li>
+                Users may opt out of personalized advertising by visiting:
+                <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="text-cyan-400 underline hover:text-cyan-200 ml-1">
+                  Google Ads Settings (https://www.google.com/settings/ads)
+                </a>.
+              </li>
+              <li>
+                Alternatively, users can opt out of a third-party vendor's use of cookies for personalized advertising by visiting:
+                <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer" class="text-cyan-400 underline hover:text-cyan-200 ml-1">
+                  aboutads.info/choices
+                </a> or
+                <a href="https://optout.networkadvertising.org" target="_blank" rel="noopener noreferrer" class="text-cyan-400 underline hover:text-cyan-200 ml-1">
+                  networkadvertising.org
+                </a>.
+              </li>
+            </ul>
+          </div>
+          <p class="text-slate-400 text-xs mt-1">
+            You can also configure your web browser settings to block, delete, or alert you about cookies. Please note that disabling cookies may affect certain web features across different websites.
           </p>
         </section>
 
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">3. Google AdSense & Third-Party Cookies</h2>
+        <!-- 4. Analytics & Technical Logs -->
+        <section id="section-4" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">04.</span> Analytics, Web Vitals & Technical Logs
+          </h2>
           <p>
-            We use Google AdSense to serve advertisements when you visit our website. Google and its advertising partners use cookies (including the DoubleClick DART cookie) to serve ads based on your visits to this site and other websites on the internet.
+            When you access our Website, standard server logs and aggregated performance telemetry may be recorded automatically by hosting infrastructure. This includes anonymized technical details such as your browser type, operating system, referring URL, time of visit, and Core Web Vitals performance metrics.
           </p>
-          <ul class="list-disc pl-5 flex flex-col gap-1 text-slate-400">
-            <li>Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to your website or other websites.</li>
-            <li>Google's use of advertising cookies enables it and its partners to serve ads to users based on their visit to your sites and/or other sites on the Internet.</li>
-            <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="text-cyan-400 underline hover:text-cyan-300">Google Ads Settings</a> or <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" class="text-cyan-400 underline hover:text-cyan-300">aboutads.info</a>.</li>
+          <p>
+            These logs are used exclusively for security monitoring, preventing automated fraud, diagnosing technical issues, and ensuring optimal load times across devices. They do not identify individual visitors personally.
+          </p>
+        </section>
+
+        <!-- 5. European Privacy Rights (GDPR) -->
+        <section id="section-5" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">05.</span> European Privacy Rights (GDPR & UK GDPR)
+          </h2>
+          <p>
+            If you are located in the European Economic Area (EEA), United Kingdom, or Switzerland, you have specific statutory rights regarding your data under the General Data Protection Regulation (GDPR):
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-1 text-xs">
+            <div class="p-3 rounded-lg bg-[#04060e] border border-slate-800">
+              <strong class="text-white block font-['Outfit']">Right of Access & Portability</strong>
+              <span class="text-slate-400">Request confirmation of data processing and obtain a portable copy of any personal data.</span>
+            </div>
+            <div class="p-3 rounded-lg bg-[#04060e] border border-slate-800">
+              <strong class="text-white block font-['Outfit']">Right to Erasure ("To Be Forgotten")</strong>
+              <span class="text-slate-400">Request deletion of personal data where retention is no longer necessary.</span>
+            </div>
+            <div class="p-3 rounded-lg bg-[#04060e] border border-slate-800">
+              <strong class="text-white block font-['Outfit']">Right to Rectification</strong>
+              <span class="text-slate-400">Request correction of inaccurate or incomplete personal records.</span>
+            </div>
+            <div class="p-3 rounded-lg bg-[#04060e] border border-slate-800">
+              <strong class="text-white block font-['Outfit']">Right to Object & Withdraw Consent</strong>
+              <span class="text-slate-400">Withdraw consent for advertising cookies or object to legitimate interest processing.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. California Disclosures (CCPA) -->
+        <section id="section-6" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">06.</span> California Consumer Privacy Rights (CCPA / CPRA)
+          </h2>
+          <p>
+            Under the California Consumer Privacy Act (CCPA), as amended by the California Privacy Rights Act (CPRA), California residents are entitled to know what categories of personal data are collected and how they are used:
+          </p>
+          <ul class="list-disc pl-5 flex flex-col gap-1 text-slate-400 text-xs">
+            <li><strong>No Sale or Sharing of Personal Data:</strong> <strong>hexboardgame.com</strong> does not sell, rent, or trade your personal information to third parties for financial compensation.</li>
+            <li><strong>Right to Know & Delete:</strong> You have the right to request what personal information we collect and request its deletion.</li>
+            <li><strong>Non-Discrimination:</strong> We will not discriminate against you or degrade your gameplay experience for exercising any of your privacy rights.</li>
           </ul>
         </section>
 
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">4. California Consumer Privacy Act (CCPA)</h2>
+        <!-- 7. Children's Privacy (COPPA) -->
+        <section id="section-7" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">07.</span> Children's Online Privacy Protection (COPPA)
+          </h2>
           <p>
-            Under the CCPA, California consumers have the right to request disclosure of personal data collected, request deletion of collected data, and opt out of the sale of personal information. As we do not sell personal data, your gameplay experience remains confidential.
+            Protecting the privacy of children is important to us. <strong>hexboardgame.com</strong> is a general audience gaming website that does not knowingly collect, request, or retain personal identifiable information from children under the age of 13 (or under 16 in the EEA/UK).
+          </p>
+          <p>
+            If you are a parent or guardian and believe that your child has provided us with personal information, please reach out to us at <span class="font-mono text-cyan-300">support@hexboardgame.com</span>, and we will promptly delete such records.
           </p>
         </section>
 
-        <section class="flex flex-col gap-2">
-          <h2 class="text-base font-bold text-white font-['Outfit']">5. Contact Us</h2>
+        <!-- 8. Data Security & Storage Integrity -->
+        <section id="section-8" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">08.</span> Security & Data Retention
+          </h2>
           <p>
-            If you have any questions about this Privacy Policy or wish to get in touch, please contact us at: <span class="font-mono text-cyan-300">support@hexboardgame.com</span>.
+            We implement industry-standard administrative and technical security measures to maintain the safety of our website. All traffic between your browser and our edge servers is encrypted using modern <strong>SSL/TLS (HTTPS) encryption</strong>. We retain server logs only as long as necessary for security auditing and diagnostic purposes.
           </p>
         </section>
+
+        <!-- 9. External Links -->
+        <section id="section-9" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">09.</span> External Links & Services
+          </h2>
+          <p>
+            Our website may contain links to external third-party resources or informational pages. We are not responsible for the privacy practices, content, or policies of third-party websites. We encourage you to review the individual privacy policies of any third-party websites you visit.
+          </p>
+        </section>
+
+        <!-- 10. Contact Information -->
+        <section id="section-10" class="flex flex-col gap-3 scroll-mt-20">
+          <h2 class="text-lg sm:text-xl font-bold text-white font-['Outfit'] flex items-center gap-2 border-b border-slate-800 pb-2">
+            <span class="text-cyan-400 font-mono">10.</span> Policy Updates & Contact Information
+          </h2>
+          <p>
+            We may update this Privacy Policy from time to time to reflect operational, legal, or regulatory changes. Any updates will be published directly on this page with an updated "Last Updated" date.
+          </p>
+          <div class="p-4 rounded-xl bg-[#04060e] border border-cyan-500/30 flex flex-col gap-2 mt-2">
+            <strong class="text-white font-['Outfit'] text-sm">Privacy & Compliance Support:</strong>
+            <p class="text-slate-400 text-xs">
+              If you have any questions or feedback regarding this Privacy Policy, please contact us:
+            </p>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-cyan-400 font-mono text-xs sm:text-sm font-bold bg-[#090e24] px-3 py-1.5 rounded-lg border border-cyan-500/40 select-all">
+                support@hexboardgame.com
+              </span>
+            </div>
+          </div>
+        </section>
+
       </div>
 
-      <div class="pt-4 border-t border-cyan-500/20">
-        <a href="/" class="nes-btn-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-mono font-bold">
-          ← Return to Game
+      <!-- Return to Game Action -->
+      <div class="pt-6 border-t border-cyan-500/20 flex items-center justify-between flex-wrap gap-4">
+        <a href="/" class="nes-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-bold">
+          <span>🎮</span>
+          <span>Play Hex Board Game</span>
+        </a>
+        <a href="/terms" class="text-xs font-mono text-slate-400 hover:text-cyan-300 transition-colors">
+          View Terms of Service →
         </a>
       </div>
 

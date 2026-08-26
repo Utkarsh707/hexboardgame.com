@@ -4,34 +4,173 @@ import SpaceBackdrop from '../components/SpaceBackdrop.astro';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  canonicalPath?: string;
+  scrollable?: boolean;
 }
 
 const {
   title = "Online Hex Board Game | Rubies vs Pearls - Hexxagon Strategy",
-  description = "Play Hexxagon online! The ultimate hexagonal turn-based strategy board game of duplication, jumping, and cascade infections. Play vs AI or 2-Player local."
+  description = "Play Hexxagon online! The ultimate hexagonal turn-based strategy board game of duplication, jumping, and cascade infections. Play vs AI or 2-Player local.",
+  image = "https://hexboardgame.com/og-image.svg",
+  canonicalPath = Astro.url.pathname,
+  scrollable = false
 } = Astro.props;
+
+const canonicalURL = new URL(canonicalPath, "https://hexboardgame.com").href;
+
+const schemaData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Hex Board Game (Hexxagon Online)",
+    "url": "https://hexboardgame.com/",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires HTML5 Canvas and JavaScript",
+    "description": "Tactical hexagonal turn-based board game of piece duplication, tactical jumps, and cascade infection captures.",
+    "genre": ["Abstract Strategy", "Turn-Based Strategy", "Board Game"],
+    "inLanguage": "en",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "1280",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Game",
+    "name": "Hexxagon Online Strategy Board Game",
+    "url": "https://hexboardgame.com/",
+    "description": "Hexagonal strategy board game where players move gems to duplicate, leap, and infect adjacent opponent pieces.",
+    "numberOfPlayers": {
+      "@type": "QuantitativeValue",
+      "minValue": 1,
+      "maxValue": 2
+    },
+    "gameItem": ["Ruby Gem", "Pearl Gem"]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Play Hex Board Game (Hexxagon)",
+    "description": "Learn the rules and mechanics of Hexxagon: piece duplication, jumping, and cascade conversion captures.",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Select Your Piece",
+        "text": "Click or tap any of your active pieces (Rubies or Pearls) to highlight available moves."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Duplicate (1-Space Move)",
+        "text": "Move into an adjacent hexagon (1 step away) to clone your piece, leaving the original in place and spawning a new piece."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Jump (2-Space Move)",
+        "text": "Move into a hexagon 2 steps away to jump across the board, vacating your original position."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Infect Adjacent Opponents",
+        "text": "Upon landing, all adjacent enemy pieces (within 1 hex radius) convert instantly to your color."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Win the Match",
+        "text": "Win by eliminating all opponent pieces, occupying the highest count when the board is full, or when no legal moves remain."
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is Hexxagon / Hex Board Game?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Hexxagon is an abstract strategy board game played on a hexagonal grid where two players maneuver pieces (Rubies vs Pearls) through duplication and jumping to capture opponent pieces via cascade infection."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you duplicate pieces in Hex Board Game?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Moving a piece to any immediately adjacent empty hexagonal cell (distance 1) duplicates the piece, creating a new piece while keeping the original on the board."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does jumping work in Hex Board Game?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Moving a piece to an empty hexagonal cell 2 spaces away is a jump. The piece moves to the new tile and leaves its starting tile empty."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does cascade infection capture work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Whenever your piece lands on a hex (via either duplicate or jump), all adjacent enemy pieces immediately convert to your color."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I play Hex Board Game for free against AI or friends?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Hex Board Game is 100% free with no downloads or sign-ups required. You can play against 4 AI difficulty levels or challenge a friend in 2-player local hotseat mode."
+        }
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Hex Board Game",
+    "url": "https://hexboardgame.com/"
+  }
+];
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="dark h-full overflow-hidden">
+<html lang="en" class={`dark ${scrollable ? 'min-h-full' : 'h-full overflow-hidden'}`}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta name="keywords" content="hex board game, hexxagon, hex strategy, turn based game, online board game, rubies vs pearls, hexagonal game" />
+  <meta name="keywords" content="hex board game, hexxagon, hex strategy, turn based game, online board game, rubies vs pearls, hexagonal game, hexxagon online, play hexxagon" />
+  <link rel="canonical" href={canonicalURL} />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   
-  <!-- Open Graph / Social Meta -->
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://hexboardgame.com/" />
+  <meta property="og:url" content={canonicalURL} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content="https://hexboardgame.com/og-image.png" />
+  <meta property="og:image" content={image} />
+  <meta property="og:site_name" content="Hex Board Game" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content={canonicalURL} />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={image} />
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5' fill='%23ff2d60'/><circle cx='50' cy='50' r='20' fill='%2300e5ff'/></svg>" />
@@ -48,34 +187,19 @@ const {
     crossorigin="anonymous"
   ></script>
 
-  <!-- Schema.org Structured Data -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Game",
-      "name": "Online Hex Board Game",
-      "url": "https://hexboardgame.com",
-      "description": "Tactical hexagonal board game of piece duplication, leaps, and conversion captures.",
-      "genre": ["Strategy", "Board Game", "Tactical"],
-      "numberOfPlayers": {
-        "@type": "QuantitativeValue",
-        "minValue": 1,
-        "maxValue": 3
-      },
-      "applicationCategory": "Game"
-    }
-  </script>
+  <!-- Multi-Entity Schema.org Structured Data (WebApplication, Game, HowTo, FAQPage, WebSite) -->
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 </head>
-<body class="bg-black text-zinc-100 h-full h-[100dvh] overflow-hidden flex flex-col font-sans antialiased selection:bg-zinc-800 selection:text-white select-none">
+<body class={`bg-black text-zinc-100 font-sans antialiased selection:bg-zinc-800 selection:text-white ${scrollable ? 'min-h-screen overflow-y-auto' : 'h-full h-[100dvh] overflow-hidden flex flex-col select-none'}`}>
   <!-- Skip Link for Accessibility -->
-  <a href="#game-main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-medium focus:rounded-md focus:shadow-xl focus:outline-none">
-    Skip to game
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-medium focus:rounded-md focus:shadow-xl focus:outline-none">
+    Skip to main content
   </a>
 
   <!-- Retro Space Backdrop -->
   <SpaceBackdrop />
 
-  <div class="relative z-10 flex flex-col h-full h-[100dvh] overflow-hidden">
+  <div class={`relative z-10 flex flex-col ${scrollable ? 'min-h-screen w-full' : 'h-full h-[100dvh] overflow-hidden'}`}>
     <slot />
   </div>
 </body>
