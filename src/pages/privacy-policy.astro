@@ -15,7 +15,7 @@ import Footer from '../components/Footer.astro';
     
     <!-- Breadcrumb Navigation -->
     <nav aria-label="Breadcrumb" class="mb-6 flex items-center gap-2 text-xs font-mono text-slate-400">
-      <a href="/" class="hover:text-cyan-300 transition-colors">Home</a>
+      <a href={import.meta.env.BASE_URL} class="hover:text-cyan-300 transition-colors">Home</a>
       <span>/</span>
       <span class="text-cyan-400">Privacy Policy</span>
     </nav>
@@ -281,11 +281,11 @@ import Footer from '../components/Footer.astro';
 
       <!-- Return to Game Action -->
       <div class="pt-6 border-t border-cyan-500/20 flex items-center justify-between flex-wrap gap-4">
-        <a href="/" class="nes-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-bold">
+        <a href={import.meta.env.BASE_URL} class="nes-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-bold">
           <span>🎮</span>
           <span>Play Hex Board Game</span>
         </a>
-        <a href="/terms" class="text-xs font-mono text-slate-400 hover:text-cyan-300 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}terms`} class="text-xs font-mono text-slate-400 hover:text-cyan-300 transition-colors">
           View Terms of Service →
         </a>
       </div>

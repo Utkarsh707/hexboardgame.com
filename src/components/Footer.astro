@@ -21,8 +21,8 @@
       <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-slate-400">
         <a href="#rules-section" class="hover:text-cyan-300 transition-colors">Game Rules</a>
         <a href="#strategy-section" class="hover:text-cyan-300 transition-colors">Strategy Guide</a>
-        <a href="/privacy-policy" class="hover:text-cyan-300 transition-colors">Privacy Policy</a>
-        <a href="/terms" class="hover:text-cyan-300 transition-colors">Terms</a>
+        <a href={`${import.meta.env.BASE_URL}privacy-policy`} class="hover:text-cyan-300 transition-colors">Privacy Policy</a>
+        <a href={`${import.meta.env.BASE_URL}terms`} class="hover:text-cyan-300 transition-colors">Terms</a>
       </div>
       <span class="font-mono text-[11px] text-slate-500">
         &copy; {new Date().getFullYear()} hexboardgame.com. All rights reserved.

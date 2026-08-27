@@ -3,7 +3,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://hexboardgame.com',
+  site: 'https://utkarsh707.github.io',
+  base: '/hexboardgame.com',
   vite: {
     plugins: [tailwindcss()]
   }
