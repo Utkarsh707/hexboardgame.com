@@ -37,6 +37,39 @@ export class SoundEngine {
             window.addEventListener('pointerdown', unlock, { passive: true, once: true });
             window.addEventListener('keydown', unlock, { passive: true, once: true });
             window.addEventListener('touchstart', unlock, { passive: true, once: true });
+
+            // Automatically pause audio when tab is minimized, switched, or phone is locked
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    if (this.ctx && this.ctx.state === 'running') {
+                        this.ctx.suspend().catch(() => {});
+                    }
+                } else {
+                    if (this.ctx && this.ctx.state === 'suspended' && !this.muted) {
+                        this.ctx.resume().then(() => {
+                            if (this.isPlayingMusic && this.ctx) {
+                                this.nextStepTime = this.ctx.currentTime + 0.05;
+                            }
+                        }).catch(() => {});
+                    }
+                }
+            });
+
+            window.addEventListener('pagehide', () => {
+                if (this.ctx && this.ctx.state === 'running') {
+                    this.ctx.suspend().catch(() => {});
+                }
+            });
+
+            window.addEventListener('pageshow', () => {
+                if (!document.hidden && this.ctx && this.ctx.state === 'suspended' && !this.muted) {
+                    this.ctx.resume().then(() => {
+                        if (this.isPlayingMusic && this.ctx) {
+                            this.nextStepTime = this.ctx.currentTime + 0.05;
+                        }
+                    }).catch(() => {});
+                }
+            });
         }
     }
 
@@ -143,6 +176,11 @@ export class SoundEngine {
 
     scheduler() {
         if (!this.isPlayingMusic || !this.ctx) return;
+
+        // Catch up if context was suspended or thread throttled to avoid note pile-up
+        if (this.nextStepTime < this.ctx.currentTime) {
+            this.nextStepTime = this.ctx.currentTime + 0.02;
+        }
 
         const secondsPerStep = 60 / (this.tempo * 4); // 16th note duration
         const scheduleAheadTime = 0.12;
