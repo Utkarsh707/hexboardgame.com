@@ -295,8 +295,25 @@ export class HexxagonGame {
             minY = Math.min(minY, y - this.cellSize);
             maxY = Math.max(maxY, y + this.cellSize);
 
-            const points = HexMath.getHexPolygonPoints(x, y, this.cellSize - 1.5);
+            const points = HexMath.getHexPolygonPoints(x, y, this.cellSize - 1.2);
+            const innerPoints = HexMath.getHexPolygonPoints(x, y, this.cellSize * 0.72);
 
+            const cellGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            cellGroup.setAttribute('class', 'hex-cell-socket-group');
+
+            // 1. Outer Beveled Socket Facet Rim
+            const socketRim = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            socketRim.setAttribute('points', points);
+            socketRim.setAttribute('class', 'hex-cell-rim');
+            cellGroup.appendChild(socketRim);
+
+            // 2. Inner Recessed Jewel Bed
+            const innerBed = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            innerBed.setAttribute('points', innerPoints);
+            innerBed.setAttribute('class', 'hex-cell-bed');
+            cellGroup.appendChild(innerBed);
+
+            // 3. Interactive Hex Cell Hit & Highlight Layer
             const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
             polygon.setAttribute('points', points);
             polygon.setAttribute('data-key', key);
@@ -320,7 +337,8 @@ export class HexxagonGame {
             polygon.addEventListener('mouseleave', () => this.clearCapturePreviews());
 
             this.cellElements.set(key, polygon);
-            cellsGroup.appendChild(polygon);
+            cellGroup.appendChild(polygon);
+            cellsGroup.appendChild(cellGroup);
 
             // Render Piece if present
             const pieceOwner = this.state.board[key];

@@ -204,6 +204,56 @@
    HEXAGONAL GRID & CELLS
    ========================================================================== */
 
+/* ==========================================================================
+   3D BEVELED JEWEL SOCKET TRAY SYSTEM (Classic Hexxagon Aesthetic)
+   ========================================================================== */
+
+.hex-cell-socket-group {
+  pointer-events: auto;
+}
+
+.hex-cell-rim {
+  fill: #182244;
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1.4;
+  pointer-events: none;
+}
+
+.hex-cell-bed {
+  fill: #0b1124;
+  stroke: rgba(0, 0, 0, 0.75);
+  stroke-width: 1.8;
+  pointer-events: none;
+}
+
+/* Theme-Specific Jewel Socket Variations */
+[data-theme="kirby_mario"] .hex-cell-rim {
+  fill: #5a126a;
+  stroke: rgba(255, 220, 255, 0.45);
+}
+[data-theme="kirby_mario"] .hex-cell-bed {
+  fill: #2c0636;
+  stroke: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="cyberpunk"] .hex-cell-rim {
+  fill: #340958;
+  stroke: rgba(255, 60, 160, 0.4);
+}
+[data-theme="cyberpunk"] .hex-cell-bed {
+  fill: #160328;
+  stroke: rgba(0, 0, 0, 0.85);
+}
+
+[data-theme="tetris"] .hex-cell-rim {
+  fill: #0c2b54;
+  stroke: rgba(56, 189, 248, 0.38);
+}
+[data-theme="tetris"] .hex-cell-bed {
+  fill: #04142a;
+  stroke: rgba(0, 0, 0, 0.8);
+}
+
 .hex-cell {
   transition: fill 0.12s ease, stroke 0.12s ease, stroke-width 0.12s ease;
   cursor: pointer;
@@ -211,15 +261,15 @@
 }
 
 .hex-cell-empty {
-  fill: #121a32;
-  stroke: #253358;
-  stroke-width: 2;
+  fill: rgba(255, 255, 255, 0.01);
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 1;
 }
 
 .hex-cell-empty:hover {
-  fill: #1c2a52 !important;
-  stroke: #38bdf8 !important;
-  stroke-width: 2.5 !important;
+  fill: rgba(0, 229, 255, 0.22) !important;
+  stroke: #00e5ff !important;
+  stroke-width: 2.4 !important;
 }
 
 .hex-cell-obstacle {

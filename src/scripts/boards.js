@@ -218,37 +218,51 @@ export const BOARD_PRESETS = {
     classic: {
         id: 'classic',
         mazeNumber: 1,
-        name: 'Classic Hexagon (58 Cells)',
+        name: 'Classic Hexxagon (58 Cells)',
         shortName: 'Classic (58)',
-        description: 'The authentic 1993 hexagonal arena: Rubies vs Pearls in tactical duplication.',
+        description: 'The authentic 1993 hexagonal arena with 3 central void holes: Rubies vs Pearls.',
         radius: 4,
         cellsCount: 58,
         players: ['ruby', 'pearl'],
         generate: () => {
             const cells = new Set();
+            const obstacles = new Set();
             const radius = 4;
+
+            // Authentic 1993 3-Hole Triangular Void in Center
+            const centerVoids = new Set([
+                HexMath.key(0, -1),
+                HexMath.key(-1, 1),
+                HexMath.key(1, 0)
+            ]);
+
             for (let q = -radius; q <= radius; q++) {
                 const r1 = Math.max(-radius, -q - radius);
                 const r2 = Math.min(radius, -q + radius);
                 for (let r = r1; r <= r2; r++) {
-                    cells.add(HexMath.key(q, r));
+                    const key = HexMath.key(q, r);
+                    if (centerVoids.has(key)) {
+                        obstacles.add(key);
+                    } else {
+                        cells.add(key);
+                    }
                 }
             }
 
-            // Starting pieces for 2 players at 3 alternating corners each
+            // Authentic starting pieces at 6 corners (3 Rubies, 3 Pearls)
             const initialPieces = {
-                // Rubies (Player 1)
-                [HexMath.key(0, -4)]: 'ruby',
-                [HexMath.key(-4, 4)]: 'ruby',
-                [HexMath.key(4, 0)]: 'ruby',
+                // Rubies (Player 1) - Top-Left, Top-Right, Bottom-Center
+                [HexMath.key(-4, 0)]: 'ruby',
+                [HexMath.key(4, -4)]: 'ruby',
+                [HexMath.key(0, 4)]: 'ruby',
 
-                // Pearls (Player 2 / AI)
-                [HexMath.key(4, -4)]: 'pearl',
-                [HexMath.key(0, 4)]: 'pearl',
-                [HexMath.key(-4, 0)]: 'pearl'
+                // Pearls (Player 2 / AI) - Top-Center, Bottom-Left, Bottom-Right
+                [HexMath.key(0, -4)]: 'pearl',
+                [HexMath.key(-4, 4)]: 'pearl',
+                [HexMath.key(4, 0)]: 'pearl'
             };
 
-            return { cells: Array.from(cells), initialPieces, obstacles: [] };
+            return { cells: Array.from(cells), initialPieces, obstacles: Array.from(obstacles) };
         }
     },
 
@@ -332,10 +346,58 @@ export const BOARD_PRESETS = {
         }
     },
 
+    triforce: {
+        id: 'triforce',
+        mazeNumber: 4,
+        name: 'Tri-Nexus (49 Cells)',
+        shortName: 'Tri-Nexus (49)',
+        description: '3 distinct battle chambers linked through 3 triangular choke points.',
+        radius: 4,
+        cellsCount: 49,
+        players: ['ruby', 'pearl'],
+        generate: () => {
+            const cells = new Set();
+            const obstacles = new Set();
+            const radius = 4;
+
+            // Cutouts creating 3 pods
+            const voidKeys = new Set([
+                HexMath.key(0, 0), HexMath.key(0, -2), HexMath.key(-2, 0), HexMath.key(2, -2),
+                HexMath.key(0, 2), HexMath.key(2, 0), HexMath.key(-2, 2),
+                HexMath.key(-1, -1), HexMath.key(1, 1), HexMath.key(1, -2), HexMath.key(-1, 2), HexMath.key(-2, 1)
+            ]);
+
+            for (let q = -radius; q <= radius; q++) {
+                const r1 = Math.max(-radius, -q - radius);
+                const r2 = Math.min(radius, -q + radius);
+                for (let r = r1; r <= r2; r++) {
+                    const key = HexMath.key(q, r);
+                    if (voidKeys.has(key)) {
+                        obstacles.add(key);
+                    } else {
+                        cells.add(key);
+                    }
+                }
+            }
+
+            const initialPieces = {
+                [HexMath.key(0, -4)]: 'ruby',
+                [HexMath.key(-4, 0)]: 'ruby',
+                [HexMath.key(4, -4)]: 'ruby',
+
+                [HexMath.key(0, 4)]: 'pearl',
+                [HexMath.key(4, 0)]: 'pearl',
+                [HexMath.key(-4, 4)]: 'pearl'
+            };
+
+            return { cells: Array.from(cells), initialPieces, obstacles: Array.from(obstacles) };
+        }
+    },
+
     trio: {
         id: 'trio',
-        mazeNumber: 4,
-        name: 'Tri-Chamber (61 Cells)',
+        mazeNumber: 5,
+        name: 'Tri-Chamber (61 Cells • 3 Players)',
         shortName: 'Tri-Chamber (61)',
         description: '3-Player free-for-all: Rubies vs Pearls vs Emeralds in a tactical battle.',
         radius: 4,
