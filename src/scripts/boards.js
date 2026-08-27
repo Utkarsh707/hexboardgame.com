@@ -21,47 +21,47 @@ export const STAGE_THEMES = {
     space_invaders: {
         id: 'space_invaders',
         stageNumber: 1,
-        name: 'Space Invaders',
-        stageTitle: 'STAGE 1 // SPACE INVADERS',
-        subtitle: '1978 Arcade • Phosphor Radar & Alien Lasers',
-        icon: '👾',
-        badge: 'ARCADE 1978',
+        name: 'Cosmic Arena',
+        stageTitle: 'COSMIC ARENA',
+        subtitle: 'Ruby Crystals & Pearl Spheres',
+        icon: '💎',
+        badge: 'CLASSIC',
         bgmTrack: 'space_invaders',
         themeClass: 'theme-space-invaders',
-        tagline: 'Alien Invasion & Laser Radar Grid',
+        tagline: 'Cosmic Ruby & Pearl',
         colors: {
-            bg: '#020906',
-            cellFill: '#04140d',
-            cellStroke: '#0d3824',
-            cellHover: '#134e32',
-            aura: 'radial-gradient(circle at center, rgba(16, 185, 129, 0.16) 0%, rgba(255, 0, 128, 0.06) 45%, transparent 70%)',
-            primaryAccent: '#00ff88',
-            secondaryAccent: '#ff007f'
+            bg: '#0b1021',
+            cellFill: '#121a32',
+            cellStroke: '#253358',
+            cellHover: '#1c2a52',
+            aura: 'radial-gradient(circle at center, rgba(0, 229, 255, 0.08) 0%, rgba(255, 45, 96, 0.05) 45%, transparent 70%)',
+            primaryAccent: '#00e5ff',
+            secondaryAccent: '#ff2d60'
         },
         players: {
             ruby: {
-                name: 'Invader Alpha',
-                color: '#ff007f',
+                name: 'Ruby',
+                color: '#ff2d60',
                 glowColor: '#ff0055',
-                icon: '👾',
-                grad: ['#ff77b4', '#ff007f', '#b80058', '#5e002c', '#20000e'],
-                markerColor: '#ff007f'
+                icon: '💎',
+                grad: ['#ff7b96', '#ff0844', '#ba002c', '#680018', '#240008'],
+                markerColor: '#ff2d60'
             },
             pearl: {
-                name: 'Laser Saucer',
-                color: '#00ff88',
-                glowColor: '#00cc6a',
-                icon: '🛸',
-                grad: ['#ffffff', '#a7f3d0', '#00ff88', '#059669', '#022c22'],
-                markerColor: '#00ff88'
+                name: 'Pearl',
+                color: '#00e5ff',
+                glowColor: '#00b0ff',
+                icon: '🔮',
+                grad: ['#ffffff', '#e0f2fe', '#38bdf8', '#0284c7', '#082f49'],
+                markerColor: '#00e5ff'
             },
             emerald: {
-                name: 'Alien Scout',
-                color: '#76ff03',
-                glowColor: '#64dd17',
-                icon: '👾',
-                grad: ['#e4ff99', '#76ff03', '#43a047', '#1b5e20', '#0a270c'],
-                markerColor: '#76ff03'
+                name: 'Emerald',
+                color: '#10b981',
+                glowColor: '#059669',
+                icon: '🟢',
+                grad: ['#a7f3d0', '#10b981', '#059669', '#064e3b', '#022c22'],
+                markerColor: '#10b981'
             }
         }
     },
@@ -69,47 +69,47 @@ export const STAGE_THEMES = {
     kirby_mario: {
         id: 'kirby_mario',
         stageNumber: 2,
-        name: '8-Bit Odyssey',
-        stageTitle: 'STAGE 2 // 8-BIT ODYSSEY',
-        subtitle: 'Joyful NES • Kirby Star & Mario Power-Ups',
-        icon: '🍄',
-        badge: 'NES 8-BIT',
+        name: 'Sunset Horizon',
+        stageTitle: 'SUNSET HORIZON',
+        subtitle: 'Warm Sunset Glow & Star Gems',
+        icon: '🌅',
+        badge: 'SUNSET',
         bgmTrack: 'kirby_mario',
         themeClass: 'theme-kirby-mario',
-        tagline: 'Dreamy Kirby Pink & Super Mario Skies',
+        tagline: 'Sunset Horizon',
         colors: {
-            bg: '#0a0718',
-            cellFill: '#140e2b',
-            cellStroke: '#33235d',
-            cellHover: '#493085',
-            aura: 'radial-gradient(circle at center, rgba(244, 114, 182, 0.16) 0%, rgba(56, 189, 248, 0.10) 45%, transparent 70%)',
+            bg: '#0f1026',
+            cellFill: '#19183b',
+            cellStroke: '#383369',
+            cellHover: '#2a275e',
+            aura: 'radial-gradient(circle at center, rgba(244, 114, 182, 0.12) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 70%)',
             primaryAccent: '#f472b6',
             secondaryAccent: '#38bdf8'
         },
         players: {
             ruby: {
-                name: 'Kirby Star',
-                color: '#ff69b4',
-                glowColor: '#f472b6',
+                name: 'Solar Star',
+                color: '#f43f5e',
+                glowColor: '#e11d48',
                 icon: '⭐',
-                grad: ['#ffd1e3', '#ff69b4', '#db2777', '#831843', '#3d071e'],
-                markerColor: '#ff69b4'
+                grad: ['#fda4af', '#f43f5e', '#be123c', '#881337', '#4c0519'],
+                markerColor: '#f43f5e'
             },
             pearl: {
-                name: 'Super Mario',
+                name: 'Sky Crystal',
                 color: '#38bdf8',
                 glowColor: '#0284c7',
-                icon: '🍄',
+                icon: '🔷',
                 grad: ['#ffffff', '#bae6fd', '#38bdf8', '#0284c7', '#082f49'],
                 markerColor: '#38bdf8'
             },
             emerald: {
-                name: '1-Up Yoshi',
-                color: '#4ade80',
-                glowColor: '#16a34a',
-                icon: '🟢',
-                grad: ['#bbf7d0', '#4ade80', '#16a34a', '#14532d', '#052e16'],
-                markerColor: '#4ade80'
+                name: 'Sunstone',
+                color: '#fbbf24',
+                glowColor: '#d97706',
+                icon: '🟡',
+                grad: ['#fef08a', '#fbbf24', '#d97706', '#92400e', '#451a03'],
+                markerColor: '#fbbf24'
             }
         }
     },
@@ -117,20 +117,20 @@ export const STAGE_THEMES = {
     cyberpunk: {
         id: 'cyberpunk',
         stageNumber: 3,
-        name: 'Cyberpunk 2099',
-        stageTitle: 'STAGE 3 // CYBERPUNK 2099',
-        subtitle: 'High-Tech Synthwave • Neon Pink & Cyber Cyan',
+        name: 'Cyber Neon',
+        stageTitle: 'CYBER NEON',
+        subtitle: 'Electric Synth & Laser Waves',
         icon: '⚡',
-        badge: 'SYNTHWAVE',
+        badge: 'NEON',
         bgmTrack: 'cyberpunk',
         themeClass: 'theme-cyberpunk',
-        tagline: 'Futuristic Chrome Grid & Electric Netrunners',
+        tagline: 'Cyber Neon',
         colors: {
-            bg: '#06020f',
-            cellFill: '#100524',
-            cellStroke: '#2f125a',
-            cellHover: '#49198c',
-            aura: 'radial-gradient(circle at center, rgba(0, 240, 255, 0.15) 0%, rgba(244, 63, 94, 0.09) 45%, transparent 70%)',
+            bg: '#09081a',
+            cellFill: '#151130',
+            cellStroke: '#312560',
+            cellHover: '#261b52',
+            aura: 'radial-gradient(circle at center, rgba(0, 240, 255, 0.12) 0%, rgba(244, 63, 94, 0.08) 45%, transparent 70%)',
             primaryAccent: '#00f0ff',
             secondaryAccent: '#ff0055'
         },
@@ -152,12 +152,12 @@ export const STAGE_THEMES = {
                 markerColor: '#00f0ff'
             },
             emerald: {
-                name: 'Matrix Daemon',
-                color: '#00ff66',
+                name: 'Matrix Core',
+                color: '#10b981',
                 glowColor: '#059669',
                 icon: '🟩',
-                grad: ['#a7f3d0', '#00ff66', '#059669', '#064e3b', '#022c22'],
-                markerColor: '#00ff66'
+                grad: ['#a7f3d0', '#10b981', '#059669', '#064e3b', '#022c22'],
+                markerColor: '#10b981'
             }
         }
     },
@@ -165,34 +165,34 @@ export const STAGE_THEMES = {
     tetris: {
         id: 'tetris',
         stageNumber: 4,
-        name: 'Tetris Matrix',
-        stageTitle: 'STAGE 4 // TETRIS MATRIX',
-        subtitle: '1989 Block Arcade • Tetromino RGB & Korobeiniki',
-        icon: '🧱',
-        badge: 'TETRIS 1989',
+        name: 'Ocean Depths',
+        stageTitle: 'OCEAN DEPTHS',
+        subtitle: 'Deep Azure & Coral Pearls',
+        icon: '🌊',
+        badge: 'OCEAN',
         bgmTrack: 'tetris',
         themeClass: 'theme-tetris',
-        tagline: 'Iconic Russian Arcade Folk & Tetromino Blocks',
+        tagline: 'Ocean Depths',
         colors: {
-            bg: '#050713',
-            cellFill: '#0a0f24',
-            cellStroke: '#1b2853',
-            cellHover: '#273c7e',
-            aura: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.16) 0%, rgba(245, 158, 11, 0.09) 45%, transparent 70%)',
-            primaryAccent: '#3b82f6',
-            secondaryAccent: '#ef4444'
+            bg: '#060c1c',
+            cellFill: '#0e1832',
+            cellStroke: '#1f3465',
+            cellHover: '#182b54',
+            aura: 'radial-gradient(circle at center, rgba(56, 189, 248, 0.12) 0%, rgba(245, 158, 11, 0.06) 45%, transparent 70%)',
+            primaryAccent: '#38bdf8',
+            secondaryAccent: '#f43f5e'
         },
         players: {
             ruby: {
-                name: 'Tetromino Z/T',
-                color: '#ef4444',
-                glowColor: '#dc2626',
-                icon: '🧱',
-                grad: ['#fca5a5', '#ef4444', '#b91c1c', '#7f1d1d', '#450a0a'],
-                markerColor: '#ef4444'
+                name: 'Coral Gem',
+                color: '#f43f5e',
+                glowColor: '#e11d48',
+                icon: '🪸',
+                grad: ['#fda4af', '#f43f5e', '#be123c', '#881337', '#4c0519'],
+                markerColor: '#f43f5e'
             },
             pearl: {
-                name: 'Tetromino I/O',
+                name: 'Azure Pearl',
                 color: '#06b6d4',
                 glowColor: '#0891b2',
                 icon: '💎',
@@ -200,12 +200,12 @@ export const STAGE_THEMES = {
                 markerColor: '#06b6d4'
             },
             emerald: {
-                name: 'Tetromino S',
-                color: '#22c55e',
-                glowColor: '#16a34a',
-                icon: '🧩',
-                grad: ['#bbf7d0', '#22c55e', '#16a34a', '#14532d', '#052e16'],
-                markerColor: '#22c55e'
+                name: 'Seafoam',
+                color: '#10b981',
+                glowColor: '#059669',
+                icon: '🌊',
+                grad: ['#a7f3d0', '#10b981', '#059669', '#064e3b', '#022c22'],
+                markerColor: '#10b981'
             }
         }
     }
@@ -431,7 +431,165 @@ export const BOARD_PRESETS = {
                 specialTiles: {}
             };
         }
+    },
+
+    // ==========================================
+    // TUTORIAL SPECIFIC BOARD PRESETS
+    // ==========================================
+    tutorial_clone: {
+        id: 'tutorial_clone',
+        name: 'Lesson 1: Duplication (Clone)',
+        shortName: 'CLONE TUTORIAL',
+        description: 'Learn 1-step duplication move',
+        cellsCount: 19,
+        cellSize: 46,
+        players: ['ruby', 'pearl'],
+        generate: () => {
+            const cells = new Set();
+            const radius = 2;
+            for (let q = -radius; q <= radius; q++) {
+                const r1 = Math.max(-radius, -q - radius);
+                const r2 = Math.min(radius, -q + radius);
+                for (let r = r1; r <= r2; r++) {
+                    cells.add(HexMath.key(q, r));
+                }
+            }
+            return {
+                cells: Array.from(cells),
+                initialPieces: {
+                    [HexMath.key(0, 0)]: 'ruby'
+                },
+                obstacles: [],
+                specialTiles: {}
+            };
+        }
+    },
+
+    tutorial_jump: {
+        id: 'tutorial_jump',
+        name: 'Lesson 2: Leap (Jump)',
+        shortName: 'JUMP TUTORIAL',
+        description: 'Learn 2-step jumping leap',
+        cellsCount: 19,
+        cellSize: 46,
+        players: ['ruby', 'pearl'],
+        generate: () => {
+            const cells = new Set();
+            const radius = 2;
+            for (let q = -radius; q <= radius; q++) {
+                const r1 = Math.max(-radius, -q - radius);
+                const r2 = Math.min(radius, -q + radius);
+                for (let r = r1; r <= r2; r++) {
+                    cells.add(HexMath.key(q, r));
+                }
+            }
+            return {
+                cells: Array.from(cells),
+                initialPieces: {
+                    [HexMath.key(-2, 0)]: 'ruby'
+                },
+                obstacles: [],
+                specialTiles: {}
+            };
+        }
+    },
+
+    tutorial_infect: {
+        id: 'tutorial_infect',
+        name: 'Lesson 3: Conversion Attack',
+        shortName: 'INFECTION TUTORIAL',
+        description: 'Learn neighboring opponent capture',
+        cellsCount: 19,
+        cellSize: 46,
+        players: ['ruby', 'pearl'],
+        generate: () => {
+            const cells = new Set();
+            const radius = 2;
+            for (let q = -radius; q <= radius; q++) {
+                const r1 = Math.max(-radius, -q - radius);
+                const r2 = Math.min(radius, -q + radius);
+                for (let r = r1; r <= r2; r++) {
+                    cells.add(HexMath.key(q, r));
+                }
+            }
+            return {
+                cells: Array.from(cells),
+                initialPieces: {
+                    [HexMath.key(-2, 0)]: 'ruby',
+                    [HexMath.key(0, -1)]: 'pearl',
+                    [HexMath.key(0, 0)]: 'pearl',
+                    [HexMath.key(0, 1)]: 'pearl'
+                },
+                obstacles: [],
+                specialTiles: {}
+            };
+        }
+    },
+
+    tutorial_defense: {
+        id: 'tutorial_defense',
+        name: 'Lesson 4: Tactical Wall & Defense',
+        shortName: 'TACTICS TUTORIAL',
+        description: 'Learn cloning for safe defense walls',
+        cellsCount: 19,
+        cellSize: 46,
+        players: ['ruby', 'pearl'],
+        generate: () => {
+            const cells = new Set();
+            const radius = 2;
+            for (let q = -radius; q <= radius; q++) {
+                const r1 = Math.max(-radius, -q - radius);
+                const r2 = Math.min(radius, -q + radius);
+                for (let r = r1; r <= r2; r++) {
+                    cells.add(HexMath.key(q, r));
+                }
+            }
+            return {
+                cells: Array.from(cells),
+                initialPieces: {
+                    [HexMath.key(-1, 0)]: 'ruby',
+                    [HexMath.key(-1, 1)]: 'ruby',
+                    [HexMath.key(1, -1)]: 'pearl',
+                    [HexMath.key(2, -2)]: 'pearl'
+                },
+                obstacles: [],
+                specialTiles: {}
+            };
+        }
+    },
+
+    tutorial_mini: {
+        id: 'tutorial_mini',
+        name: 'Lesson 5: Practice Arena',
+        shortName: 'PRACTICE ARENA',
+        description: 'Mini live match against Training Bot',
+        cellsCount: 19,
+        cellSize: 46,
+        players: ['ruby', 'pearl'],
+        generate: () => {
+            const cells = new Set();
+            const radius = 2;
+            for (let q = -radius; q <= radius; q++) {
+                const r1 = Math.max(-radius, -q - radius);
+                const r2 = Math.min(radius, -q + radius);
+                for (let r = r1; r <= r2; r++) {
+                    cells.add(HexMath.key(q, r));
+                }
+            }
+            return {
+                cells: Array.from(cells),
+                initialPieces: {
+                    [HexMath.key(-2, 0)]: 'ruby',
+                    [HexMath.key(0, 2)]: 'ruby',
+                    [HexMath.key(2, 0)]: 'pearl',
+                    [HexMath.key(0, -2)]: 'pearl'
+                },
+                obstacles: [],
+                specialTiles: {}
+            };
+        }
     }
 };
 
 export const MAZE_PRESETS = BOARD_PRESETS;
+

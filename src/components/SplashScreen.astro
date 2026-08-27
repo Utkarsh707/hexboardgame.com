@@ -2,26 +2,27 @@
 ---
 
 <!-- ==========================================================================
-     HEXXAGON TITLE & SETUP SCREENS
-     1. Screen Title: Clean, uncluttered landing with animated "PLAY!" button
-     2. Screen Setup: Match configuration options (Mode, Arena, Difficulty)
+     MODERN CASUAL GAME TITLE & MATCH SETUP SCREENS (Poki.com Style)
+     1. Screen Title: Clean, uncluttered landing with chunky 3D "PLAY NOW!" button
+     2. Screen Setup: Playful, intuitive game mode & arena configuration
      ========================================================================== -->
 
-<!-- SCREEN 1: CLEAN LANDING SCREEN (Zero Option Overload) -->
-<div id="screen-title" class="screen-view w-full h-full flex flex-col items-center justify-between px-3 py-3 sm:py-6 overflow-hidden select-none z-30">
+<!-- SCREEN 1: CLEAN LANDING SCREEN -->
+<div id="screen-title" class="screen-view w-full h-full flex flex-col items-center justify-between px-3 py-2 sm:py-5 overflow-y-auto min-h-0 select-none z-30">
   
-  <!-- Top Bar (Version Badge & Audio Quick Toggle) -->
-  <div class="w-full max-w-3xl flex items-center justify-between px-1 sm:px-2 pt-1 sm:pt-0">
-    <div class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-[#050814]/90 border border-cyan-500/30 text-[9px] sm:text-[10px] font-mono text-cyan-300 shadow-[0_0_12px_rgba(0,229,255,0.2)]">
-      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-      <span class="truncate">HEXXAGON COSMIC ARENA</span>
+  <!-- Top Bar (Game Badge & Audio Quick Toggle) -->
+  <div class="w-full max-w-2xl flex items-center justify-between px-1 pt-1 shrink-0">
+    <div class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#141d38]/90 border border-cyan-400/30 text-[10px] sm:text-xs font-mono font-bold text-cyan-300 shadow-md">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+      <span class="hidden xs:inline">HEXXAGON • COSMIC ARENA</span>
+      <span class="xs:hidden">HEXXAGON</span>
     </div>
 
     <!-- Quick Audio Mute Toggle -->
     <button
       id="btn-splash-sound"
       type="button"
-      class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-xs font-mono font-medium text-slate-300 hover:text-white bg-[#050814]/90 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-full transition-all cursor-pointer shadow-sm active:scale-95"
+      class="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 text-xs font-mono font-bold text-slate-200 hover:text-white bg-[#141d38] hover:bg-[#1e2b50] border border-slate-700 hover:border-cyan-400 rounded-full transition-all cursor-pointer shadow-md active:scale-95 shrink-0"
       title="Toggle Audio"
     >
       <span id="splash-sound-icon">🔊</span>
@@ -30,18 +31,18 @@
   </div>
 
   <!-- Center Hero Section -->
-  <div class="w-full max-w-xl flex flex-col items-center justify-center gap-4 sm:gap-7 my-auto px-2">
+  <div class="w-full max-w-xl flex flex-col items-center justify-center gap-3 sm:gap-6 my-auto px-2 py-2">
     
     <!-- 3D Gems Duel Emblem & Title -->
     <div class="flex flex-col items-center text-center">
       <!-- Floating Gems Emblem -->
       <div class="relative w-20 h-16 sm:w-28 sm:h-24 flex items-center justify-center hero-emblem-container">
         <!-- Ruby Gem Sphere -->
-        <div class="absolute -left-2 sm:left-0 w-11 h-11 sm:w-16 sm:h-16 rounded-full shadow-[0_0_30px_rgba(255,8,68,0.6)] transition-transform hover:scale-110 hero-emblem-gem">
+        <div class="absolute -left-2 sm:-left-2 w-12 h-12 sm:w-18 sm:h-18 rounded-full shadow-[0_8px_30px_rgba(255,45,96,0.6)] transition-transform hover:scale-110 hero-emblem-gem">
           <svg viewBox="0 0 100 100" class="w-full h-full">
-            <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.5)"></ellipse>
+            <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.4)"></ellipse>
             <circle cx="50" cy="48" r="44" fill="url(#title-ruby)" stroke="rgba(255,255,255,0.4)" stroke-width="2"></circle>
-            <ellipse cx="36" cy="34" rx="18" ry="10" transform="rotate(-28 36 34)" fill="rgba(255,255,255,0.75)"></ellipse>
+            <ellipse cx="36" cy="34" rx="18" ry="10" transform="rotate(-28 36 34)" fill="rgba(255,255,255,0.8)"></ellipse>
             <circle cx="30" cy="28" r="5" fill="#ffffff"></circle>
             <defs>
               <radialGradient id="title-ruby" cx="30%" cy="26%" r="72%">
@@ -55,284 +56,270 @@
         </div>
 
         <!-- Pearl Gem Sphere -->
-        <div class="absolute -right-2 sm:right-0 w-11 h-11 sm:w-16 sm:h-16 rounded-full shadow-[0_0_30px_rgba(0,229,255,0.6)] transition-transform hover:scale-110 hero-emblem-gem">
+        <div class="absolute -right-2 sm:-right-2 w-12 h-12 sm:w-18 sm:h-18 rounded-full shadow-[0_8px_30px_rgba(0,229,255,0.6)] transition-transform hover:scale-110 hero-emblem-gem">
           <svg viewBox="0 0 100 100" class="w-full h-full">
-            <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.5)"></ellipse>
+            <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.4)"></ellipse>
             <circle cx="50" cy="48" r="44" fill="url(#title-pearl)" stroke="rgba(255,255,255,0.5)" stroke-width="2"></circle>
-            <ellipse cx="36" cy="34" rx="18" ry="10" transform="rotate(-28 36 34)" fill="rgba(255,255,255,0.85)"></ellipse>
+            <ellipse cx="36" cy="34" rx="18" ry="10" transform="rotate(-28 36 34)" fill="rgba(255,255,255,0.9)"></ellipse>
             <circle cx="30" cy="28" r="5" fill="#ffffff"></circle>
             <defs>
               <radialGradient id="title-pearl" cx="30%" cy="26%" r="72%">
                 <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="25%" stop-color="#f2f7fc"/>
-                <stop offset="60%" stop-color="#c5d1d9"/>
-                <stop offset="85%" stop-color="#607d8b"/>
-                <stop offset="100%" stop-color="#263238"/>
+                <stop offset="25%" stop-color="#e0f2fe"/>
+                <stop offset="60%" stop-color="#7dd3fc"/>
+                <stop offset="85%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#082f49"/>
               </radialGradient>
             </defs>
           </svg>
         </div>
 
         <!-- Center Hex Shield -->
-        <div class="relative z-10 w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center">
-          <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-[0_0_10px_rgba(56,189,248,0.9)]">
-            <polygon points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5" fill="#04060c" stroke="#38bdf8" stroke-width="6" />
-            <polygon points="50,20 80,37 80,63 50,80 20,63 20,37" fill="#38bdf8" opacity="0.35" />
+        <div class="relative z-10 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+          <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-[0_4px_12px_rgba(56,189,248,0.8)]">
+            <polygon points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5" fill="#0d1429" stroke="#38bdf8" stroke-width="6" />
+            <polygon points="50,20 80,37 80,63 50,80 20,63 20,37" fill="#38bdf8" opacity="0.4" />
           </svg>
         </div>
       </div>
 
       <!-- Main Logo Title -->
-      <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-white font-['Outfit'] mt-2 flex items-center justify-center gap-2 hero-title-text">
-        <span class="bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">HEX BOARD</span>
-        <span class="text-[#ff2d60] drop-shadow-[0_0_20px_rgba(255,45,96,0.6)]">GAME</span>
+      <h1 class="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white font-['Outfit'] mt-2 sm:mt-3 flex items-center justify-center gap-2 hero-title-text drop-shadow-md">
+        <span class="bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text text-transparent">HEX</span>
+        <span class="text-[#ff2d60] drop-shadow-[0_0_24px_rgba(255,45,96,0.6)]">BOARD</span>
       </h1>
-      <p class="text-[11px] sm:text-sm font-mono text-cyan-300/80 tracking-wider sm:tracking-widest uppercase mt-1">
-        Hexxagon Turn-Based Strategy
+      <p class="text-[11px] sm:text-sm font-bold font-['Outfit'] text-cyan-300 tracking-wide uppercase mt-0.5 sm:mt-1">
+        Turn-Based Gem Conquest
       </p>
     </div>
 
-    <!-- PROMINENT ANIMATED "PLAY!" ACTION BUTTON -->
-    <button
-      id="btn-title-play"
-      type="button"
-      class="btn-hero-play hero-btn-play px-8 sm:px-14 py-3.5 sm:py-5 rounded-2xl bg-[#ffd000] hover:bg-[#ffe033] text-[#050814] font-black font-['Outfit'] text-lg sm:text-2xl tracking-wider uppercase flex items-center justify-center gap-2.5 sm:gap-3 cursor-pointer select-none border-2 border-[#fff37a] shadow-[0_4px_25px_rgba(255,208,0,0.5)]"
-    >
-      <svg class="w-5 h-5 sm:w-7 sm:h-7 text-[#050814] transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M8 5v14l11-7z"/>
-      </svg>
-      <span>PLAY!</span>
-    </button>
+    <!-- PROMINENT POKI 3D "PLAY NOW!" & "TUTORIAL" BUTTONS -->
+    <div class="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 w-full justify-center">
+      <button
+        id="btn-title-play"
+        type="button"
+        class="poki-btn poki-btn-primary btn-hero-play w-full sm:w-auto px-8 sm:px-14 py-3.5 sm:py-4 rounded-2xl text-base sm:text-xl font-black uppercase flex items-center justify-center gap-2.5"
+      >
+        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0b0f19]" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <span>PLAY NOW!</span>
+      </button>
+
+      <button
+        id="btn-title-tutorial"
+        type="button"
+        class="poki-btn poki-btn-cyan w-full sm:w-auto px-6 sm:px-9 py-3 sm:py-4 rounded-2xl text-sm sm:text-lg font-black uppercase flex items-center justify-center gap-2"
+      >
+        <span class="text-base sm:text-lg">🎓</span>
+        <span>TUTORIAL</span>
+      </button>
+    </div>
 
   </div>
 
-  <!-- Bottom Utility Navigation Bar -->
-  <div class="w-full max-w-xl flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-1 pb-1">
-    <button id="btn-splash-how-to-play" type="button" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold font-mono text-slate-300 hover:text-white bg-[#070b16]/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400/50 rounded-xl transition-all cursor-pointer active:scale-95">
-      <span>📖</span>
-      <span>Rules</span>
+  <!-- Bottom Utility Navigation Bar (Neat Wrapping Pills) -->
+  <div class="w-full max-w-xl flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-1 pb-1 shrink-0">
+    <button id="btn-splash-tutorial" type="button" class="poki-btn poki-btn-secondary px-3 py-1 text-[11px] sm:text-xs font-mono font-bold text-cyan-300 hover:text-white rounded-xl">
+      <span>🎓 Tutorial</span>
     </button>
 
-    <button id="btn-splash-strategy" type="button" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold font-mono text-purple-300 hover:text-white bg-[#070b16]/90 hover:bg-slate-800 border border-slate-800 hover:border-purple-400/50 rounded-xl transition-all cursor-pointer active:scale-95">
-      <span>⚡</span>
-      <span>Strategy</span>
+    <button id="btn-splash-how-to-play" type="button" class="poki-btn poki-btn-secondary px-3 py-1 text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white rounded-xl">
+      <span>📖 Rules</span>
     </button>
 
-    <button id="btn-splash-settings" type="button" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold font-mono text-slate-300 hover:text-white bg-[#070b16]/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400/50 rounded-xl transition-all cursor-pointer active:scale-95">
-      <span>⚙️</span>
-      <span>Settings</span>
+    <button id="btn-splash-strategy" type="button" class="poki-btn poki-btn-secondary px-3 py-1 text-[11px] sm:text-xs font-mono font-bold text-purple-300 hover:text-white rounded-xl">
+      <span>⚡ Tactics</span>
     </button>
 
-    <button id="btn-splash-stats" type="button" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold font-mono text-slate-300 hover:text-white bg-[#070b16]/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400/50 rounded-xl transition-all cursor-pointer active:scale-95">
-      <span>📊</span>
-      <span>Stats</span>
+    <button id="btn-splash-stats" type="button" class="poki-btn poki-btn-secondary px-3 py-1 text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white rounded-xl">
+      <span>📊 Stats</span>
     </button>
 
-    <button id="btn-splash-shortcuts" type="button" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold font-mono text-slate-300 hover:text-white bg-[#070b16]/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400/50 rounded-xl transition-all cursor-pointer active:scale-95">
-      <span>⌨️</span>
-      <span>Controls</span>
+    <button id="btn-splash-settings" type="button" class="poki-btn poki-btn-secondary px-3 py-1 text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white rounded-xl">
+      <span>⚙️ Settings</span>
     </button>
 
-    <button id="btn-splash-about" type="button" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold font-mono text-slate-300 hover:text-white bg-[#070b16]/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-400/50 rounded-xl transition-all cursor-pointer active:scale-95">
-      <span>ℹ️</span>
-      <span>About</span>
+    <button id="btn-splash-shortcuts" type="button" class="poki-btn poki-btn-secondary px-3 py-1 text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white rounded-xl">
+      <span>⌨️ Controls</span>
+    </button>
+
+    <button id="btn-splash-about" type="button" class="poki-btn poki-btn-secondary px-3 py-1 text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white rounded-xl">
+      <span>ℹ️ About</span>
     </button>
   </div>
 
 </div>
 
 
-<!-- SCREEN 2: MATCH SETUP & ARENA SELECT SCREEN (Revealed after clicking "PLAY!") -->
-<div id="screen-setup" class="screen-view hidden-screen w-full h-full flex flex-col items-center justify-between px-3 py-2 sm:py-6 overflow-hidden select-none z-30">
+<!-- SCREEN 2: MATCH SETUP & ARENA SELECT SCREEN -->
+<div id="screen-setup" class="screen-view hidden-screen w-full h-full flex flex-col items-center justify-between px-3 py-2 sm:py-5 overflow-y-auto min-h-0 select-none z-30">
   
   <!-- Setup Header with Back Button -->
-  <div class="w-full max-w-xl flex items-center justify-between px-1 pt-1">
+  <div class="w-full max-w-xl flex items-center justify-between px-1 pt-1 shrink-0">
     <button
       id="btn-setup-back"
       type="button"
-      class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono text-slate-300 hover:text-white bg-[#050814]/90 hover:bg-slate-800 border border-slate-800 rounded-full transition-all cursor-pointer active:scale-95"
+      class="poki-btn poki-btn-secondary px-3 py-1 text-xs font-mono font-bold text-slate-200 hover:text-white rounded-full flex items-center gap-1.5"
     >
       <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
       </svg>
-      <span>TITLE SCREEN</span>
+      <span>BACK</span>
     </button>
 
-    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#050814]/90 border border-slate-800 text-[10px] font-mono text-cyan-400">
-      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#141d38] border border-slate-700 text-xs font-mono font-bold text-cyan-400">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
       <span>MATCH SETUP</span>
     </div>
   </div>
 
   <!-- Match Configuration Card -->
-  <div class="w-full max-w-xl flex flex-col items-center justify-center my-auto overflow-y-auto max-h-[calc(100dvh-70px)] py-1">
-    <div class="w-full nes-card rounded-2xl p-3.5 sm:p-6 border border-cyan-400/30 flex flex-col gap-3.5 sm:gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.85)]">
+  <div class="w-full max-w-xl flex flex-col items-center justify-center my-auto py-2">
+    <div class="w-full poki-card rounded-3xl p-3.5 sm:p-6 border border-slate-700/60 flex flex-col gap-3 sm:gap-4 shadow-2xl">
       
       <!-- Section Title -->
-      <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+      <div class="flex items-center justify-between border-b border-slate-700/60 pb-2.5">
         <div>
-          <h2 class="text-sm sm:text-lg font-black text-white font-['Outfit'] tracking-wide">
-            Select Battle Parameters
+          <h2 class="text-base sm:text-xl font-black text-white font-['Outfit'] tracking-wide">
+            Game Setup
           </h2>
-          <p class="text-[10px] sm:text-[11px] font-mono text-slate-400">Choose game mode, arena layout, and AI level.</p>
+          <p class="text-[11px] sm:text-xs font-medium text-slate-300">Choose game mode, arena layout, and difficulty.</p>
         </div>
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(0,229,255,0.15)]">
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-300" viewBox="0 0 24 24" fill="none">
-            <polygon points="12 2 21 7.2 21 16.8 12 22 3 16.8 3 7.2" stroke="currentColor" stroke-width="1.8" fill="rgba(0,229,255,0.06)"/>
-            <circle cx="8.5" cy="12" r="2.2" fill="#ff0844" stroke="#ffffff" stroke-width="0.8"/>
-            <circle cx="15.5" cy="12" r="2.2" fill="#00e5ff" stroke="#ffffff" stroke-width="0.8"/>
-          </svg>
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center shrink-0 shadow-sm">
+          <span class="text-base sm:text-lg">🎮</span>
         </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
         <!-- Game Mode Selection -->
         <div class="flex flex-col gap-1">
-          <label for="splash-select-mode" class="text-[10px] font-bold text-slate-400 font-['Outfit'] uppercase tracking-wider">
+          <label for="splash-select-mode" class="text-[11px] sm:text-xs font-bold text-slate-300 font-['Outfit'] uppercase tracking-wider">
             Game Mode
           </label>
           <select
             id="splash-select-mode"
-            class="w-full bg-[#04060c] border border-slate-700 hover:border-cyan-400 rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-colors font-mono cursor-pointer"
+            class="w-full bg-[#0d1429] border-2 border-slate-700 hover:border-cyan-400 rounded-xl px-3 py-2 text-xs font-bold text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono cursor-pointer"
           >
-            <option value="pve" selected>VS Computer (1P)</option>
-            <option value="pvp">2-Player Local (PvP)</option>
-            <option value="trio">3-Player Arena (Trio)</option>
+            <option value="pve" selected>🤖 VS Bot (1 Player)</option>
+            <option value="pvp">👥 Pass & Play (2 Players)</option>
+            <option value="trio">⚡ 3-Player Free-For-All</option>
+            <option value="tutorial">🎓 Tutorial (Learn to Play)</option>
           </select>
         </div>
 
         <!-- Maze Type Selection -->
         <div class="flex flex-col gap-1">
-          <label for="splash-select-preset" class="text-[10px] font-bold text-slate-400 font-['Outfit'] uppercase tracking-wider">
-            Maze Type (Layout)
+          <label for="splash-select-preset" class="text-[11px] sm:text-xs font-bold text-slate-300 font-['Outfit'] uppercase tracking-wider">
+            Arena Layout
           </label>
           <select
             id="splash-select-preset"
-            class="w-full bg-[#04060c] border border-slate-700 hover:border-cyan-400 rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-colors font-mono cursor-pointer"
+            class="w-full bg-[#0d1429] border-2 border-slate-700 hover:border-cyan-400 rounded-xl px-3 py-2 text-xs font-bold text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors font-mono cursor-pointer"
           >
-            <option value="classic" selected>Classic Hexagon (58 Cells)</option>
+            <option value="classic" selected>Classic Arena (58 Cells)</option>
             <option value="ring">Donut Void (48 Cells)</option>
-            <option value="hourglass">Quantum Hourglass (40 Cells)</option>
+            <option value="hourglass">Hourglass (40 Cells)</option>
             <option value="trio">Tri-Chamber (61 Cells)</option>
             <option value="warp">Warp Nexus (84 Cells)</option>
           </select>
         </div>
       </div>
 
-      <!-- Stage Select (4 Distinct Retro Themes) -->
+      <!-- Theme / Stage Select -->
       <div class="flex flex-col gap-1.5">
         <div class="flex items-center justify-between">
-          <span class="text-[10px] font-bold text-slate-400 font-['Outfit'] uppercase tracking-wider">
-            Stage Select (Retro Theme)
+          <span class="text-[11px] sm:text-xs font-bold text-slate-300 font-['Outfit'] uppercase tracking-wider">
+            Board Theme
           </span>
-          <span id="splash-theme-tagline" class="text-[9px] font-mono text-cyan-300">
-            1978 Space Arcade & Alien Radar
+          <span id="splash-theme-tagline" class="text-[10px] sm:text-xs font-mono font-bold text-cyan-300">
+            Cosmic Ruby & Pearl
           </span>
         </div>
 
         <select id="splash-select-theme" class="hidden">
-          <option value="space_invaders" selected>Stage 1: Space Invaders</option>
-          <option value="kirby_mario">Stage 2: 8-Bit Odyssey (Kirby/Mario)</option>
-          <option value="cyberpunk">Stage 3: Cyberpunk 2099</option>
-          <option value="tetris">Stage 4: Tetris Matrix</option>
+          <option value="space_invaders" selected>Cosmic Ruby & Pearl</option>
+          <option value="kirby_mario">Sunset Horizon</option>
+          <option value="cyberpunk">Cyber Neon</option>
+          <option value="tetris">Ocean Depths</option>
         </select>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
-          <!-- Stage 1: Space Invaders -->
+          <!-- Theme 1: Cosmic -->
           <button
             type="button"
             data-theme="space_invaders"
-            class="btn-splash-theme active theme-select-card p-2 sm:p-2.5 rounded-xl border border-cyan-400/80 bg-cyan-500/20 text-left flex flex-col gap-1 cursor-pointer transition-all active:scale-95"
+            class="btn-splash-theme active theme-select-card p-2 sm:p-2.5 rounded-2xl border-2 border-cyan-400 bg-cyan-500/20 text-left flex flex-col gap-1 cursor-pointer transition-all active:scale-95"
           >
             <div class="flex items-center justify-between w-full">
-              <span class="text-sm sm:text-base">👾</span>
-              <span class="text-[8px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">1978</span>
+              <span class="text-sm sm:text-base">💎</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 font-bold">Classic</span>
             </div>
             <div>
-              <div class="text-[11px] font-black text-white font-['Outfit'] truncate">Space Invaders</div>
-              <div class="text-[8px] font-mono text-slate-400 truncate">Alien Radar Grid</div>
-            </div>
-            <div class="flex items-center gap-1 mt-0.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#ff007f]"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-[#00ff88]"></span>
-              <span class="text-[8px] font-mono text-slate-400">Stage 1</span>
+              <div class="text-[11px] sm:text-xs font-black text-white font-['Outfit'] truncate">Cosmic Arena</div>
+              <div class="text-[9px] sm:text-[10px] font-mono text-slate-300 truncate">Ruby & Pearl</div>
             </div>
           </button>
 
-          <!-- Stage 2: Kirby / Mario NES -->
+          <!-- Theme 2: Sunset -->
           <button
             type="button"
             data-theme="kirby_mario"
-            class="btn-splash-theme theme-select-card p-2 sm:p-2.5 rounded-xl border border-slate-700 bg-[#04060c] text-left flex flex-col gap-1 cursor-pointer transition-all hover:border-pink-400/60 active:scale-95"
+            class="btn-splash-theme theme-select-card p-2 sm:p-2.5 rounded-2xl border-2 border-slate-700 bg-[#0d1429] text-left flex flex-col gap-1 cursor-pointer transition-all hover:border-pink-400 active:scale-95"
           >
             <div class="flex items-center justify-between w-full">
-              <span class="text-sm sm:text-base">🍄</span>
-              <span class="text-[8px] font-mono px-1 py-0.2 rounded bg-pink-500/20 text-pink-300 font-bold border border-pink-500/30">NES</span>
+              <span class="text-sm sm:text-base">🌅</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 font-bold">Sunset</span>
             </div>
             <div>
-              <div class="text-[11px] font-black text-white font-['Outfit'] truncate">8-Bit Odyssey</div>
-              <div class="text-[8px] font-mono text-slate-400 truncate">Kirby & Mario NES</div>
-            </div>
-            <div class="flex items-center gap-1 mt-0.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#ff69b4]"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></span>
-              <span class="text-[8px] font-mono text-slate-400">Stage 2</span>
+              <div class="text-[11px] sm:text-xs font-black text-white font-['Outfit'] truncate">Sunset Horizon</div>
+              <div class="text-[9px] sm:text-[10px] font-mono text-slate-300 truncate">Warm Glow</div>
             </div>
           </button>
 
-          <!-- Stage 3: Cyberpunk -->
+          <!-- Theme 3: Cyber -->
           <button
             type="button"
             data-theme="cyberpunk"
-            class="btn-splash-theme theme-select-card p-2 sm:p-2.5 rounded-xl border border-slate-700 bg-[#04060c] text-left flex flex-col gap-1 cursor-pointer transition-all hover:border-cyan-400/60 active:scale-95"
+            class="btn-splash-theme theme-select-card p-2 sm:p-2.5 rounded-2xl border-2 border-slate-700 bg-[#0d1429] text-left flex flex-col gap-1 cursor-pointer transition-all hover:border-purple-400 active:scale-95"
           >
             <div class="flex items-center justify-between w-full">
               <span class="text-sm sm:text-base">⚡</span>
-              <span class="text-[8px] font-mono px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">SYNTH</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold">Neon</span>
             </div>
             <div>
-              <div class="text-[11px] font-black text-white font-['Outfit'] truncate">Cyberpunk 2099</div>
-              <div class="text-[8px] font-mono text-slate-400 truncate">Neon Synthwave</div>
-            </div>
-            <div class="flex items-center gap-1 mt-0.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#ff0055]"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-[#00f0ff]"></span>
-              <span class="text-[8px] font-mono text-slate-400">Stage 3</span>
+              <div class="text-[11px] sm:text-xs font-black text-white font-['Outfit'] truncate">Cyber Neon</div>
+              <div class="text-[9px] sm:text-[10px] font-mono text-slate-300 truncate">Electric Synth</div>
             </div>
           </button>
 
-          <!-- Stage 4: Tetris -->
+          <!-- Theme 4: Ocean -->
           <button
             type="button"
             data-theme="tetris"
-            class="btn-splash-theme theme-select-card p-2 sm:p-2.5 rounded-xl border border-slate-700 bg-[#04060c] text-left flex flex-col gap-1 cursor-pointer transition-all hover:border-blue-400/60 active:scale-95"
+            class="btn-splash-theme theme-select-card p-2 sm:p-2.5 rounded-2xl border-2 border-slate-700 bg-[#0d1429] text-left flex flex-col gap-1 cursor-pointer transition-all hover:border-blue-400 active:scale-95"
           >
             <div class="flex items-center justify-between w-full">
-              <span class="text-sm sm:text-base">🧱</span>
-              <span class="text-[8px] font-mono px-1 py-0.2 rounded bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30">1989</span>
+              <span class="text-sm sm:text-base">🌊</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold">Ocean</span>
             </div>
             <div>
-              <div class="text-[11px] font-black text-white font-['Outfit'] truncate">Tetris Matrix</div>
-              <div class="text-[8px] font-mono text-slate-400 truncate">Block Arcade</div>
-            </div>
-            <div class="flex items-center gap-1 mt-0.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#ef4444]"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-[#06b6d4]"></span>
-              <span class="text-[8px] font-mono text-slate-400">Stage 4</span>
+              <div class="text-[11px] sm:text-xs font-black text-white font-['Outfit'] truncate">Ocean Depths</div>
+              <div class="text-[9px] sm:text-[10px] font-mono text-slate-300 truncate">Deep Azure</div>
             </div>
           </button>
         </div>
       </div>
 
-      <!-- CPU Difficulty Buttons (Visible in PvE mode) -->
+      <!-- CPU Difficulty (Visible in PvE mode) -->
       <div id="splash-container-difficulty" class="flex flex-col gap-1">
-        <span class="text-[10px] font-bold text-slate-400 font-['Outfit'] uppercase tracking-wider">
+        <span class="text-[11px] sm:text-xs font-bold text-slate-300 font-['Outfit'] uppercase tracking-wider">
           AI Difficulty
         </span>
-        <div class="grid grid-cols-3 gap-1 p-0.5 rounded-xl bg-[#04060c] border border-slate-700">
-          <button type="button" data-diff="easy" class="btn-splash-diff py-1.5 sm:py-2 text-xs font-mono font-bold text-slate-400 rounded-lg transition-colors hover:text-emerald-300 cursor-pointer active:scale-95">Easy</button>
-          <button type="button" data-diff="medium" class="btn-splash-diff active py-1.5 sm:py-2 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-lg cursor-pointer active:scale-95">Medium</button>
-          <button type="button" data-diff="master" class="btn-splash-diff py-1.5 sm:py-2 text-xs font-mono font-bold text-slate-400 rounded-lg transition-colors hover:text-rose-400 cursor-pointer active:scale-95">Master</button>
+        <div class="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-[#0d1429] border border-slate-700">
+          <button type="button" data-diff="easy" class="btn-splash-diff py-1.5 sm:py-2 text-xs font-mono font-bold text-slate-400 rounded-xl transition-colors hover:text-emerald-300 cursor-pointer active:scale-95">Easy</button>
+          <button type="button" data-diff="medium" class="btn-splash-diff active py-1.5 sm:py-2 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-xl cursor-pointer active:scale-95">Medium</button>
+          <button type="button" data-diff="master" class="btn-splash-diff py-1.5 sm:py-2 text-xs font-mono font-bold text-slate-400 rounded-xl transition-colors hover:text-rose-400 cursor-pointer active:scale-95">Master</button>
         </div>
       </div>
 
@@ -340,19 +327,18 @@
       <button
         id="btn-splash-start-game"
         type="button"
-        class="w-full mt-1 sm:mt-2 py-3 sm:py-3.5 px-6 rounded-xl font-bold font-['Outfit'] text-xs sm:text-sm tracking-wide text-black bg-gradient-to-r from-white via-cyan-100 to-cyan-300 hover:from-white hover:to-white shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:shadow-[0_0_30px_rgba(0,229,255,0.7)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+        class="poki-btn poki-btn-primary w-full mt-1 sm:mt-2 py-3.5 sm:py-4 px-6 rounded-2xl text-base sm:text-lg font-black tracking-wide uppercase flex items-center justify-center gap-2 shadow-xl"
       >
-        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-black animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg class="w-5 h-5 text-[#0b0f19]" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
         </svg>
-        <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider">START BATTLE</span>
+        <span>START BATTLE</span>
       </button>
 
     </div>
   </div>
 
   <!-- Bottom Spacer -->
-  <div class="h-1 sm:h-4"></div>
+  <div class="h-1 sm:h-2 shrink-0"></div>
 
 </div>

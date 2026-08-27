@@ -6,141 +6,137 @@ interface Props {
 const { isSubpage = false } = Astro.props;
 ---
 
-<header class="w-full border-b border-slate-800/80 bg-[#03040a]/95 shrink-0 z-40">
-  <div class="max-w-6xl mx-auto px-2.5 sm:px-4 md:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 sm:gap-4">
+<header class="w-full border-b border-slate-800/80 bg-[#0b1021]/95 shrink-0 z-40">
+  <div class="max-w-6xl mx-auto px-2.5 sm:px-4 md:px-6 h-11 sm:h-13 flex items-center justify-between gap-1.5 sm:gap-4">
     
-    <!-- Brand / Return to Menu & Strong Title -->
-    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+    <!-- Brand / Return to Menu & Title -->
+    <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 min-w-0">
       {isSubpage ? (
         <a
           href={import.meta.env.BASE_URL}
-          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-mono font-bold text-cyan-300 hover:text-white bg-cyan-950/50 hover:bg-cyan-900/70 border border-cyan-500/40 hover:border-cyan-400 rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
+          class="poki-btn poki-btn-secondary px-2.5 sm:px-3 py-1 text-xs font-mono font-bold text-cyan-300 hover:text-white rounded-xl flex items-center gap-1 shrink-0"
           title="Return to Game Arena"
         >
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span class="hidden xs:inline">Back to Game</span>
-          <span class="xs:hidden">Game</span>
+          <span class="hidden xs:inline">Game</span>
         </a>
       ) : (
         <button
           id="btn-nav-menu"
           type="button"
-          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-mono font-bold text-cyan-300 hover:text-white bg-cyan-950/50 hover:bg-cyan-900/70 border border-cyan-500/40 hover:border-cyan-400 rounded-lg transition-all cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 active:scale-95"
+          class="poki-btn poki-btn-secondary px-2.5 sm:px-3 py-1 text-xs font-mono font-bold text-cyan-300 hover:text-white rounded-xl flex items-center gap-1 shrink-0"
           title="Return to Main Menu"
         >
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
           <span class="hidden xs:inline">Menu</span>
         </button>
       )}
 
       <!-- Strong Prominent Brand Title -->
-      <a href={import.meta.env.BASE_URL} class="flex items-center gap-1.5 sm:gap-2 group">
-        <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-gradient-to-tr from-[#ff0844] to-[#00e5ff] shadow-[0_0_8px_rgba(0,229,255,0.6)] group-hover:scale-125 transition-transform animate-pulse shrink-0"></span>
-        <span class="text-xs sm:text-sm md:text-base font-black font-['Outfit'] tracking-wider text-white uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.2)] group-hover:text-cyan-200 transition-colors truncate max-w-[110px] xs:max-w-[160px] sm:max-w-none">
+      <a href={import.meta.env.BASE_URL} class="flex items-center gap-1.5 sm:gap-2 group min-w-0">
+        <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-[#ff2d60] to-[#00e5ff] shadow-[0_0_10px_rgba(0,229,255,0.8)] group-hover:scale-110 transition-transform shrink-0"></span>
+        <span class="text-xs sm:text-sm md:text-base font-black font-['Outfit'] tracking-wide text-white uppercase group-hover:text-cyan-300 transition-colors truncate max-w-[100px] xs:max-w-[140px] sm:max-w-none">
           Hex Board Game
         </span>
       </a>
     </div>
 
-    <!-- Navigation Group -->
-    <nav class="flex items-center gap-1 sm:gap-2 shrink-0">
+    <!-- Navigation Group (Responsive & Compact) -->
+    <nav class="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0">
       {isSubpage ? (
-        <div class="flex items-center gap-1.5 sm:gap-3">
+        <div class="flex items-center gap-1.5 sm:gap-2">
           <a
             href={import.meta.env.BASE_URL}
-            class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-mono font-bold text-slate-200 hover:text-white bg-slate-800/90 hover:bg-slate-700 border border-slate-700 rounded-lg transition-all"
+            class="poki-btn poki-btn-primary px-2.5 sm:px-3 py-1 text-xs font-bold rounded-xl"
           >
-            <span>🎮</span>
-            <span class="hidden sm:inline">Play Free</span>
+            <span>🎮 Play</span>
           </a>
           <a
             href={`${import.meta.env.BASE_URL}privacy-policy`}
-            class="text-xs font-mono text-slate-400 hover:text-cyan-300 transition-colors px-1.5 sm:px-2 py-1"
+            class="text-xs font-mono font-medium text-slate-400 hover:text-cyan-300 transition-colors px-1.5 py-1"
           >
             Privacy
           </a>
           <a
             href={`${import.meta.env.BASE_URL}terms`}
-            class="text-xs font-mono text-slate-400 hover:text-cyan-300 transition-colors px-1.5 sm:px-2 py-1"
+            class="text-xs font-mono font-medium text-slate-400 hover:text-cyan-300 transition-colors px-1.5 py-1"
           >
             Terms
           </a>
         </div>
       ) : (
         <>
-          <!-- How to Play Rules Button -->
+          <!-- Rules Button (Visible on sm+) -->
           <button
             id="btn-open-how-to-play"
             type="button"
-            class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
+            class="hidden sm:inline-flex poki-btn poki-btn-secondary px-2 sm:px-2.5 py-1 text-xs text-slate-200 hover:text-white rounded-xl items-center gap-1"
             title="Rules & How to Play"
           >
-            <span class="text-xs sm:text-sm">📖</span>
-            <span class="hidden md:inline font-mono text-xs">Rules</span>
+            <span>📖</span>
+            <span class="hidden md:inline font-mono font-bold text-xs">Rules</span>
           </button>
 
-          <!-- Strategy Guide Button -->
+          <!-- Tactics Button (Visible on md+) -->
           <button
             id="btn-open-strategy"
             type="button"
-            class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 text-xs font-medium text-purple-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-purple-500/40 rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
+            class="hidden md:inline-flex poki-btn poki-btn-secondary px-2.5 py-1 text-xs text-purple-300 hover:text-white rounded-xl items-center gap-1"
             title="Tactical Strategy Guide"
           >
-            <span class="text-xs sm:text-sm">⚡</span>
-            <span class="hidden md:inline font-mono text-xs">Tactics</span>
+            <span>⚡</span>
+            <span class="font-mono font-bold text-xs">Tactics</span>
           </button>
 
           <!-- Stats Button -->
           <button
             id="btn-open-stats"
             type="button"
-            class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
+            class="poki-btn poki-btn-secondary px-2 sm:px-2.5 py-1 text-xs text-slate-200 hover:text-white rounded-xl flex items-center gap-1"
             title="Combat Statistics"
           >
-            <span class="text-xs sm:text-sm">📊</span>
-            <span class="hidden md:inline font-mono text-xs">Stats</span>
+            <span>📊</span>
+            <span class="hidden lg:inline font-mono font-bold text-xs">Stats</span>
           </button>
 
           <!-- Settings Button -->
           <button
             id="btn-open-settings"
             type="button"
-            class="inline-flex items-center justify-center p-1.5 sm:p-2 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
-            title="Settings & Preferences"
+            class="poki-btn poki-btn-secondary px-2 py-1 text-xs text-slate-200 hover:text-white rounded-xl"
+            title="Settings"
           >
-            <span class="text-xs sm:text-sm">⚙️</span>
+            <span>⚙️</span>
           </button>
 
           <!-- Sound Toggle -->
           <button
             id="btn-toggle-sound"
             type="button"
-            class="inline-flex items-center justify-center p-1.5 sm:p-2 text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
+            class="poki-btn poki-btn-secondary px-2 py-1 text-xs text-slate-200 hover:text-white rounded-xl"
             title="Toggle Sound"
           >
-            <!-- Sound On Icon -->
-            <svg id="icon-sound-on" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <svg id="icon-sound-on" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
             </svg>
-            <!-- Sound Off Icon -->
-            <svg id="icon-sound-off" class="w-3.5 h-3.5 hidden text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+            <svg id="icon-sound-off" class="w-3.5 h-3.5 hidden text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
             </svg>
           </button>
 
-          <!-- Ghost / Outline Reset Button -->
+          <!-- Reset Match Button -->
           <button
             id="btn-restart-game"
             type="button"
-            class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 text-xs font-mono font-semibold text-slate-300 hover:text-amber-300 bg-slate-900/60 hover:bg-amber-950/30 border border-slate-700/80 hover:border-amber-500/50 rounded-lg transition-all shadow-sm cursor-pointer active:scale-95 shrink-0"
-            title="Reset Current Match"
+            class="poki-btn poki-btn-secondary px-2 sm:px-2.5 py-1 text-xs font-mono font-bold text-amber-300 hover:text-white rounded-xl flex items-center gap-1"
+            title="Restart Match"
           >
-            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             <span class="hidden sm:inline">Reset</span>
           </button>

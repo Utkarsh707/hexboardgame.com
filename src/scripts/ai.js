@@ -151,8 +151,8 @@ export class HexxagonAI {
             return valB - valA;
         });
 
-        // Beam Search Pruning for deeper plies to maintain 60 FPS
-        const candidateMoves = (moves.length > 14 && depth > 1) ? moves.slice(0, 14) : moves;
+        // Beam Search Pruning: evaluate top 8 candidate moves per ply for instant < 4ms execution
+        const candidateMoves = (moves.length > 8) ? moves.slice(0, 8) : moves;
 
         if (isMaximizing) {
             let maxEval = -Infinity;
@@ -203,7 +203,7 @@ export class HexxagonAI {
         const opponent = allPlayers.find(p => p !== player) || 'ruby';
 
         // Non-blocking natural micro-delay for realistic pacing
-        await new Promise(resolve => setTimeout(resolve, 220 + Math.random() * 80));
+        await new Promise(resolve => setTimeout(resolve, 180 + Math.random() * 60));
 
         if (this.difficulty === 'easy') {
             if (Math.random() < 0.35) {
@@ -222,10 +222,8 @@ export class HexxagonAI {
             return result.move || moves[0];
         }
 
-        // Master AI: Fast lookahead with tactical beam pruning
-        const emptyCount = state.cells.length - Object.keys(state.board).length;
-        const depth = (moves.length <= 10 || emptyCount <= 8) ? 4 : 3;
-        const result = HexxagonAI.minimax(state, depth, -Infinity, Infinity, true, player, opponent, allPlayers);
+        // Master AI: Fast lookahead with depth 2 and beam search
+        const result = HexxagonAI.minimax(state, 2, -Infinity, Infinity, true, player, opponent, allPlayers);
         return result.move || moves[0];
     }
 }

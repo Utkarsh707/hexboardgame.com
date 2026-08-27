@@ -21,6 +21,7 @@ export class HexxagonGame {
         this.presetId = options.presetId || 'classic';
         this.themeId = options.themeId || 'space_invaders';
         this.gameMode = options.gameMode || 'pve-medium';
+        this.isTutorialMode = false;
 
         this.state = null;
         this.history = [];
@@ -124,6 +125,10 @@ export class HexxagonGame {
         this.initGame(presetId);
     }
 
+    setTutorialMode(active) {
+        this.isTutorialMode = !!active;
+    }
+
     getTheme() {
         return STAGE_THEMES[this.themeId] || STAGE_THEMES.space_invaders;
     }
@@ -213,7 +218,7 @@ export class HexxagonGame {
     }
 
     isCurrentPlayerAi() {
-        if (this.gameMode === 'pvp') return false;
+        if (this.gameMode === 'pvp' || this.gameMode === 'tutorial') return false;
         if (this.gameMode.startsWith('pve-')) {
             return this.getCurrentPlayer() === 'pearl';
         }
@@ -807,13 +812,18 @@ export class HexxagonGame {
         setTimeout(() => beam.remove(), 520);
     }
 
-    triggerBoardShake() {
+    triggerBoardShake(intensity = 'medium') {
         if (typeof window !== 'undefined' && localStorage.getItem('hexxagon_shake') === 'false') return;
         const boardViewport = document.getElementById('board-viewport');
         if (boardViewport) {
-            boardViewport.classList.remove('board-rumble');
-            void boardViewport.offsetWidth; // force reflow
-            boardViewport.classList.add('board-rumble');
+            boardViewport.classList.remove('board-rumble', 'board-rumble-heavy');
+            // Force reflow to reliably restart CSS keyframe animation
+            void boardViewport.offsetWidth;
+            const cls = intensity === 'heavy' ? 'board-rumble-heavy' : 'board-rumble';
+            boardViewport.classList.add(cls);
+            setTimeout(() => {
+                boardViewport.classList.remove('board-rumble', 'board-rumble-heavy');
+            }, intensity === 'heavy' ? 460 : 360);
         }
     }
 
@@ -1082,7 +1092,7 @@ export class HexxagonGame {
 
         // Staggered conversion audio & native vector animation
         if (move.captures.length > 0) {
-            this.triggerBoardShake();
+            this.triggerBoardShake(move.captures.length >= 3 ? 'heavy' : 'medium');
 
             move.captures.forEach((capKey, idx) => {
                 setTimeout(() => {
@@ -1123,6 +1133,11 @@ export class HexxagonGame {
     }
 
     async advanceTurn() {
+        if (this.isTutorialMode && this.gameMode === 'tutorial') {
+            this.notifyState();
+            return;
+        }
+
         const totalPlayers = this.state.players.length;
         const scores = this.calculateScores();
         const activePlayersWithPieces = this.state.players.filter(p => (scores[p] || 0) > 0);
@@ -1315,13 +1330,15 @@ export class HexxagonGame {
             winner = 'tie';
         }
 
-        if (winner === 'ruby' || (winner !== 'pearl' && winner !== 'tie')) {
-            sound.playVictory();
-        } else if (winner === 'pearl' && this.gameMode.startsWith('pve-')) {
-            sound.playDefeat();
-        }
+        if (!this.isTutorialMode && this.gameMode !== 'tutorial') {
+            if (winner === 'ruby' || (winner !== 'pearl' && winner !== 'tie')) {
+                sound.playVictory();
+            } else if (winner === 'pearl' && this.gameMode.startsWith('pve-')) {
+                sound.playDefeat();
+            }
 
-        this.saveStats(winner, scores);
+            this.saveStats(winner, scores);
+        }
 
         this.emit('gameOver', {
             winner,
@@ -1333,7 +1350,7 @@ export class HexxagonGame {
     }
 
     saveStats(winner, scores) {
-        if (typeof window === 'undefined') return;
+        if (typeof window === 'undefined' || this.isTutorialMode || this.gameMode === 'tutorial') return;
         try {
             const raw = localStorage.getItem('hexxagon_stats_v2') || '{}';
             const stats = JSON.parse(raw);

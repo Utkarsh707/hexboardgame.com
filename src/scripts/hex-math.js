@@ -55,21 +55,34 @@ export class HexMath {
         return HEX_DIRECTIONS;
     }
 
+    static neighborCache = new Map();
+    static reachableCache = new Map();
+
     static getNeighbors(center) {
+        const cacheKey = `${center.q},${center.r}`;
+        let cached = HexMath.neighborCache.get(cacheKey);
+        if (cached) return cached;
+
         const cs = center.s !== undefined ? center.s : -center.q - center.r;
         const neighbors = new Array(6);
         for (let i = 0; i < 6; i++) {
             const dir = HEX_DIRECTIONS[i];
-            neighbors[i] = {
+            neighbors[i] = Object.freeze({
                 q: center.q + dir.q,
                 r: center.r + dir.r,
                 s: cs + dir.s
-            };
+            });
         }
+        Object.freeze(neighbors);
+        HexMath.neighborCache.set(cacheKey, neighbors);
         return neighbors;
     }
 
     static getReachableHexes(center, maxDistance = 2) {
+        const cacheKey = `${center.q},${center.r}_${maxDistance}`;
+        let cached = HexMath.reachableCache.get(cacheKey);
+        if (cached) return cached;
+
         const results = [];
         const cs = center.s !== undefined ? center.s : -center.q - center.r;
 
@@ -80,16 +93,18 @@ export class HexMath {
                 const ds = -dq - dr;
                 const dist = Math.max(Math.abs(dq), Math.abs(dr), Math.abs(ds));
                 if (dist > 0 && dist <= maxDistance) {
-                    results.push({
+                    results.push(Object.freeze({
                         q: center.q + dq,
                         r: center.r + dr,
                         s: cs + ds,
                         distance: dist,
                         type: dist === 1 ? 'clone' : 'jump'
-                    });
+                    }));
                 }
             }
         }
+        Object.freeze(results);
+        HexMath.reachableCache.set(cacheKey, results);
         return results;
     }
 

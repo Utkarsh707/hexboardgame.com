@@ -177,13 +177,19 @@ export class SoundEngine {
     scheduler() {
         if (!this.isPlayingMusic || !this.ctx) return;
 
+        // If audio is muted, idle the scheduler lightly
+        if (this.musicMuted || this.muted) {
+            this.schedulerTimer = setTimeout(() => this.scheduler(), 200);
+            return;
+        }
+
         // Catch up if context was suspended or thread throttled to avoid note pile-up
         if (this.nextStepTime < this.ctx.currentTime) {
             this.nextStepTime = this.ctx.currentTime + 0.02;
         }
 
         const secondsPerStep = 60 / (this.tempo * 4); // 16th note duration
-        const scheduleAheadTime = 0.12;
+        const scheduleAheadTime = 0.25;
 
         while (this.nextStepTime < this.ctx.currentTime + scheduleAheadTime) {
             this.playStep(this.currentStep, this.nextStepTime);
@@ -191,7 +197,7 @@ export class SoundEngine {
             this.currentStep = (this.currentStep + 1) % 32; // 2-bar 32-step loop
         }
 
-        this.schedulerTimer = setTimeout(() => this.scheduler(), 25);
+        this.schedulerTimer = setTimeout(() => this.scheduler(), 60);
     }
 
     playStep(step, time) {

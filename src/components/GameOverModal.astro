@@ -3,13 +3,13 @@
 
 <dialog
   id="dialog-game-over"
-  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 max-w-md w-[calc(100vw-1rem)]"
+  class="fixed inset-0 z-50 p-3 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 max-w-md w-[calc(100vw-1.5rem)]"
   aria-labelledby="game-over-title"
 >
-  <div class="nes-card rounded-2xl p-5 sm:p-7 border border-cyan-400/30 text-slate-100 flex flex-col items-center text-center gap-4 sm:gap-5 relative overflow-hidden max-h-[88vh] overflow-y-auto">
+  <div class="poki-card rounded-3xl p-6 sm:p-7 border-2 border-cyan-400/40 text-slate-100 flex flex-col items-center text-center gap-4 sm:gap-5 relative overflow-hidden shadow-2xl">
     
     <!-- Trophy / Badge Icon -->
-    <div id="game-over-icon" class="w-16 h-16 rounded-2xl bg-[#090d1a] border border-cyan-400/40 flex items-center justify-center text-3xl">
+    <div id="game-over-icon" class="w-16 h-16 sm:w-18 sm:h-18 rounded-3xl bg-[#0b1021] border-2 border-cyan-400/40 flex items-center justify-center text-3xl sm:text-4xl shadow-md">
       🏆
     </div>
 
@@ -18,40 +18,40 @@
       <h2 id="game-over-title" class="text-xl sm:text-2xl font-black tracking-tight text-white font-['Outfit']">
         Match Concluded
       </h2>
-      <p id="game-over-subtitle" class="text-xs text-slate-400 font-mono">
+      <p id="game-over-subtitle" class="text-xs text-slate-300 font-medium">
         All playable territory claimed.
       </p>
     </div>
 
     <!-- Final Score Display -->
-    <div class="w-full grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#050814] border border-cyan-500/30">
+    <div class="w-full grid grid-cols-2 gap-3 p-4 rounded-2xl bg-[#0b1021] border-2 border-slate-700/80">
       <div class="flex flex-col items-center">
-        <span class="text-[9px] font-['Press_Start_2P'] uppercase text-[#ff2d60]">RUBIES</span>
-        <span id="final-score-ruby" class="text-3xl font-black font-mono text-[#ff2d60] tabular-nums mt-1">0</span>
+        <span class="text-xs font-black uppercase text-[#ff2d60] font-['Outfit'] tracking-wider">RUBIES</span>
+        <span id="final-score-ruby" class="text-3xl sm:text-4xl font-black font-mono text-[#ff2d60] tabular-nums mt-1">0</span>
       </div>
-      <div class="flex flex-col items-center border-l border-cyan-500/20">
-        <span class="text-[9px] font-['Press_Start_2P'] uppercase text-[#00e5ff]">PEARLS</span>
-        <span id="final-score-pearl" class="text-3xl font-black font-mono text-[#00e5ff] tabular-nums mt-1">0</span>
+      <div class="flex flex-col items-center border-l-2 border-slate-700/80">
+        <span class="text-xs font-black uppercase text-[#00e5ff] font-['Outfit'] tracking-wider">PEARLS</span>
+        <span id="final-score-pearl" class="text-3xl sm:text-4xl font-black font-mono text-[#00e5ff] tabular-nums mt-1">0</span>
       </div>
     </div>
 
-    <!-- Play Again & Review Action Buttons (Evenly aligned 2-column grid) -->
+    <!-- Play Again & Review Action Buttons -->
     <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
       <button
         id="btn-game-over-rematch"
         type="button"
-        class="w-full nes-btn-primary py-2.5 px-4 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 flex items-center justify-center gap-1.5 cursor-pointer"
+        class="poki-btn poki-btn-primary py-3 px-4 rounded-xl text-xs font-black font-mono uppercase flex items-center justify-center gap-1.5"
       >
         <svg class="w-4 h-4 text-black shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
-        <span>PLAY REMATCH</span>
+        <span>PLAY AGAIN</span>
       </button>
 
       <button
         id="btn-game-over-close"
         type="button"
-        class="w-full nes-btn-secondary py-2.5 px-4 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 flex items-center justify-center gap-1.5 cursor-pointer"
+        class="poki-btn poki-btn-secondary py-3 px-4 rounded-xl text-xs font-bold font-mono text-slate-200 uppercase flex items-center justify-center gap-1.5"
       >
         <span>REVIEW BOARD</span>
       </button>

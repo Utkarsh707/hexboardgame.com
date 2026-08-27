@@ -45,8 +45,12 @@ export class ParticleEngine {
         const displayWidth = rect.width || 700;
         const displayHeight = rect.height || 700;
 
-        this.canvas.width = Math.round(displayWidth * this.dpr);
-        this.canvas.height = Math.round(displayHeight * this.dpr);
+        const targetW = Math.round(displayWidth * this.dpr);
+        const targetH = Math.round(displayHeight * this.dpr);
+        if (this.canvas.width !== targetW || this.canvas.height !== targetH) {
+            this.canvas.width = targetW;
+            this.canvas.height = targetH;
+        }
 
         const vw = this.vw || 700;
         const vh = this.vh || 700;

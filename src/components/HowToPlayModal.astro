@@ -3,109 +3,117 @@
 
 <dialog
   id="dialog-how-to-play"
-  class="fixed inset-0 z-50 p-2 sm:p-4 m-auto bg-transparent backdrop:bg-black/80 max-w-xl w-[calc(100vw-1rem)]"
+  class="fixed inset-0 z-50 p-3 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 max-w-xl w-[calc(100vw-1.5rem)]"
   aria-labelledby="how-to-play-title"
 >
-  <div class="nes-card rounded-2xl p-4 sm:p-6 border border-cyan-400/30 text-slate-100 flex flex-col gap-4 sm:gap-5 max-h-[88vh] overflow-y-auto">
+  <div class="poki-card rounded-3xl p-5 sm:p-7 border-2 border-slate-700/60 text-slate-100 flex flex-col gap-4 max-h-[88vh] overflow-y-auto shadow-2xl">
     
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+    <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm shadow-[0_0_12px_rgba(0,229,255,0.3)]">
+        <div class="w-9 h-9 rounded-2xl bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-base shadow-sm">
           📖
         </div>
-        <h2 id="how-to-play-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-['Press_Start_2P'] text-[11px] sm:text-xs text-cyan-300">
+        <h2 id="how-to-play-title" class="text-base sm:text-lg font-black text-white tracking-wide font-['Outfit']">
           HOW TO PLAY
         </h2>
       </div>
       <button
         id="btn-close-how-to-play"
         type="button"
-        class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+        class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
         aria-label="Close dialog"
       >
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
     <!-- Rules Walkthrough Content -->
-    <div class="flex flex-col gap-3 text-xs leading-relaxed text-slate-300">
+    <div class="flex flex-col gap-3 text-xs leading-relaxed text-slate-200">
       
       <!-- Rule 1: Selection & Duplication -->
-      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3.5 rounded-2xl bg-[#0b1021] border border-slate-700/80 flex items-start gap-3">
+        <div class="w-7 h-7 rounded-full bg-emerald-500/20 border-2 border-emerald-400 text-emerald-400 flex items-center justify-center font-mono font-black shrink-0">
           1
         </div>
         <div>
-          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 flex items-center gap-1.5 font-['Outfit']">
-            <span>Clone / Duplicate (Distance 1)</span>
-            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800">Green Ring</span>
+          <h3 class="font-extrabold text-white text-sm mb-0.5 flex items-center gap-2 font-['Outfit']">
+            <span>Clone / Duplicate (1 Step)</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">Green Ring</span>
           </h3>
-          <p class="text-[11px] sm:text-xs text-slate-400">
-            Click one of your pieces and select an adjacent hex (1 step). A brand new piece is spawned on the target cell while keeping your original piece intact.
+          <p class="text-xs text-slate-300">
+            Click one of your gems and select an adjacent hex (1 step). A brand new gem duplicates onto the target while keeping your original piece intact.
           </p>
         </div>
       </div>
 
       <!-- Rule 2: Jumping -->
-      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3.5 rounded-2xl bg-[#0b1021] border border-slate-700/80 flex items-start gap-3">
+        <div class="w-7 h-7 rounded-full bg-amber-500/20 border-2 border-amber-400 text-amber-400 flex items-center justify-center font-mono font-black shrink-0">
           2
         </div>
         <div>
-          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 flex items-center gap-1.5 font-['Outfit']">
-            <span>Jump / Leap (Distance 2)</span>
-            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800">Amber Ring</span>
+          <h3 class="font-extrabold text-white text-sm mb-0.5 flex items-center gap-2 font-['Outfit']">
+            <span>Jump / Leap (2 Steps)</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40">Amber Ring</span>
           </h3>
-          <p class="text-[11px] sm:text-xs text-slate-400">
-            Leap across two spaces to reach tactical positions. Jumping moves the original piece to the destination without duplicating.
+          <p class="text-xs text-slate-300">
+            Leap across two spaces to reach tactical positions. Jumping moves the original gem across the board, leaving your starting tile empty.
           </p>
         </div>
       </div>
 
       <!-- Rule 3: Infection & Capture -->
-      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3.5 rounded-2xl bg-[#0b1021] border border-slate-700/80 flex items-start gap-3">
+        <div class="w-7 h-7 rounded-full bg-rose-500/20 border-2 border-rose-400 text-rose-400 flex items-center justify-center font-mono font-black shrink-0">
           3
         </div>
         <div>
-          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 flex items-center gap-1.5 font-['Outfit']">
-            <span>Infection / Conversion</span>
-            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800">Cascade Attack</span>
+          <h3 class="font-extrabold text-white text-sm mb-0.5 flex items-center gap-2 font-['Outfit']">
+            <span>Touch Conversion / Infection</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold border border-rose-500/40">Infection Wave</span>
           </h3>
-          <p class="text-[11px] sm:text-xs text-slate-400">
-            Whenever your piece lands, all neighboring opponent pieces immediately convert to your color! Strategic moves can turn multiple enemy gems at once.
+          <p class="text-xs text-slate-300">
+            Whenever your gem lands next to enemy pieces, all adjacent enemy gems immediately convert to your side in a chain reaction!
           </p>
         </div>
       </div>
 
       <!-- Rule 4: Win Condition -->
-      <div class="p-3 rounded-xl bg-[#050814] border border-cyan-500/20 flex items-start gap-3">
-        <div class="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 flex items-center justify-center font-mono font-bold shrink-0">
+      <div class="p-3.5 rounded-2xl bg-[#0b1021] border border-slate-700/80 flex items-start gap-3">
+        <div class="w-7 h-7 rounded-full bg-cyan-500/20 border-2 border-cyan-400 text-cyan-300 flex items-center justify-center font-mono font-black shrink-0">
           4
         </div>
         <div>
-          <h3 class="font-bold text-white text-xs sm:text-sm mb-0.5 font-['Outfit']">
+          <h3 class="font-extrabold text-white text-sm mb-0.5 font-['Outfit']">
             Victory Condition
           </h3>
-          <p class="text-[11px] sm:text-xs text-slate-400">
-            The game ends when all board spaces are occupied or an opponent is wiped out. The player with the highest territory count claims victory!
+          <p class="text-xs text-slate-300">
+            The match concludes when all board tiles are occupied or an opponent has no remaining pieces. The player controlling the most gems wins!
           </p>
         </div>
       </div>
 
     </div>
 
-    <!-- Footer action -->
-    <div class="flex justify-end pt-1 border-t border-cyan-500/20">
+    <!-- Dialog Actions -->
+    <div class="flex flex-col sm:flex-row items-center gap-2.5 pt-2 border-t border-slate-700/60">
+      <button
+        id="btn-how-to-play-launch-tutorial"
+        type="button"
+        class="poki-btn poki-btn-cyan w-full sm:flex-1 py-3 rounded-2xl text-xs font-mono font-black tracking-wide uppercase flex items-center justify-center gap-2"
+      >
+        <span>🎓 INTERACTIVE TUTORIAL</span>
+      </button>
+
       <button
         id="btn-confirm-how-to-play"
         type="button"
-        class="nes-btn-primary px-4 py-2 rounded-xl text-xs font-bold font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
+        class="poki-btn poki-btn-primary w-full sm:w-auto px-6 py-3 rounded-2xl text-xs font-black font-mono tracking-wide uppercase"
       >
-        GOT IT
+        GOT IT!
       </button>
     </div>
 

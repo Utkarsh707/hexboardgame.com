@@ -2,442 +2,184 @@
 ---
 
 <!-- ==========================================================================
-     AUTHENTIC GENRE-ACCURATE RETRO STAGE BACKDROPS
-     - Stage 1: Space Invaders (1978 Arcade CRT • Pixel Aliens & Radar Oscilloscope)
-     - Stage 2: 8-Bit Odyssey (Kirby & Mario NES • Pixel Hills, [?] Blocks & Nintendo Sky)
-     - Stage 3: Cyberpunk 2099 (Synthwave Megacity Skyline, Neon Kanji & Horizon Grid)
-     - Stage 4: Tetris Matrix (1989 Saint Basil's Cathedral Silhouette & Block Matrix)
+     4 DISTINCT MODERN POKI-STYLE STAGE BACKDROPS
+     1. Cosmic Arena (space_invaders) - Royal deep space, cyan/ruby nebulas & crystal stars
+     2. Sunset Horizon (kirby_mario)  - Warm dusk twilight, solar orb, rolling hills & star sparkles
+     3. Cyber Neon (cyberpunk)       - Midnight synthwave, neon horizon grid & electric skyline
+     4. Ocean Depths (tetris)        - Abyssal azure gradient, bioluminescent bubbles & sun rays
      ========================================================================== -->
+
 <div id="stage-backdrop" class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none" data-theme="space_invaders">
   
   <!-- ========================================================================
-       STAGE 1: SPACE INVADERS (1978 Taito / Bally Midway Arcade CRT)
+       STAGE 1: COSMIC ARENA (Royal Deep Space & Crystal Dust)
        ======================================================================== -->
-  <div class="theme-layer theme-layer-space-invaders absolute inset-0 pointer-events-none bg-[#020704]">
-    <!-- CRT Phosphor Radar Scanlines & Grid -->
-    <div class="absolute inset-0 bg-space-crt-grid opacity-60"></div>
-    <div class="absolute inset-0 bg-space-phosphor-dots opacity-80"></div>
+  <div class="theme-layer theme-layer-cosmic absolute inset-0 pointer-events-none bg-[#080d1a]">
+    <!-- Cosmic Deep Space Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#060a14] via-[#0c142b] to-[#060a14]"></div>
 
-    <!-- Arcade Header Score Readouts in Retro Vector Style -->
-    <div class="absolute top-2 inset-x-0 flex justify-between px-4 sm:px-12 text-[9px] sm:text-[11px] font-mono text-[#00ff88]/60 font-bold uppercase tracking-widest pointer-events-none">
-      <span>1P SCORE <span class="text-white">00420</span></span>
-      <span class="hidden sm:inline">HIGH-SCORE <span class="text-[#ff007f]">99990</span></span>
-      <span>2P SCORE <span class="text-white">00000</span></span>
-    </div>
+    <!-- Vibrant Ambient Nebulas -->
+    <div class="absolute -top-24 -left-24 w-[32rem] h-[32rem] rounded-full bg-cyan-500/12 blur-3xl"></div>
+    <div class="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] rounded-full bg-rose-500/10 blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] rounded-full bg-indigo-500/8 blur-3xl"></div>
 
-    <!-- Authentic 1978 Space Invader Pixel Formations (Vector SVGs) -->
-    <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <!-- Invader Crab Sprite Matrix (11x8) -->
-        <pattern id="invader-crab-pattern" width="44" height="32" patternUnits="userSpaceOnUse">
-          <g fill="#00ff88" opacity="0.45">
-            <!-- Row 1 -->
-            <rect x="8" y="0" width="4" height="4"/><rect x="32" y="0" width="4" height="4"/>
-            <!-- Row 2 -->
-            <rect x="12" y="4" width="4" height="4"/><rect x="28" y="4" width="4" height="4"/>
-            <!-- Row 3 -->
-            <rect x="8" y="8" width="28" height="4"/>
-            <!-- Row 4 -->
-            <rect x="4" y="12" width="8" height="4"/><rect x="16" y="12" width="12" height="4"/><rect x="32" y="12" width="8" height="4"/>
-            <!-- Row 5 -->
-            <rect x="0" y="16" width="44" height="4"/>
-            <!-- Row 6 -->
-            <rect x="0" y="20" width="4" height="4"/><rect x="8" y="20" width="28" height="4"/><rect x="40" y="20" width="4" height="4"/>
-            <!-- Row 7 -->
-            <rect x="0" y="24" width="4" height="4"/><rect x="8" y="24" width="4" height="4"/><rect x="32" y="24" width="4" height="4"/><rect x="40" y="24" width="4" height="4"/>
-            <!-- Row 8 -->
-            <rect x="12" y="28" width="8" height="4"/><rect x="24" y="28" width="8" height="4"/>
-          </g>
-        </pattern>
-
-        <!-- Invader Squid Sprite Matrix (8x8) -->
-        <g id="invader-squid" fill="#ff007f" opacity="0.4">
-          <rect x="6" y="0" width="4" height="2"/>
-          <rect x="4" y="2" width="8" height="2"/>
-          <rect x="2" y="4" width="12" height="2"/>
-          <rect x="0" y="6" width="4" height="2"/><rect x="6" y="6" width="4" height="2"/><rect x="12" y="6" width="4" height="2"/>
-          <rect x="0" y="8" width="16" height="2"/>
-          <rect x="4" y="10" width="2" height="2"/><rect x="10" y="10" width="2" height="2"/>
-          <rect x="2" y="12" width="2" height="2"/><rect x="6" y="12" width="4" height="2"/><rect x="12" y="12" width="2" height="2"/>
-          <rect x="0" y="14" width="2" height="2"/><rect x="14" y="14" width="2" height="2"/>
-        </g>
-      </defs>
-
-      <!-- Flying Mystery Saucer (Top Bonus UFO) -->
-      <g transform="translate(40, 48) scale(1.6)" fill="#ff0055" opacity="0.65">
-        <rect x="10" y="0" width="12" height="2"/>
-        <rect x="6" y="2" width="20" height="2"/>
-        <rect x="4" y="4" width="24" height="2"/>
-        <rect x="2" y="6" width="6" height="2"/><rect x="10" y="6" width="4" height="2"/><rect x="18" y="6" width="4" height="2"/><rect x="24" y="6" width="6" height="2"/>
-        <rect x="0" y="8" width="32" height="2"/>
-        <rect x="6" y="10" width="4" height="2"/><rect x="14" y="10" width="4" height="2"/><rect x="22" y="10" width="4" height="2"/>
-        <rect x="8" y="12" width="2" height="2"/><rect x="22" y="12" width="2" height="2"/>
+    <!-- Geometric Constellations & Star Field -->
+    <svg class="absolute inset-0 w-full h-full opacity-35" xmlns="http://www.w3.org/2000/svg">
+      <!-- Star Constellation Top Left -->
+      <g stroke="#38bdf8" stroke-width="0.8" opacity="0.6">
+        <line x1="8%" y1="12%" x2="16%" y2="18%"/>
+        <line x1="16%" y1="18%" x2="22%" y2="10%"/>
+        <circle cx="8%" cy="12%" r="2.5" fill="#ffffff"/>
+        <circle cx="16%" cy="18%" r="3" fill="#38bdf8"/>
+        <circle cx="22%" cy="10%" r="2.5" fill="#ffffff"/>
       </g>
 
-      <!-- Squid Invader Flank Left -->
-      <use href="#invader-squid" x="30" y="140" transform="scale(2.2)"/>
-      <use href="#invader-squid" x="30" y="210" transform="scale(2.2)"/>
-
-      <!-- Invader Crab Flank Right -->
-      <g transform="translate(480, 120) scale(1.8)" fill="#00ff88" opacity="0.45">
-        <rect x="8" y="0" width="4" height="4"/><rect x="32" y="0" width="4" height="4"/>
-        <rect x="12" y="4" width="4" height="4"/><rect x="28" y="4" width="4" height="4"/>
-        <rect x="8" y="8" width="28" height="4"/>
-        <rect x="4" y="12" width="8" height="4"/><rect x="16" y="12" width="12" height="4"/><rect x="32" y="12" width="8" height="4"/>
-        <rect x="0" y="16" width="44" height="4"/>
-        <rect x="0" y="20" width="4" height="4"/><rect x="8" y="20" width="28" height="4"/><rect x="40" y="20" width="4" height="4"/>
-        <rect x="0" y="24" width="4" height="4"/><rect x="8" y="24" width="4" height="4"/><rect x="32" y="24" width="4" height="4"/><rect x="40" y="24" width="4" height="4"/>
-        <rect x="12" y="28" width="8" height="4"/><rect x="24" y="28" width="8" height="4"/>
+      <!-- Star Constellation Bottom Right -->
+      <g stroke="#f43f5e" stroke-width="0.8" opacity="0.5">
+        <line x1="82%" y1="78%" x2="90%" y2="84%"/>
+        <line x1="90%" y1="84%" x2="94%" y2="76%"/>
+        <circle cx="82%" cy="78%" r="2.5" fill="#ffffff"/>
+        <circle cx="90%" cy="84%" r="3" fill="#f43f5e"/>
+        <circle cx="94%" cy="76%" r="2" fill="#ffffff"/>
       </g>
 
-      <!-- Oscilloscope Radar Crosshairs in Bottom Right -->
-      <circle cx="85%" cy="85%" r="65" fill="none" stroke="#00ff88" stroke-width="1.2" opacity="0.25" stroke-dasharray="6 4"/>
-      <circle cx="85%" cy="85%" r="35" fill="none" stroke="#00ff88" stroke-width="1" opacity="0.3"/>
-      <line x1="85%" y1="72%" x2="85%" y2="98%" stroke="#00ff88" stroke-width="1" opacity="0.25"/>
-      <line x1="72%" y1="85%" x2="98%" y2="85%" stroke="#00ff88" stroke-width="1" opacity="0.25"/>
+      <!-- Shimmering Star Sparkles -->
+      <g fill="#ffffff" opacity="0.7">
+        <circle cx="28%" cy="24%" r="1.5"/>
+        <circle cx="75%" cy="15%" r="2"/>
+        <circle cx="88%" cy="32%" r="1.5"/>
+        <circle cx="12%" cy="65%" r="2"/>
+        <circle cx="25%" cy="85%" r="1.5"/>
+        <circle cx="68%" cy="82%" r="2"/>
+        <circle cx="45%" cy="8%" r="1.5"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ========================================================================
+       STAGE 2: SUNSET HORIZON (Warm Twilight Glow & Pastel Rolling Hills)
+       ======================================================================== -->
+  <div class="theme-layer theme-layer-sunset absolute inset-0 pointer-events-none bg-[#160b24]">
+    <!-- Warm Sunset Sky Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#1b0d30] via-[#3a1442] via-60% to-[#5a1c44]"></div>
+
+    <!-- Radiant Glowing Solar Sun Orb -->
+    <div class="absolute top-[8%] right-[10%] sm:right-[16%] w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-b from-[#ffea75] via-[#ff9a3c] to-[#ff4b72] shadow-[0_0_80px_rgba(255,154,60,0.6)] opacity-80"></div>
+
+    <!-- Floating Star Sparkles -->
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <!-- 4-point Diamond Star Sparkles -->
+      <g fill="#fde047" opacity="0.75">
+        <path d="M 60 80 L 64 88 L 72 92 L 64 96 L 60 104 L 56 96 L 48 92 L 56 88 Z" transform="scale(0.8) translate(80, 50)"/>
+        <path d="M 60 80 L 64 88 L 72 92 L 64 96 L 60 104 L 56 96 L 48 92 L 56 88 Z" transform="scale(0.6) translate(650, 180)"/>
+        <path d="M 60 80 L 64 88 L 72 92 L 64 96 L 60 104 L 56 96 L 48 92 L 56 88 Z" transform="scale(0.7) translate(140, 480)"/>
+      </g>
+
+      <!-- Soft Mountain Ridges in Foreground -->
+      <path d="M0 720 Q 200 620 450 670 T 900 640 T 1440 680 L 1440 900 L 0 900 Z" fill="#240e34" opacity="0.85"/>
+      <path d="M0 760 Q 300 680 650 730 T 1200 700 T 1440 740 L 1440 900 L 0 900 Z" fill="#150621" opacity="0.95"/>
+    </svg>
+  </div>
+
+  <!-- ========================================================================
+       STAGE 3: CYBER NEON (Synthwave Grid & Electric Lasers)
+       ======================================================================== -->
+  <div class="theme-layer theme-layer-cyber absolute inset-0 pointer-events-none bg-[#090518]">
+    <!-- Midnight Cyber Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#060312] via-[#100626] to-[#1c0836]"></div>
+
+    <!-- Neon Horizon Glow Line -->
+    <div class="absolute top-[68%] inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#ff007f] via-50% to-transparent shadow-[0_0_24px_#ff007f]"></div>
+    <div class="absolute top-[68%] inset-x-0 h-32 bg-gradient-to-b from-[#ff007f]/15 to-transparent blur-xl"></div>
+
+    <!-- Perspective 3D Neon Horizon Grid -->
+    <div class="absolute top-[68%] inset-x-0 bottom-0 bg-cyber-grid opacity-60"></div>
+
+    <!-- Distant Neon Skyline Silhouettes -->
+    <svg class="absolute bottom-[31%] inset-x-0 w-full h-36 opacity-30" preserveAspectRatio="none" viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 150 L0 100 L40 100 L40 80 L60 80 L60 100 L110 100 L110 60 L140 60 L140 150 L200 150 L200 70 L230 40 L260 70 L260 150 L340 150 L340 85 L390 85 L390 150 L460 150 L460 50 L490 50 L490 150 L580 150 L580 75 L620 75 L620 150 L700 150 L700 90 L760 90 L760 45 L790 45 L790 150 L880 150 L880 80 L920 80 L920 150 L1000 150 Z" fill="#00f0ff"/>
     </svg>
 
-    <!-- Bottom Arcade Bunker Defenses (Pixel Green) -->
-    <div class="absolute bottom-2 inset-x-0 flex justify-between px-6 sm:px-20 opacity-30 pointer-events-none">
-      <div class="w-12 sm:w-16 h-8 bg-[#00ff88] rounded-t-lg [clip-path:polygon(0_0,100%_0,100%_100%,75%_100%,75%_40%,25%_40%,25%_100%,0_100%)]"></div>
-      <div class="w-12 sm:w-16 h-8 bg-[#00ff88] rounded-t-lg [clip-path:polygon(0_0,100%_0,100%_100%,75%_100%,75%_40%,25%_40%,25%_100%,0_100%)]"></div>
-    </div>
+    <!-- Neon Cyan & Magenta Ambient Orbs -->
+    <div class="absolute top-10 left-[8%] w-64 h-64 rounded-full bg-[#00f0ff]/12 blur-3xl"></div>
+    <div class="absolute top-20 right-[10%] w-72 h-72 rounded-full bg-[#ff007f]/15 blur-3xl"></div>
   </div>
 
   <!-- ========================================================================
-       STAGE 2: 8-BIT ODYSSEY (Super Mario / Kirby NES 1985 Overworld)
+       STAGE 4: OCEAN DEPTHS (Abyssal Azure & Bioluminescent Coral)
        ======================================================================== -->
-  <div class="theme-layer theme-layer-kirby-mario absolute inset-0 pointer-events-none bg-[#0e1633]">
-    <!-- Nintendo 8-Bit Twilight Sunset Sky Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#182a5e] via-[#482b6b] to-[#783063] opacity-95"></div>
+  <div class="theme-layer theme-layer-ocean absolute inset-0 pointer-events-none bg-[#040c1a]">
+    <!-- Deep Ocean Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#031326] via-[#062444] via-50% to-[#021020]"></div>
 
-    <!-- Floating 8-Bit Question Mark [?] Coin Blocks & Brick Blocks -->
-    <div class="absolute top-[10%] left-[6%] sm:left-[12%] flex items-center gap-1 opacity-70">
-      <!-- Brick Block -->
-      <div class="w-7 h-7 sm:w-9 sm:h-9 bg-[#c84c0c] border-2 border-black rounded-xs flex flex-col justify-between p-0.5 shadow-[2px_2px_0px_#000000]">
-        <div class="w-full h-1 border-b border-black/60 bg-[#e45c10]"></div>
-        <div class="w-full h-1 border-t border-black/60 bg-[#a03808]"></div>
-      </div>
-      <!-- Question Mark [?] Block -->
-      <div class="w-7 h-7 sm:w-9 sm:h-9 bg-[#fcbc3c] border-2 border-black rounded-xs flex items-center justify-center font-mono font-black text-black text-xs sm:text-sm shadow-[2px_2px_0px_#000000] animate-bounce">
-        ?
-      </div>
-      <!-- Brick Block -->
-      <div class="w-7 h-7 sm:w-9 sm:h-9 bg-[#c84c0c] border-2 border-black rounded-xs flex flex-col justify-between p-0.5 shadow-[2px_2px_0px_#000000]">
-        <div class="w-full h-1 border-b border-black/60 bg-[#e45c10]"></div>
-        <div class="w-full h-1 border-t border-black/60 bg-[#a03808]"></div>
-      </div>
-    </div>
+    <!-- Diagonal Sun Caustic Light Rays from Surface -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(56,189,248,0.18)_0%,transparent_65%)] pointer-events-none"></div>
 
-    <!-- Kirby Warp Star Moon in Top Right -->
-    <div class="absolute top-[8%] right-[8%] sm:right-[14%] w-16 h-16 sm:w-20 sm:h-20 opacity-80 pointer-events-none">
-      <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-[0_0_12px_rgba(254,240,138,0.6)]">
-        <polygon points="50,5 64,36 98,36 70,57 81,90 50,70 19,90 30,57 2,36 36,36" fill="#fde047" stroke="#000000" stroke-width="4"/>
-        <!-- Kirby Star Cheek Sparkle -->
-        <circle cx="36" cy="48" r="4" fill="#ff69b4"/>
-        <circle cx="64" cy="48" r="4" fill="#ff69b4"/>
-      </svg>
-    </div>
+    <!-- Bioluminescent Bubbles & Particles -->
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Bubble Glow Radial -->
+        <radialGradient id="bubble-glow" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+          <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#0284c7" stop-opacity="0.1"/>
+        </radialGradient>
+      </defs>
 
-    <!-- Authentic 8-Bit Pixel Clouds -->
-    <div class="absolute top-[22%] right-[5%] sm:right-[20%] opacity-45">
-      <svg width="96" height="40" viewBox="0 0 96 40" fill="#ffffff">
-        <rect x="24" y="0" width="48" height="8"/>
-        <rect x="16" y="8" width="64" height="8"/>
-        <rect x="8" y="16" width="80" height="8"/>
-        <rect x="0" y="24" width="96" height="16"/>
-        <!-- Eyes -->
-        <rect x="40" y="24" width="4" height="8" fill="#000000"/>
-        <rect x="52" y="24" width="4" height="8" fill="#000000"/>
-      </svg>
-    </div>
+      <!-- Floating Water Bubbles -->
+      <g>
+        <circle cx="14%" cy="80%" r="9" fill="url(#bubble-glow)" opacity="0.6"/>
+        <circle cx="16%" cy="72%" r="5" fill="url(#bubble-glow)" opacity="0.5"/>
+        <circle cx="22%" cy="45%" r="12" fill="url(#bubble-glow)" opacity="0.7"/>
+        <circle cx="80%" cy="65%" r="14" fill="url(#bubble-glow)" opacity="0.65"/>
+        <circle cx="85%" cy="52%" r="8" fill="url(#bubble-glow)" opacity="0.5"/>
+        <circle cx="72%" cy="28%" r="10" fill="url(#bubble-glow)" opacity="0.7"/>
+        <circle cx="36%" cy="18%" r="6" fill="url(#bubble-glow)" opacity="0.5"/>
+      </g>
 
-    <!-- Iconic Parallax 8-Bit NES Overworld Stepped Hills & Bushes at Bottom -->
-    <div class="absolute bottom-0 inset-x-0 h-32 sm:h-44 pointer-events-none overflow-hidden opacity-60">
-      <svg viewBox="0 0 1200 240" preserveAspectRatio="none" class="w-full h-full">
-        <!-- Big Hill Left -->
-        <polygon points="0,240 180,40 360,240" fill="#00a800" stroke="#000000" stroke-width="5"/>
-        <circle cx="180" cy="90" r="16" fill="#80d010"/>
-        <circle cx="150" cy="140" r="14" fill="#80d010"/>
-        <circle cx="210" cy="140" r="14" fill="#80d010"/>
+      <!-- Ocean Wave Contours -->
+      <path d="M0 800 Q 300 740 700 780 T 1440 750 L 1440 900 L 0 900 Z" fill="#031a33" opacity="0.7"/>
+      <path d="M0 830 Q 400 790 850 820 T 1440 800 L 1440 900 L 0 900 Z" fill="#020f20" opacity="0.9"/>
+    </svg>
 
-        <!-- Small Hill Center -->
-        <polygon points="480,240 600,100 720,240" fill="#008800" stroke="#000000" stroke-width="4"/>
-        <circle cx="600" cy="140" r="12" fill="#60b010"/>
-
-        <!-- Big Hill Right -->
-        <polygon points="840,240 1020,30 1200,240" fill="#00a800" stroke="#000000" stroke-width="5"/>
-        <circle cx="1020" cy="80" r="16" fill="#80d010"/>
-      </svg>
-    </div>
-
-    <!-- Candy Pastel Star Dust Layer -->
-    <div class="absolute inset-0 bg-pastel-stars opacity-80"></div>
-  </div>
-
-  <!-- ========================================================================
-       STAGE 3: CYBERPUNK 2099 (Megacity Skyline, Neon Kanji & Outrun Horizon)
-       ======================================================================== -->
-  <div class="theme-layer theme-layer-cyberpunk absolute inset-0 pointer-events-none bg-[#05010c]">
-    <!-- Synthwave Sunset Deep Void -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#05010e] via-[#120326] to-[#250638]"></div>
-
-    <!-- Sliced Retro Neon Synthwave Sun -->
-    <div class="absolute top-[6%] left-1/2 -translate-x-1/2 w-[140px] h-[140px] sm:w-[190px] sm:h-[190px] pointer-events-none opacity-85">
-      <div class="relative w-full h-full rounded-full bg-gradient-to-b from-[#ffea00] via-[#ff0055] to-[#7928ca] shadow-[0_0_40px_rgba(255,0,85,0.4)] overflow-hidden">
-        <div class="absolute inset-0 bg-[repeating-linear-gradient(180deg,transparent_0px,transparent_6px,#05010c_6px,#05010c_9px,transparent_9px,transparent_18px,#05010c_18px,#05010c_22px)] opacity-90"></div>
-      </div>
-    </div>
-
-    <!-- Floating Neon Japanese Kanji Holograms -->
-    <div class="absolute top-[14%] left-[4%] sm:left-[10%] flex flex-col gap-1 items-center px-2 py-2 rounded-lg bg-black/60 border border-[#00f0ff]/50 shadow-[0_0_15px_rgba(0,240,255,0.3)] opacity-75">
-      <span class="text-[12px] sm:text-[14px] font-black text-[#00f0ff] font-mono leading-tight tracking-wider">電脳</span>
-      <span class="text-[8px] font-mono text-[#ff0055] font-bold">STAGE 03</span>
-    </div>
-
-    <div class="absolute top-[18%] right-[4%] sm:right-[12%] flex flex-col gap-1 items-center px-2 py-2 rounded-lg bg-black/60 border border-[#ff0055]/50 shadow-[0_0_15px_rgba(255,0,85,0.3)] opacity-75">
-      <span class="text-[12px] sm:text-[14px] font-black text-[#ff0055] font-mono leading-tight tracking-wider">未来</span>
-      <span class="text-[8px] font-mono text-[#00f0ff] font-bold">NEXUS</span>
-    </div>
-
-    <!-- Layered Cyberpunk Megacity Skyscraper Silhouettes with Illuminated Window Matrix -->
-    <div class="absolute bottom-[18%] inset-x-0 h-40 sm:h-52 pointer-events-none opacity-70">
-      <svg viewBox="0 0 1000 200" preserveAspectRatio="none" class="w-full h-full">
-        <!-- Building 1 (Tower with Antenna) -->
-        <rect x="30" y="40" width="70" height="160" fill="#0b0416" stroke="#00f0ff" stroke-width="0.8"/>
-        <line x1="65" y1="10" x2="65" y2="40" stroke="#00f0ff" stroke-width="1.5"/>
-        <circle cx="65" cy="10" r="2.5" fill="#ff0055"/>
-        <!-- Window Matrix -->
-        <g fill="#00f0ff" opacity="0.6">
-          <rect x="42" y="55" width="4" height="4"/><rect x="52" y="55" width="4" height="4"/><rect x="74" y="55" width="4" height="4"/><rect x="84" y="55" width="4" height="4"/>
-          <rect x="42" y="75" width="4" height="4"/><rect x="63" y="75" width="4" height="4"/><rect x="84" y="75" width="4" height="4"/>
-          <rect x="52" y="95" width="4" height="4"/><rect x="74" y="95" width="4" height="4"/>
-          <rect x="42" y="115" width="4" height="4"/><rect x="63" y="115" width="4" height="4"/><rect x="84" y="115" width="4" height="4"/>
-        </g>
-
-        <!-- Building 2 (Central Spire) -->
-        <polygon points="180,200 180,60 215,20 250,60 250,200" fill="#080212" stroke="#ff0055" stroke-width="0.8"/>
-        <g fill="#ff0055" opacity="0.6">
-          <rect x="205" y="45" width="20" height="3"/><rect x="200" y="70" width="30" height="3"/><rect x="195" y="95" width="40" height="3"/>
-          <rect x="195" y="120" width="40" height="3"/><rect x="195" y="145" width="40" height="3"/>
-        </g>
-
-        <!-- Building 3 (Right High-Rise) -->
-        <rect x="750" y="30" width="90" height="170" fill="#0a0314" stroke="#00f0ff" stroke-width="0.8"/>
-        <line x1="795" y1="5" x2="795" y2="30" stroke="#ff0055" stroke-width="1.5"/>
-        <g fill="#00f0ff" opacity="0.5">
-          <rect x="765" y="50" width="6" height="4"/><rect x="785" y="50" width="6" height="4"/><rect x="815" y="50" width="6" height="4"/>
-          <rect x="765" y="70" width="6" height="4"/><rect x="800" y="70" width="6" height="4"/><rect x="815" y="70" width="6" height="4"/>
-          <rect x="785" y="90" width="6" height="4"/><rect x="815" y="90" width="6" height="4"/>
-        </g>
-
-        <!-- Building 4 (Far Right Megatower) -->
-        <rect x="890" y="50" width="80" height="150" fill="#07020e" stroke="#ff0055" stroke-width="0.8"/>
-      </svg>
-    </div>
-
-    <!-- Outrun Perspective Road Grid at Bottom -->
-    <div class="absolute bottom-0 inset-x-0 h-[22%] bg-synthwave-horizon-grid opacity-50"></div>
-    <div class="absolute inset-0 bg-cyberpunk-stars opacity-85"></div>
-  </div>
-
-  <!-- ========================================================================
-       STAGE 4: TETRIS MATRIX (1989 Saint Basil's Cathedral & Falling Matrix)
-       ======================================================================== -->
-  <div class="theme-layer theme-layer-tetris absolute inset-0 pointer-events-none bg-[#030614]">
-    <!-- Cobalt Russian Arcade Matrix Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#030718] via-[#081232] to-[#04091e]"></div>
-
-    <!-- Arcade Top Score & Level Readout -->
-    <div class="absolute top-2 inset-x-0 flex justify-between px-4 sm:px-12 text-[9px] sm:text-[11px] font-mono text-cyan-300/60 font-bold uppercase tracking-widest pointer-events-none">
-      <span>LINES - <span class="text-white">040</span></span>
-      <span class="text-[#f59e0b]">TETRIS 1989</span>
-      <span>LEVEL <span class="text-white">09</span></span>
-    </div>
-
-    <!-- Authentic Saint Basil's Cathedral Architectural Silhouette (Iconic Tetris 1989 Title Artwork) -->
-    <div class="absolute bottom-0 inset-x-0 h-44 sm:h-64 pointer-events-none opacity-50">
-      <svg viewBox="0 0 1000 300" preserveAspectRatio="none" class="w-full h-full">
-        <!-- Central Main Spire & Onion Dome (Saint Basil's) -->
-        <g fill="#0b1638" stroke="#3b82f6" stroke-width="1.2">
-          <!-- Central Onion Dome -->
-          <path d="M 500,20 C 500,10 500,0 500,0 C 500,0 470,40 470,80 C 470,110 530,110 530,80 C 530,40 500,0 500,20 Z" fill="#122354"/>
-          <rect x="480" y="105" width="40" height="70"/>
-          <polygon points="460,175 540,175 560,300 440,300"/>
-
-          <!-- Left Onion Dome (Flank Tower 1) -->
-          <path d="M 360,70 C 360,55 360,45 360,45 C 360,45 335,80 335,110 C 335,135 385,135 385,110 C 385,80 360,45 360,70 Z" fill="#0e1d44"/>
-          <rect x="345" y="130" width="30" height="60"/>
-          <rect x="330" y="190" width="60" height="110"/>
-
-          <!-- Far Left Dome (Flank Tower 2) -->
-          <path d="M 220,110 C 220,95 220,85 220,85 C 220,85 200,115 200,140 C 200,160 240,160 240,140 C 240,115 220,85 220,110 Z" fill="#0a1533"/>
-          <rect x="208" y="155" width="24" height="50"/>
-          <rect x="195" y="205" width="50" height="95"/>
-
-          <!-- Right Onion Dome (Flank Tower 1) -->
-          <path d="M 640,70 C 640,55 640,45 640,45 C 640,45 615,80 615,110 C 615,135 665,135 665,110 C 665,80 640,45 640,70 Z" fill="#0e1d44"/>
-          <rect x="625" y="130" width="30" height="60"/>
-          <rect x="610" y="190" width="60" height="110"/>
-
-          <!-- Far Right Dome (Flank Tower 2) -->
-          <path d="M 780,110 C 780,95 780,85 780,85 C 780,85 760,115 760,140 C 760,160 800,160 800,140 C 800,115 780,85 780,110 Z" fill="#0a1533"/>
-          <rect x="768" y="155" width="24" height="50"/>
-          <rect x="755" y="205" width="50" height="95"/>
-        </g>
-      </svg>
-    </div>
-
-    <!-- Authentic Falling Tetromino Block Shapes -->
-    <div class="absolute inset-0 pointer-events-none">
-      <!-- Tetromino T (Purple) in Top Left -->
-      <div class="absolute top-[14%] left-[6%] sm:left-[12%] flex flex-col items-center opacity-65 rotate-[15deg]">
-        <div class="w-5 h-5 bg-[#a855f7] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#581c87]"></div>
-        <div class="flex">
-          <div class="w-5 h-5 bg-[#a855f7] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#581c87]"></div>
-          <div class="w-5 h-5 bg-[#a855f7] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#581c87]"></div>
-          <div class="w-5 h-5 bg-[#a855f7] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#581c87]"></div>
-        </div>
-      </div>
-
-      <!-- Tetromino I (Cyan) in Top Right -->
-      <div class="absolute top-[20%] right-[6%] sm:right-[14%] flex flex-col opacity-65 rotate-[-18deg]">
-        <div class="w-5 h-5 bg-[#06b6d4] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#0e7490]"></div>
-        <div class="w-5 h-5 bg-[#06b6d4] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#0e7490]"></div>
-        <div class="w-5 h-5 bg-[#06b6d4] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#0e7490]"></div>
-        <div class="w-5 h-5 bg-[#06b6d4] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#0e7490]"></div>
-      </div>
-
-      <!-- Tetromino Z (Red) in Bottom Left -->
-      <div class="absolute bottom-[28%] left-[4%] sm:left-[10%] flex flex-col opacity-55 rotate-[24deg]">
-        <div class="flex">
-          <div class="w-5 h-5 bg-[#ef4444] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#7f1d1d]"></div>
-          <div class="w-5 h-5 bg-[#ef4444] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#7f1d1d]"></div>
-        </div>
-        <div class="flex ml-5">
-          <div class="w-5 h-5 bg-[#ef4444] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#7f1d1d]"></div>
-          <div class="w-5 h-5 bg-[#ef4444] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#7f1d1d]"></div>
-        </div>
-      </div>
-
-      <!-- Tetromino O (Yellow) in Bottom Right -->
-      <div class="absolute bottom-[24%] right-[5%] sm:right-[12%] flex flex-col opacity-60 rotate-[-10deg]">
-        <div class="flex">
-          <div class="w-5 h-5 bg-[#f59e0b] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#78350f]"></div>
-          <div class="w-5 h-5 bg-[#f59e0b] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#78350f]"></div>
-        </div>
-        <div class="flex">
-          <div class="w-5 h-5 bg-[#f59e0b] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#78350f]"></div>
-          <div class="w-5 h-5 bg-[#f59e0b] border-2 border-black shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#78350f]"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Vertical Arcade Tetris Column Grid Texture -->
-    <div class="absolute inset-0 bg-tetris-matrix-grid opacity-50"></div>
-    <div class="absolute inset-0 bg-tetris-stars opacity-85"></div>
+    <!-- Deep Sea Glow Orbs -->
+    <div class="absolute bottom-10 left-[15%] w-80 h-80 rounded-full bg-[#06b6d4]/14 blur-3xl"></div>
+    <div class="absolute top-20 right-[15%] w-72 h-72 rounded-full bg-[#f43f5e]/10 blur-3xl"></div>
   </div>
 
 </div>
 
 <style>
-  /* CULL INACTIVE THEME LAYERS COMPLETELY (0% CPU / 0% GPU overhead) */
+  /* Zero-cost stage switching: show ONLY the active theme layer */
   .theme-layer {
     display: none !important;
   }
 
-  [data-theme="space_invaders"] .theme-layer-space-invaders,
-  #stage-backdrop[data-theme="space_invaders"] .theme-layer-space-invaders {
-    display: block !important;
-  }
-  [data-theme="kirby_mario"] .theme-layer-kirby-mario,
-  #stage-backdrop[data-theme="kirby_mario"] .theme-layer-kirby-mario {
-    display: block !important;
-  }
-  [data-theme="cyberpunk"] .theme-layer-cyberpunk,
-  #stage-backdrop[data-theme="cyberpunk"] .theme-layer-cyberpunk {
-    display: block !important;
-  }
-  [data-theme="tetris"] .theme-layer-tetris,
-  #stage-backdrop[data-theme="tetris"] .theme-layer-tetris {
+  [data-theme="space_invaders"] .theme-layer-cosmic,
+  #stage-backdrop[data-theme="space_invaders"] .theme-layer-cosmic {
     display: block !important;
   }
 
-  /* Theme 1: Phosphor CRT grid & phosphor dots */
-  .bg-space-crt-grid {
+  [data-theme="kirby_mario"] .theme-layer-sunset,
+  #stage-backdrop[data-theme="kirby_mario"] .theme-layer-sunset {
+    display: block !important;
+  }
+
+  [data-theme="cyberpunk"] .theme-layer-cyber,
+  #stage-backdrop[data-theme="cyberpunk"] .theme-layer-cyber {
+    display: block !important;
+  }
+
+  [data-theme="tetris"] .theme-layer-ocean,
+  #stage-backdrop[data-theme="tetris"] .theme-layer-ocean {
+    display: block !important;
+  }
+
+  /* Theme 3 Cyberpunk Grid Texture */
+  .bg-cyber-grid {
     background-image: 
-      linear-gradient(to right, rgba(0, 255, 136, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 255, 136, 0.04) 1px, transparent 1px);
+      linear-gradient(to right, rgba(0, 240, 255, 0.18) 1px, transparent 1px),
+      linear-gradient(to top, rgba(255, 0, 85, 0.22) 1px, transparent 1px);
     background-size: 40px 40px;
-  }
-
-  .bg-space-phosphor-dots {
-    background-image: 
-      radial-gradient(1.5px 1.5px at 30px 40px, #00ff88, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 120px 190px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 240px 90px, #ff007f, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 370px 280px, #00ff88, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 510px 150px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 650px 250px, #76ff03, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 780px 70px, #00ff88, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 910px 320px, #ff007f, rgba(0,0,0,0));
-    background-repeat: repeat;
-    background-size: 550px 380px;
-  }
-
-  /* Theme 2: Pastel Stars */
-  .bg-pastel-stars {
-    background-image: 
-      radial-gradient(1.5px 1.5px at 40px 50px, #ffd1dc, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 140px 170px, #fde047, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 250px 70px, #38bdf8, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 380px 260px, #f472b6, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 510px 130px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 640px 230px, #4ade80, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 780px 80px, #fde047, rgba(0,0,0,0));
-    background-repeat: repeat;
-    background-size: 550px 380px;
-  }
-
-  /* Theme 3: Synthwave Grid & Cyber Stars */
-  .bg-synthwave-horizon-grid {
-    background-image: 
-      linear-gradient(to right, rgba(0, 240, 255, 0.2) 1px, transparent 1px),
-      linear-gradient(to top, rgba(255, 0, 85, 0.25) 1px, transparent 1px);
-    background-size: 36px 36px;
-  }
-
-  .bg-cyberpunk-stars {
-    background-image: 
-      radial-gradient(1.5px 1.5px at 35px 45px, #00f0ff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 150px 180px, #ff0055, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 270px 85px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 400px 270px, #00f0ff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 530px 140px, #a855f7, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 660px 240px, #ff0055, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 800px 90px, #00f0ff, rgba(0,0,0,0));
-    background-repeat: repeat;
-    background-size: 550px 380px;
-  }
-
-  /* Theme 4: Tetris Matrix Grid & Stars */
-  .bg-tetris-matrix-grid {
-    background-image: 
-      linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
-    background-size: 32px 32px;
-  }
-
-  .bg-tetris-stars {
-    background-image: 
-      radial-gradient(1.5px 1.5px at 50px 60px, #06b6d4, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 160px 190px, #ef4444, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 280px 90px, #f59e0b, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 410px 280px, #3b82f6, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 540px 150px, #22c55e, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 680px 250px, #a855f7, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 820px 95px, #06b6d4, rgba(0,0,0,0));
-    background-repeat: repeat;
-    background-size: 550px 380px;
   }
 </style>

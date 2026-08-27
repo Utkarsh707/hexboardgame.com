@@ -2,10 +2,10 @@
 
 @layer base {
   :root {
-    --bg-page: #03040a;
-    --bg-surface: #080c18;
-    --bg-surface-hover: #10172c;
-    --bg-surface-elevated: #16203c;
+    --bg-page: #0b1021;
+    --bg-surface: #141d38;
+    --bg-surface-hover: #1c284e;
+    --bg-surface-elevated: #233260;
     --border-subtle: #1e293b;
     --border-default: #334155;
     --border-bright: #475569;
@@ -17,6 +17,7 @@
     --ruby-color: #ff2d60;
     --pearl-color: #00e5ff;
     --emerald-color: #10b981;
+    --gold-color: #ffd000;
 
     --clone-marker: #10b981;
     --jump-marker: #f59e0b;
@@ -26,6 +27,26 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
+  }
+
+  [data-theme="space_invaders"] {
+    --bg-page: #080d1a;
+    --bg-surface: #141d38;
+  }
+
+  [data-theme="kirby_mario"] {
+    --bg-page: #160b24;
+    --bg-surface: #241138;
+  }
+
+  [data-theme="cyberpunk"] {
+    --bg-page: #090518;
+    --bg-surface: #1c0836;
+  }
+
+  [data-theme="tetris"] {
+    --bg-page: #040c1a;
+    --bg-surface: #0a1e38;
   }
 
   html, body {
@@ -38,186 +59,226 @@
   body {
     background-color: var(--bg-page);
     color: var(--text-primary);
-    font-family: 'Outfit', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     letter-spacing: -0.01em;
     padding-top: var(--safe-top);
     padding-bottom: var(--safe-bottom);
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
+    transition: background-color 0.3s ease;
   }
 }
 
-/* Ultra-smooth 60/120 FPS Arcade Stage Panels & Frames */
-.nes-card {
-  background: linear-gradient(180deg, #0c1120 0%, #060912 100%);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+/* ==========================================================================
+   POKI-STYLE JUICY 3D TACTILE BUTTONS & CARDS
+   ========================================================================== */
+
+.poki-card, .nes-card {
+  background: linear-gradient(180deg, var(--bg-surface, #141d38) 0%, rgba(13, 20, 41, 0.95) 100%);
+  border: 1.5px solid rgba(71, 85, 105, 0.45);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: background 0.3s ease, border-color 0.2s ease;
 }
 
-.nes-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
+.poki-card:hover, .nes-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
 }
 
-/* Arcade Buttons */
-.nes-btn-primary {
-  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-  color: #020617;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.25);
-  transition: transform 0.15s ease, background-color 0.15s ease;
+/* Base Tactile 3D Button */
+.poki-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 0.02em;
+  border-radius: 1rem;
+  border-bottom-width: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s ease, filter 0.12s ease, border-bottom-width 0.12s ease;
 }
 
-.nes-btn-primary:hover {
-  background: #ffffff;
-  transform: translateY(-1px);
+.poki-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
 }
 
-.nes-btn-secondary {
-  background: #0f172a;
+.poki-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+  filter: brightness(0.96);
+}
+
+/* Primary Juicy Yellow Button (Poki Hero CTA) */
+.poki-btn-primary, .nes-btn-primary {
+  background: linear-gradient(180deg, #ffdc2e 0%, #ffc400 100%);
+  color: #0b0f19;
+  border-color: #d97706;
+  border-bottom-width: 4px;
+  box-shadow: 0 8px 24px rgba(255, 196, 0, 0.4);
+}
+
+.poki-btn-primary:hover, .nes-btn-primary:hover {
+  background: linear-gradient(180deg, #ffe04d 0%, #ffd000 100%);
+  box-shadow: 0 12px 28px rgba(255, 196, 0, 0.55);
+}
+
+/* Emerald Green 3D Button */
+.poki-btn-emerald {
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+  color: #ffffff;
+  border-color: #15803d;
+  border-bottom-width: 4px;
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.35);
+}
+
+/* Ruby Red 3D Button */
+.poki-btn-ruby {
+  background: linear-gradient(180deg, #ff477e 0%, #ff2d60 100%);
+  color: #ffffff;
+  border-color: #be123c;
+  border-bottom-width: 4px;
+  box-shadow: 0 8px 20px rgba(255, 45, 96, 0.4);
+}
+
+/* Cyan 3D Button */
+.poki-btn-cyan {
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+  color: #0b0f19;
+  border-color: #0369a1;
+  border-bottom-width: 4px;
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+}
+
+/* Slate Secondary 3D Button */
+.poki-btn-secondary, .nes-btn-secondary {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
   color: #f1f5f9;
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  border-color: #020617;
+  border-bottom-width: 3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.nes-btn-secondary:hover {
-  background: #1e293b;
-  border-color: rgba(56, 189, 248, 0.5);
+.poki-btn-secondary:hover, .nes-btn-secondary:hover {
+  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
   color: #ffffff;
 }
 
-/* Playful Grow & Shrink Bounce Animation for Play Button */
-@keyframes playful-play-bounce {
+/* Playful Hero Bounce Animation */
+@keyframes poki-hero-pulse {
   0%, 100% {
     transform: scale(1);
   }
-  28% {
-    transform: scale(1.08, 1.06) translateY(-2px);
-  }
-  42% {
-    transform: scale(0.96, 0.97) translateY(1px);
-  }
-  56% {
-    transform: scale(1.04, 1.03) translateY(-1px);
-  }
-  70% {
-    transform: scale(0.98, 0.99) translateY(0.5px);
-  }
-  84% {
-    transform: scale(1.01, 1.01);
+  50% {
+    transform: scale(1.04) translateY(-2px);
   }
 }
 
 .btn-hero-play {
-  animation: playful-play-bounce 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
+  animation: poki-hero-pulse 2.2s infinite ease-in-out;
   will-change: transform;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 208, 0, 0.35);
-  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .btn-hero-play:hover {
   animation-play-state: paused;
-  transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 208, 0, 0.55);
+  transform: scale(1.06) translateY(-2px);
 }
 
 .btn-hero-play:active {
-  transform: scale(0.95) translateY(2px);
+  transform: scale(0.97) translateY(2px);
 }
 
-/* Hexxagon Hexagonal Grid Cells */
+/* ==========================================================================
+   HEXAGONAL GRID & CELLS
+   ========================================================================== */
+
 .hex-cell {
-  transition: fill 0.15s ease, stroke 0.15s ease, stroke-width 0.15s ease;
+  transition: fill 0.12s ease, stroke 0.12s ease, stroke-width 0.12s ease;
   cursor: pointer;
   shape-rendering: geometricPrecision;
 }
 
 .hex-cell-empty {
-  fill: #0c101d;
-  stroke: #1e263d;
-  stroke-width: 1.8;
+  fill: #121a32;
+  stroke: #253358;
+  stroke-width: 2;
 }
 
 .hex-cell-empty:hover {
-  fill: #18223d !important;
+  fill: #1c2a52 !important;
   stroke: #38bdf8 !important;
-  stroke-width: 2.2 !important;
+  stroke-width: 2.5 !important;
 }
 
 .hex-cell-obstacle {
-  fill: #04060c;
-  stroke: #0e121e;
+  fill: #080c18;
+  stroke: #161f36;
   stroke-width: 1.5;
-  opacity: 0.35;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .hex-cell-clone-target {
-  fill: rgba(0, 230, 118, 0.25) !important;
-  stroke: #00e676 !important;
-  stroke-width: 2.2 !important;
+  fill: rgba(16, 185, 129, 0.3) !important;
+  stroke: #10b981 !important;
+  stroke-width: 2.6 !important;
 }
 
 .hex-cell-jump-target {
-  fill: rgba(255, 171, 0, 0.25) !important;
-  stroke: #ffab00 !important;
-  stroke-width: 2.2 !important;
+  fill: rgba(245, 158, 11, 0.3) !important;
+  stroke: #f59e0b !important;
+  stroke-width: 2.6 !important;
 }
 
 .hex-cell-selected {
-  stroke-width: 2.8 !important;
-  fill: #222942 !important;
+  stroke-width: 3 !important;
+  fill: #223460 !important;
   stroke: #00e5ff !important;
 }
 
 .hex-cell-last-dest {
   stroke: #00e5ff !important;
-  stroke-width: 2.2 !important;
+  stroke-width: 2.4 !important;
 }
 
 .hex-cell-last-origin {
   stroke: #64748b !important;
-  stroke-width: 1.8 !important;
+  stroke-width: 2 !important;
   stroke-dasharray: 4, 3;
 }
 
-/* Compositor-Thread Pulse Animations */
+/* Target Pulse Marker */
 @keyframes pulse-marker {
   0%, 100% {
-    opacity: 0.75;
-    transform: scale(0.96);
+    opacity: 0.7;
   }
   50% {
     opacity: 1;
-    transform: scale(1.04);
   }
 }
 
 .hex-cell-clone-target,
 .hex-cell-jump-target {
-  animation: pulse-marker 1.4s infinite ease-in-out;
-  transform-origin: center;
-  transform-box: fill-box;
-  will-change: transform, opacity;
+  animation: pulse-marker 1.2s infinite ease-in-out;
+  will-change: opacity;
 }
 
-/* 3D Gem Piece Conversion Animation */
+/* 3D Piece Conversion Animation */
 @keyframes piece-convert {
   0% {
     transform: scale(1);
-    opacity: 0.9;
   }
   40% {
-    transform: scale(1.2);
-    opacity: 1;
+    transform: scale(1.22);
   }
   100% {
     transform: scale(1);
-    opacity: 1;
   }
 }
 
 .piece-converting {
-  animation: piece-convert 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: piece-convert 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform;
 }
 
@@ -241,7 +302,7 @@
 
 .svg-infection-beam {
   stroke-dasharray: 8 4;
-  animation: infection-beam-pulse 0.38s ease-out forwards;
+  animation: infection-beam-pulse 0.36s ease-out forwards;
   pointer-events: none;
 }
 
@@ -262,11 +323,11 @@
 
 .svg-jump-arc {
   stroke-dasharray: 100 100;
-  animation: jump-arc-laser 0.36s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: jump-arc-laser 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   pointer-events: none;
 }
 
-/* Float Badge Animations */
+/* Floating Combo Badge */
 @keyframes float-badge {
   0% {
     transform: translateY(0) scale(0.85);
@@ -287,69 +348,35 @@
 }
 
 .float-badge {
-  animation: float-badge 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: float-badge 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   will-change: transform, opacity;
-}
-
-@keyframes piece-pop-in {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.piece-popping-in {
-  animation: piece-pop-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  transform-box: fill-box;
-  transform-origin: center;
-  will-change: transform, opacity;
-}
-
-@keyframes piece-threat-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.85;
-  }
-  100% {
-    transform: scale(1.12);
-    opacity: 1;
-  }
 }
 
 .piece-capture-threat {
-  animation: piece-threat-pulse 0.5s infinite alternate ease-in-out !important;
+  animation: piece-convert 0.6s infinite alternate ease-in-out !important;
   transform-box: fill-box;
   transform-origin: center;
-  will-change: transform, opacity;
 }
 
 .hex-cell-capture-threat {
-  stroke: #ff0844 !important;
-  stroke-width: 2.5px !important;
-  fill: rgba(255, 8, 68, 0.3) !important;
+  stroke: #ff2d60 !important;
+  stroke-width: 2.6px !important;
+  fill: rgba(255, 45, 96, 0.3) !important;
 }
 
-/* Custom Scrollbar */
+/* Custom Clean Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #03040a;
+  background: #0b1021;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 4px;
+  background: #253358;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -363,12 +390,12 @@ dialog {
 }
 
 dialog::backdrop {
-  background: rgba(3, 4, 10, 0.88);
-  animation: backdrop-fade-in 0.18s ease-out forwards;
+  background: rgba(8, 12, 24, 0.85);
+  animation: backdrop-fade-in 0.16s ease-out forwards;
 }
 
 dialog[open] {
-  animation: dialog-pop-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: dialog-pop-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   will-change: transform, opacity;
 }
 
@@ -380,7 +407,7 @@ dialog[open] {
 @keyframes dialog-pop-in {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(6px);
+    transform: scale(0.94) translateY(6px);
   }
   to {
     opacity: 1;
@@ -390,7 +417,7 @@ dialog[open] {
 
 /* Screen state transitions */
 .screen-view {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.18s ease;
 }
 
 .screen-view.hidden-screen {
@@ -399,11 +426,7 @@ dialog[open] {
   display: none !important;
 }
 
-/* ==========================================================================
-   RESPONSIVE ADAPTATIONS ACROSS BREAKPOINTS & ORIENTATIONS
-   ========================================================================== */
-
-/* Compact screens & Landscape phones (< 600px height) */
+/* Responsive Arena Heights */
 @media (max-height: 600px) {
   .hero-emblem-container {
     height: 3.5rem !important;
@@ -415,20 +438,11 @@ dialog[open] {
   .hero-title-text {
     font-size: 1.5rem !important;
   }
-  .hero-btn-play {
-    padding: 0.6rem 2rem !important;
-    font-size: 1.1rem !important;
-  }
   .board-arena-container {
     max-height: min(480px, calc(100dvh - 105px)) !important;
   }
-  .action-legend-container {
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.25rem !important;
-  }
 }
 
-/* Ultra-short landscape phones (< 440px height) */
 @media (max-height: 440px) {
   .board-arena-container {
     max-height: calc(100dvh - 90px) !important;
@@ -438,92 +452,52 @@ dialog[open] {
   }
 }
 
-/* Narrow mobile screens (< 375px width) */
-@media (max-width: 375px) {
-  .score-number {
-    font-size: 1.25rem !important;
-  }
-  .legend-item-text {
-    font-size: 0.65rem !important;
-  }
+/* Screen Shake / Rumble Impact FX */
+.board-rumble {
+  animation: board-rumble-anim 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  will-change: transform;
 }
 
-/* ==========================================================================
-   4 DISTINCT RETRO STAGE THEMES (Space Invaders, Kirby/Mario, Cyberpunk, Tetris)
-   ========================================================================== */
-
-/* Theme 1: Space Invaders (1978 Arcade • Phosphor Green & Alien Radar) */
-[data-theme="space_invaders"] .hex-cell-empty {
-  fill: #03120b !important;
-  stroke: #0d3824 !important;
-}
-[data-theme="space_invaders"] .hex-cell-empty:hover {
-  fill: #082618 !important;
-  stroke: #00ff88 !important;
-}
-.board-arena-container[data-theme="space_invaders"] {
-  background: radial-gradient(circle at center, rgba(0, 255, 136, 0.08) 0%, rgba(255, 0, 127, 0.04) 40%, transparent 70%);
+.board-rumble-heavy {
+  animation: board-rumble-heavy-anim 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  will-change: transform;
 }
 
-/* Theme 2: 8-Bit Odyssey (Kirby & Mario NES • Pastel Star Skies & Power-Ups) */
-[data-theme="kirby_mario"] .hex-cell-empty {
-  fill: #120c26 !important;
-  stroke: #33235e !important;
-}
-[data-theme="kirby_mario"] .hex-cell-empty:hover {
-  fill: #221846 !important;
-  stroke: #f472b6 !important;
-}
-.board-arena-container[data-theme="kirby_mario"] {
-  background: radial-gradient(circle at center, rgba(244, 114, 182, 0.09) 0%, rgba(56, 189, 248, 0.06) 40%, transparent 70%);
+@keyframes board-rumble-anim {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-3.5px, 2.5px) rotate(-0.6deg); }
+  30% { transform: translate(3.5px, -2.5px) rotate(0.6deg); }
+  45% { transform: translate(-2.5px, -1.5px) rotate(-0.3deg); }
+  60% { transform: translate(2.5px, 1.5px) rotate(0.3deg); }
+  75% { transform: translate(-1px, 1px) rotate(0deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-/* Theme 3: Cyberpunk 2099 (Synthwave • Neon Pink & Electric Cyan) */
-[data-theme="cyberpunk"] .hex-cell-empty {
-  fill: #0e0520 !important;
-  stroke: #2c1257 !important;
-}
-[data-theme="cyberpunk"] .hex-cell-empty:hover {
-  fill: #1c0a3f !important;
-  stroke: #00f0ff !important;
-}
-.board-arena-container[data-theme="cyberpunk"] {
-  background: radial-gradient(circle at center, rgba(0, 240, 255, 0.09) 0%, rgba(244, 63, 94, 0.06) 40%, transparent 70%);
+@keyframes board-rumble-heavy-anim {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  12% { transform: translate(-6px, 4px) rotate(-1.2deg); }
+  25% { transform: translate(6px, -4px) rotate(1.2deg); }
+  38% { transform: translate(-4.5px, -3px) rotate(-0.8deg); }
+  50% { transform: translate(4.5px, 3px) rotate(0.8deg); }
+  65% { transform: translate(-3px, 2px) rotate(-0.4deg); }
+  80% { transform: translate(2px, -1px) rotate(0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-/* Theme 4: Tetris Matrix (1989 Block Arcade • Tetromino RGB & Korobeiniki) */
-[data-theme="tetris"] .hex-cell-empty {
-  fill: #090e21 !important;
-  stroke: #1b2954 !important;
-}
-[data-theme="tetris"] .hex-cell-empty:hover {
-  fill: #141f47 !important;
-  stroke: #3b82f6 !important;
-}
-.board-arena-container[data-theme="tetris"] {
-  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.09) 0%, rgba(245, 158, 11, 0.05) 40%, transparent 70%);
-}
-
-/* Piece Theme Glyph */
-.piece-glyph-icon {
-  font-family: 'Outfit', -apple-system, sans-serif;
-  user-select: none;
-}
-
-/* Theme Selection Cards in Setup Modal & Settings */
+/* Theme Selection Cards */
 .theme-select-card {
-  transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
   position: relative;
   overflow: hidden;
 }
 
 .theme-select-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(0, 229, 255, 0.5) !important;
+  border-color: #00e5ff !important;
 }
 
 .theme-select-card.active {
   border-color: #00e5ff !important;
-  background: rgba(0, 229, 255, 0.12) !important;
-  box-shadow: 0 0 16px rgba(0, 229, 255, 0.35), inset 0 0 12px rgba(0, 229, 255, 0.15) !important;
+  background: rgba(0, 229, 255, 0.14) !important;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.35) !important;
 }

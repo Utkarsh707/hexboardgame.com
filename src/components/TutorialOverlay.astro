@@ -1,0 +1,181 @@
+---
+---
+
+<!-- ==========================================================================
+     HEXXAGON INTERACTIVE TUTORIAL HUD CARD (Poki.com Style)
+     - Clean, friendly in-flow arcade tutorial panel
+     - Tactile 3D buttons, snappy responsive controls, encouraging feedback
+     ========================================================================== -->
+
+<div
+  id="tutorial-overlay"
+  class="hidden w-full max-w-xl flex-col gap-2.5 p-3 sm:p-4 rounded-2xl poki-card border border-cyan-400/40 shadow-xl shrink-0 z-20"
+>
+  <!-- Top Progress & Header Bar -->
+  <div class="flex items-center justify-between gap-2 border-b border-slate-700/60 pb-2">
+    <div class="flex items-center gap-2">
+      <span
+        id="tutorial-step-badge"
+        class="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-mono font-bold bg-cyan-500/20 border border-cyan-400 text-cyan-300 tracking-wider"
+      >
+        LESSON 1 OF 5
+      </span>
+      <h2 id="tutorial-lesson-title" class="text-xs sm:text-sm font-black font-['Outfit'] text-white tracking-wide truncate">
+        1-Step Duplication (Clone)
+      </h2>
+    </div>
+
+    <button
+      id="btn-tutorial-exit"
+      type="button"
+      class="poki-btn poki-btn-secondary px-2.5 py-0.5 text-[10px] font-mono font-bold text-slate-300 hover:text-rose-300 rounded-lg border-b-2"
+      title="Exit Tutorial"
+    >
+      <span>✕ Exit</span>
+    </button>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="w-full bg-[#0b1021] rounded-full h-2 overflow-hidden border border-slate-800">
+    <div id="tutorial-progress-bar" class="bg-gradient-to-r from-cyan-400 via-emerald-400 to-[#ff2d60] h-2 rounded-full transition-all duration-200 w-1/5 shadow-[0_0_10px_rgba(0,229,255,0.8)]"></div>
+  </div>
+
+  <!-- Instruction Narrative -->
+  <div id="tutorial-instruction-text" class="text-xs sm:text-[13px] leading-relaxed text-slate-100 font-['Outfit'] font-medium">
+    Click your <strong class="text-[#ff4b72]">Ruby</strong> and select an adjacent <strong class="text-emerald-400">Green Ring</strong> (1 hex away). It clones a brand new Ruby while keeping your original!
+  </div>
+
+  <!-- Bottom Controls (Auto-Demo, Reset, Navigation) -->
+  <div class="flex items-center justify-between gap-2 pt-1">
+    <div class="flex items-center gap-2">
+      <!-- Auto Demonstration Button -->
+      <button
+        id="btn-tutorial-autodemo"
+        type="button"
+        class="poki-btn poki-btn-primary px-3 py-1.5 text-xs font-mono font-extrabold text-[#0b0f19] rounded-xl border-b-3"
+        title="Watch automated demonstration"
+      >
+        <span>🤖 Auto-Demo</span>
+      </button>
+
+      <!-- Reset Step Button -->
+      <button
+        id="btn-tutorial-reset"
+        type="button"
+        class="poki-btn poki-btn-secondary px-3 py-1.5 text-xs font-mono font-bold text-slate-200 rounded-xl border-b-3"
+        title="Restart this lesson"
+      >
+        <span>🔄 Reset</span>
+      </button>
+    </div>
+
+    <!-- Next / Prev Controls -->
+    <div class="flex items-center gap-2">
+      <button
+        id="btn-tutorial-prev"
+        type="button"
+        class="poki-btn poki-btn-secondary px-3 py-1.5 text-xs font-mono font-bold text-slate-300 rounded-xl border-b-3 disabled:opacity-40 disabled:pointer-events-none"
+        title="Previous Lesson"
+      >
+        ◀ Prev
+      </button>
+
+      <button
+        id="btn-tutorial-next"
+        type="button"
+        class="poki-btn poki-btn-cyan px-3.5 py-1.5 text-xs font-mono font-black text-[#0b0f19] rounded-xl border-b-3"
+        title="Skip to Next Lesson"
+      >
+        Next ▶
+      </button>
+    </div>
+  </div>
+
+  <!-- Success Slide-down Banner -->
+  <div
+    id="tutorial-success-banner"
+    class="hidden items-center justify-between gap-2 p-2.5 rounded-xl bg-[#0f241d] border-2 border-emerald-400/80 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+  >
+    <div class="flex items-center gap-2">
+      <span class="text-base sm:text-lg">✨</span>
+      <span id="tutorial-success-msg" class="text-xs sm:text-sm font-bold text-emerald-200 font-['Outfit']">
+        Perfect! Lesson completed!
+      </span>
+    </div>
+    <button
+      id="btn-tutorial-success-proceed"
+      type="button"
+      class="poki-btn poki-btn-emerald px-3.5 py-1 text-xs font-black text-white rounded-xl border-b-3 shrink-0"
+    >
+      CONTINUE ▶
+    </button>
+  </div>
+
+</div>
+
+<!-- ==========================================================================
+     TUTORIAL MASTERY / COMPLETION MODAL
+     ========================================================================== -->
+<dialog
+  id="dialog-tutorial-complete"
+  class="fixed inset-0 z-50 p-3 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 max-w-md w-[calc(100vw-1.5rem)]"
+  aria-labelledby="tutorial-complete-title"
+>
+  <div class="poki-card rounded-3xl p-6 sm:p-7 border-2 border-emerald-400 text-slate-100 flex flex-col items-center text-center gap-4 shadow-2xl">
+    
+    <!-- Trophy Icon & Badge -->
+    <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-3xl sm:text-4xl shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+      🎓
+    </div>
+
+    <!-- Title & Praise -->
+    <div class="flex flex-col gap-1">
+      <h2 id="tutorial-complete-title" class="text-xl sm:text-2xl font-black text-white font-['Outfit'] tracking-wide">
+        TUTORIAL COMPLETE!
+      </h2>
+      <p class="text-xs sm:text-sm text-emerald-300 font-bold">
+        You have mastered all core Hexxagon mechanics!
+      </p>
+    </div>
+
+    <!-- Key Takeaway Badges -->
+    <div class="grid grid-cols-3 gap-2 w-full text-center py-2.5 border-y border-slate-700/60">
+      <div class="p-2.5 rounded-2xl bg-[#0b1021] border border-emerald-500/40 flex flex-col items-center">
+        <span class="text-xs sm:text-sm font-bold text-emerald-400">1-Step</span>
+        <span class="text-[10px] font-mono text-slate-300">Clone</span>
+      </div>
+      <div class="p-2.5 rounded-2xl bg-[#0b1021] border border-amber-500/40 flex flex-col items-center">
+        <span class="text-xs sm:text-sm font-bold text-amber-400">2-Step</span>
+        <span class="text-[10px] font-mono text-slate-300">Jump</span>
+      </div>
+      <div class="p-2.5 rounded-2xl bg-[#0b1021] border border-rose-500/40 flex flex-col items-center">
+        <span class="text-xs sm:text-sm font-bold text-rose-400">Touch</span>
+        <span class="text-[10px] font-mono text-slate-300">Convert</span>
+      </div>
+    </div>
+
+    <p class="text-xs text-slate-200 leading-relaxed font-medium">
+      Ready to test your tactical dominance against challenging AI levels and friends?
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full pt-1">
+      <button
+        id="btn-tutorial-complete-play"
+        type="button"
+        class="poki-btn poki-btn-primary w-full py-3.5 rounded-2xl text-sm font-black uppercase tracking-wider"
+      >
+        ⚔️ START REAL BATTLE
+      </button>
+
+      <button
+        id="btn-tutorial-complete-replay"
+        type="button"
+        class="poki-btn poki-btn-secondary w-full sm:w-auto px-4 py-3 text-xs font-mono font-bold text-slate-200 rounded-2xl"
+      >
+        🔄 Replay
+      </button>
+    </div>
+
+  </div>
+</dialog>

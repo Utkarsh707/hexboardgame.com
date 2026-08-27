@@ -8,6 +8,7 @@
 import { HexxagonGame } from './game-engine.js';
 import { sound } from './audio.js';
 import { PLAYERS, BOARD_PRESETS, STAGE_THEMES } from './boards.js';
+import { TutorialManager } from './tutorial.js';
 
 export function initGameUI() {
     // Screen Elements
@@ -17,6 +18,8 @@ export function initGameUI() {
 
     // Title Screen Controls
     const btnTitlePlay = document.getElementById('btn-title-play');
+    const btnTitleTutorial = document.getElementById('btn-title-tutorial');
+    const btnSplashTutorial = document.getElementById('btn-splash-tutorial');
 
     // Setup Screen Controls
     const btnSetupBack = document.getElementById('btn-setup-back');
@@ -64,6 +67,7 @@ export function initGameUI() {
     const btnSplashHowToPlay = document.getElementById('btn-splash-how-to-play');
     const btnCloseHowToPlay = document.getElementById('btn-close-how-to-play');
     const btnConfirmHowToPlay = document.getElementById('btn-confirm-how-to-play');
+    const btnHowToPlayLaunchTutorial = document.getElementById('btn-how-to-play-launch-tutorial');
 
     const dialogStrategy = document.getElementById('dialog-strategy');
     const btnOpenStrategy = document.getElementById('btn-open-strategy');
@@ -116,6 +120,7 @@ export function initGameUI() {
     let selectedTheme = localStorage.getItem('hexxagon_theme') || 'space_invaders';
     let selectedDiff = 'medium';
     let game = null;
+    let tutorialManager = null;
     let screenShakeEnabled = localStorage.getItem('hexxagon_shake') !== 'false';
     let reduceFlashesEnabled = localStorage.getItem('hexxagon_reduce_flashes') === 'true';
 
@@ -241,21 +246,21 @@ export function initGameUI() {
     function updateSettingsUI() {
         if (settingToggleShake) {
             if (screenShakeEnabled) {
-                settingToggleShake.textContent = 'ON';
-                settingToggleShake.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-cyan-500/20 border border-cyan-400 text-cyan-300 hover:bg-cyan-500/30';
+                settingToggleShake.textContent = 'ENABLED';
+                settingToggleShake.className = 'poki-btn poki-btn-emerald px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold';
             } else {
-                settingToggleShake.textContent = 'OFF';
-                settingToggleShake.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-slate-800 border border-slate-700 text-slate-400 hover:text-white';
+                settingToggleShake.textContent = 'DISABLED';
+                settingToggleShake.className = 'poki-btn poki-btn-secondary px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-400';
             }
         }
 
         if (settingToggleFlashes) {
             if (reduceFlashesEnabled) {
-                settingToggleFlashes.textContent = 'ON';
-                settingToggleFlashes.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-emerald-500/20 border border-emerald-400 text-emerald-300 hover:bg-emerald-500/30';
+                settingToggleFlashes.textContent = 'ENABLED';
+                settingToggleFlashes.className = 'poki-btn poki-btn-emerald px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold';
             } else {
-                settingToggleFlashes.textContent = 'OFF';
-                settingToggleFlashes.className = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all bg-slate-800 border border-slate-700 text-slate-400 hover:text-white';
+                settingToggleFlashes.textContent = 'DISABLED';
+                settingToggleFlashes.className = 'poki-btn poki-btn-secondary px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-400';
             }
         }
     }
@@ -283,9 +288,9 @@ export function initGameUI() {
                 selectedDiff = diff;
                 splashDiffButtons.forEach(b => {
                     if (b.getAttribute('data-diff') === diff) {
-                        b.className = 'btn-splash-diff active py-1.5 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-lg cursor-pointer';
+                        b.className = 'btn-splash-diff active py-2 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-xl cursor-pointer';
                     } else {
-                        b.className = 'btn-splash-diff py-1.5 text-xs font-mono font-bold text-slate-400 rounded-lg transition-colors hover:text-cyan-300 cursor-pointer';
+                        b.className = 'btn-splash-diff py-2 text-xs font-mono font-bold text-slate-400 rounded-xl transition-colors hover:text-cyan-300 cursor-pointer';
                     }
                 });
                 sound.playSelect();
@@ -325,12 +330,11 @@ export function initGameUI() {
         splashThemeButtons.forEach(btn => {
             const bTheme = btn.getAttribute('data-theme');
             if (bTheme === themeId) {
-                btn.classList.add('active');
-                btn.classList.remove('border-slate-700', 'bg-[#04060c]');
-                btn.classList.add('border-cyan-400/80', 'bg-cyan-500/20');
+                btn.classList.add('active', 'border-cyan-400', 'bg-cyan-500/20');
+                btn.classList.remove('border-slate-700', 'bg-[#0d1429]');
             } else {
-                btn.classList.remove('active', 'border-cyan-400/80', 'bg-cyan-500/20');
-                btn.classList.add('border-slate-700', 'bg-[#04060c]');
+                btn.classList.remove('active', 'border-cyan-400', 'bg-cyan-500/20');
+                btn.classList.add('border-slate-700', 'bg-[#0d1429]');
             }
         });
 
@@ -415,9 +419,9 @@ export function initGameUI() {
 
         splashDiffButtons.forEach(b => {
             if (b.getAttribute('data-diff') === 'medium') {
-                b.className = 'btn-splash-diff active py-1.5 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-lg cursor-pointer';
+                b.className = 'btn-splash-diff active py-2 text-xs font-mono font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/80 rounded-xl cursor-pointer';
             } else {
-                b.className = 'btn-splash-diff py-1.5 text-xs font-mono font-bold text-slate-400 rounded-lg transition-colors hover:text-cyan-300 cursor-pointer';
+                b.className = 'btn-splash-diff py-2 text-xs font-mono font-bold text-slate-400 rounded-xl transition-colors hover:text-cyan-300 cursor-pointer';
             }
         });
     }
@@ -427,6 +431,9 @@ export function initGameUI() {
 
     // Screen State Transition Functions
     function showTitleScreen() {
+        if (tutorialManager && tutorialManager.isActive) {
+            tutorialManager.exitTutorial();
+        }
         resetMenuSelections();
         screenGame?.classList.add('hidden-screen');
         screenSetup?.classList.add('hidden-screen');
@@ -436,6 +443,9 @@ export function initGameUI() {
     }
 
     function showSetupScreen() {
+        if (tutorialManager && tutorialManager.isActive) {
+            tutorialManager.exitTutorial();
+        }
         screenGame?.classList.add('hidden-screen');
         screenTitle?.classList.add('hidden-screen');
         screenSetup?.classList.remove('hidden-screen');
@@ -443,7 +453,61 @@ export function initGameUI() {
         sound.playSelect();
     }
 
+    // Initialize Tutorial Manager
+    tutorialManager = new TutorialManager(null, {
+        onExit: (launchRealBattle) => {
+            if (launchRealBattle) {
+                selectedMode = 'pve';
+                launchBattle();
+            } else {
+                showTitleScreen();
+            }
+        }
+    });
+
+    function launchTutorial(startIndex = 0) {
+        sound.playSelect();
+        const themeObj = STAGE_THEMES[selectedTheme] || STAGE_THEMES.space_invaders;
+        sound.startMusic(themeObj.bgmTrack || 'space_invaders');
+        screenTitle?.classList.add('hidden-screen');
+        screenSetup?.classList.add('hidden-screen');
+        screenGame?.classList.remove('hidden-screen');
+
+        // Close any open popups
+        allDialogs.forEach(dlg => {
+            if (dlg && dlg.open) dlg.close();
+        });
+
+        if (!game) {
+            game = new HexxagonGame({
+                presetId: 'tutorial_clone',
+                themeId: selectedTheme,
+                gameMode: 'tutorial'
+            });
+            attachGameEvents(game);
+        }
+
+        tutorialManager.setGame(game);
+        tutorialManager.startTutorial(startIndex);
+
+        cardEmerald?.classList.add('hidden');
+        cardEmerald?.classList.remove('flex');
+        if (labelPlayerPearl) labelPlayerPearl.textContent = 'Trainer Bot';
+        if (stageBannerText) stageBannerText.textContent = 'INTERACTIVE TUTORIAL • LEARN TO PLAY';
+
+        window.hexxagonInstance = game;
+    }
+
     function launchBattle() {
+        if (selectedMode === 'tutorial') {
+            launchTutorial(0);
+            return;
+        }
+
+        if (tutorialManager && tutorialManager.isActive) {
+            tutorialManager.exitTutorial();
+        }
+
         sound.playSelect();
         const themeObj = STAGE_THEMES[selectedTheme] || STAGE_THEMES.space_invaders;
         sound.startMusic(themeObj.bgmTrack || 'space_invaders');
@@ -567,9 +631,21 @@ export function initGameUI() {
             }
         });
 
+        // Event: Move Made (Tutorial hook)
+        gameInstance.on('moveMade', ({ move, player }) => {
+            if (tutorialManager && tutorialManager.isActive) {
+                tutorialManager.handleMoveMade(move, player);
+            }
+        });
+
         // Event: Game Over
         gameInstance.on('gameOver', ({ winner, isTie, scores, moveCount }) => {
             updateUndoButton(false);
+            if (tutorialManager && tutorialManager.isActive) {
+                tutorialManager.handleGameOver(winner);
+                return;
+            }
+
             if (!dialogGameOver) return;
 
             if (finalScoreRuby) finalScoreRuby.textContent = scores.ruby || 0;
@@ -601,6 +677,10 @@ export function initGameUI() {
     // Title Screen: Animated "PLAY!" button -> Opens Setup Screen
     btnTitlePlay?.addEventListener('click', showSetupScreen);
 
+    // Title Screen & Bottom Nav: "TUTORIAL" buttons -> Launches Tutorial
+    btnTitleTutorial?.addEventListener('click', () => launchTutorial(0));
+    btnSplashTutorial?.addEventListener('click', () => launchTutorial(0));
+
     // Setup Screen: Back to Title button
     btnSetupBack?.addEventListener('click', showTitleScreen);
 
@@ -612,7 +692,11 @@ export function initGameUI() {
 
     // Restart Button inside Arena
     btnRestartGame?.addEventListener('click', () => {
-        if (game) game.initGame();
+        if (tutorialManager && tutorialManager.isActive) {
+            tutorialManager.loadCurrentLesson();
+        } else if (game) {
+            game.initGame();
+        }
         sound.playSelect();
     });
 
@@ -641,6 +725,10 @@ export function initGameUI() {
     btnSplashHowToPlay?.addEventListener('click', openHowToPlay);
     btnCloseHowToPlay?.addEventListener('click', closeHowToPlay);
     btnConfirmHowToPlay?.addEventListener('click', closeHowToPlay);
+    btnHowToPlayLaunchTutorial?.addEventListener('click', () => {
+        closeHowToPlay();
+        launchTutorial(0);
+    });
 
     // Modal Triggers: Strategy Guide
     const openStrategy = () => {
