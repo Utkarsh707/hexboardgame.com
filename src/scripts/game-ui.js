@@ -7,7 +7,7 @@
 
 import { HexxagonGame } from './game-engine.js';
 import { sound } from './audio.js';
-import { PLAYERS, BOARD_PRESETS } from './boards.js';
+import { PLAYERS, BOARD_PRESETS, STAGE_THEMES } from './boards.js';
 
 export function initGameUI() {
     // Screen Elements
@@ -22,12 +22,16 @@ export function initGameUI() {
     const btnSetupBack = document.getElementById('btn-setup-back');
     const splashSelectMode = document.getElementById('splash-select-mode');
     const splashSelectPreset = document.getElementById('splash-select-preset');
+    const splashSelectTheme = document.getElementById('splash-select-theme');
+    const splashThemeButtons = document.querySelectorAll('.btn-splash-theme');
+    const splashThemeTagline = document.getElementById('splash-theme-tagline');
     const splashContainerDiff = document.getElementById('splash-container-difficulty');
     const splashDiffButtons = document.querySelectorAll('.btn-splash-diff');
     const btnSplashStartGame = document.getElementById('btn-splash-start-game');
     const btnSplashSound = document.getElementById('btn-splash-sound');
     const splashSoundIcon = document.getElementById('splash-sound-icon');
     const splashSoundText = document.getElementById('splash-sound-text');
+    const settingSelectTheme = document.getElementById('setting-select-theme');
 
     // In-Game Header & Arena Controls
     const btnNavMenu = document.getElementById('btn-nav-menu');
@@ -108,7 +112,8 @@ export function initGameUI() {
 
     // State Variables
     let selectedMode = 'pve';
-    let selectedPreset = 'classic';
+    let selectedPreset = localStorage.getItem('hexxagon_maze') || 'classic';
+    let selectedTheme = localStorage.getItem('hexxagon_theme') || 'space_invaders';
     let selectedDiff = 'medium';
     let game = null;
     let screenShakeEnabled = localStorage.getItem('hexxagon_shake') !== 'false';
@@ -288,6 +293,77 @@ export function initGameUI() {
         });
     });
 
+    // Update In-Game Composite Stage Banner (e.g. STAGE 1 // SPACE INVADERS • CLASSIC)
+    function updateStageBanner() {
+        if (stageBannerText && BOARD_PRESETS[selectedPreset] && STAGE_THEMES[selectedTheme]) {
+            const maze = BOARD_PRESETS[selectedPreset];
+            const theme = STAGE_THEMES[selectedTheme];
+            stageBannerText.textContent = `${theme.stageTitle} • ${maze.shortName || maze.name}`;
+        }
+    }
+
+    // Theme Selection Synchronizer (Splash & Settings)
+    function updateThemeCardsUI(themeId) {
+        selectedTheme = themeId;
+        localStorage.setItem('hexxagon_theme', themeId);
+        if (splashSelectTheme) splashSelectTheme.value = themeId;
+        if (settingSelectTheme) settingSelectTheme.value = themeId;
+
+        // Apply theme globally across Document, Body, and Stage Backdrop
+        document.documentElement.setAttribute('data-theme', themeId);
+        document.body.setAttribute('data-theme', themeId);
+        const stageBackdrop = document.getElementById('stage-backdrop');
+        if (stageBackdrop) {
+            stageBackdrop.setAttribute('data-theme', themeId);
+        }
+
+        const themeObj = STAGE_THEMES[themeId];
+        if (splashThemeTagline && themeObj) {
+            splashThemeTagline.textContent = themeObj.subtitle;
+        }
+
+        splashThemeButtons.forEach(btn => {
+            const bTheme = btn.getAttribute('data-theme');
+            if (bTheme === themeId) {
+                btn.classList.add('active');
+                btn.classList.remove('border-slate-700', 'bg-[#04060c]');
+                btn.classList.add('border-cyan-400/80', 'bg-cyan-500/20');
+            } else {
+                btn.classList.remove('active', 'border-cyan-400/80', 'bg-cyan-500/20');
+                btn.classList.add('border-slate-700', 'bg-[#04060c]');
+            }
+        });
+
+        if (game) {
+            game.setTheme(themeId);
+            if (sound.isPlayingMusic && sound.currentTrack !== 'menu') {
+                sound.startMusic(themeObj?.bgmTrack || themeId);
+            }
+            updateStageBanner();
+        }
+    }
+
+    // Theme selection button clicks
+    splashThemeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const theme = btn.getAttribute('data-theme');
+            if (theme) {
+                updateThemeCardsUI(theme);
+                sound.playSelect();
+            }
+        });
+    });
+
+    splashSelectTheme?.addEventListener('change', (e) => {
+        updateThemeCardsUI(e.target.value);
+        sound.playSelect();
+    });
+
+    settingSelectTheme?.addEventListener('change', (e) => {
+        updateThemeCardsUI(e.target.value);
+        sound.playSelect();
+    });
+
     // Splash Screen: Mode Selector
     splashSelectMode?.addEventListener('change', (e) => {
         selectedMode = e.target.value;
@@ -304,12 +380,14 @@ export function initGameUI() {
             if (splashSelectPreset) splashSelectPreset.value = 'classic';
             selectedPreset = 'classic';
         }
+        localStorage.setItem('hexxagon_maze', selectedPreset);
         sound.playSelect();
     });
 
-    // Splash Screen: Preset Selector
+    // Splash Screen: Maze Type Selector
     splashSelectPreset?.addEventListener('change', (e) => {
         selectedPreset = e.target.value;
+        localStorage.setItem('hexxagon_maze', selectedPreset);
         if (selectedPreset === 'trio') {
             if (splashSelectMode) splashSelectMode.value = 'trio';
             selectedMode = 'trio';
@@ -322,15 +400,18 @@ export function initGameUI() {
         sound.playSelect();
     });
 
-    // Reset Menu Selections to Defaults (PvE, Classic, Medium AI)
+    // Reset Menu Selections to Defaults (PvE, Classic / Saved, Medium AI)
     function resetMenuSelections() {
         selectedMode = 'pve';
-        selectedPreset = 'classic';
+        selectedPreset = localStorage.getItem('hexxagon_maze') || 'classic';
+        selectedTheme = localStorage.getItem('hexxagon_theme') || 'space_invaders';
         selectedDiff = 'medium';
 
         if (splashSelectMode) splashSelectMode.value = 'pve';
-        if (splashSelectPreset) splashSelectPreset.value = 'classic';
+        if (splashSelectPreset) splashSelectPreset.value = selectedPreset;
         splashContainerDiff?.classList.remove('opacity-30', 'pointer-events-none');
+
+        updateThemeCardsUI(selectedTheme);
 
         splashDiffButtons.forEach(b => {
             if (b.getAttribute('data-diff') === 'medium') {
@@ -364,7 +445,8 @@ export function initGameUI() {
 
     function launchBattle() {
         sound.playSelect();
-        sound.startMusic('game');
+        const themeObj = STAGE_THEMES[selectedTheme] || STAGE_THEMES.space_invaders;
+        sound.startMusic(themeObj.bgmTrack || 'space_invaders');
         screenTitle?.classList.add('hidden-screen');
         screenSetup?.classList.add('hidden-screen');
         screenGame?.classList.remove('hidden-screen');
@@ -374,19 +456,19 @@ export function initGameUI() {
         if (!game) {
             game = new HexxagonGame({
                 presetId: selectedPreset,
+                themeId: selectedTheme,
                 gameMode: modeKey
             });
             attachGameEvents(game);
         } else {
             game.setPreset(selectedPreset);
+            game.setTheme(selectedTheme);
             game.setGameMode(modeKey);
             game.initGame();
         }
 
-        // Update In-Game Labels
-        if (stageBannerText && BOARD_PRESETS[selectedPreset]) {
-            stageBannerText.textContent = BOARD_PRESETS[selectedPreset].stageTitle;
-        }
+        // Update In-Game Labels with Composite Stage Banner
+        updateStageBanner();
 
         if (selectedMode === 'trio') {
             cardEmerald?.classList.remove('hidden');

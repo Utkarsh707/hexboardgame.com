@@ -2,55 +2,218 @@
 ---
 
 <!-- ==========================================================================
-     LIGHTWEIGHT 60/120 FPS HARDWARE-ACCELERATED RETRO SPACE BACKDROP
-     - Zero composite thrashing, 0% CPU overhead
+     LIGHTWEIGHT ZERO-LAG HARDWARE-ACCELERATED STAGE BACKDROP (4 THEMES)
+     - Zero composite thrashing, 0% idle CPU overhead
+     - Inactive theme layers are completely culled via display: none
      ========================================================================== -->
-<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none bg-[#03040a]">
+<div id="stage-backdrop" class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none bg-[#020805]" data-theme="space_invaders">
   
-  <!-- Retro Distant Ringed Planet -->
-  <div class="absolute top-[6%] right-[6%] sm:right-[12%] w-[140px] h-[140px] sm:w-[200px] sm:h-[200px] pointer-events-none opacity-75">
-    <div class="relative w-full h-full rounded-full bg-gradient-to-tr from-[#160d29] via-[#3b1778] to-[#0284c7] shadow-[0_0_40px_rgba(2,132,199,0.2)] overflow-hidden border border-cyan-400/20">
-      <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent"></div>
+  <!-- ========================================================================
+       THEME 1: SPACE INVADERS (Phosphor Green Radar & Wireframe Alien Planet)
+       ======================================================================== -->
+  <div class="theme-layer theme-layer-space-invaders absolute inset-0 pointer-events-none">
+    <!-- Emerald Wireframe Ringed Planet -->
+    <div class="absolute top-[6%] right-[6%] sm:right-[12%] w-[130px] h-[130px] sm:w-[180px] sm:h-[180px] pointer-events-none opacity-80">
+      <div class="relative w-full h-full rounded-full bg-gradient-to-tr from-[#02180d] via-[#093d25] to-[#00ff88] shadow-[0_0_24px_rgba(0,255,136,0.25)] overflow-hidden border border-[#00ff88]/40">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-transparent to-transparent"></div>
+        <div class="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_4px,rgba(0,255,136,0.12)_4px,rgba(0,255,136,0.12)_6px)]"></div>
+      </div>
+      <!-- Planetary Ring -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[28%] rounded-[50%] border-t-[4px] sm:border-t-[6px] border-b-[2px] border-[#00ff88]/60 shadow-[0_0_12px_rgba(0,255,136,0.35)] rotate-[-22deg]"></div>
     </div>
-    <!-- Planetary Ring -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[32%] rounded-[50%] border-t-[5px] sm:border-t-[8px] border-b-[2px] border-cyan-300/50 shadow-[0_0_15px_rgba(56,189,248,0.3)] rotate-[-24deg]"></div>
+
+    <!-- Distant Alien Radar Moon -->
+    <div class="absolute top-[24%] left-[6%] sm:left-[10%] w-[42px] h-[42px] sm:w-[50px] sm:h-[50px] rounded-full bg-gradient-to-tr from-[#02140a] via-[#0b3320] to-[#10b981] border border-[#10b981]/40 shadow-[0_0_10px_rgba(16,185,129,0.25)] opacity-70">
+      <div class="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-black/50 border border-[#10b981]/30"></div>
+    </div>
+
+    <!-- Space Invaders Radar Scanline Grid -->
+    <div class="absolute inset-0 bg-space-radar-grid opacity-70"></div>
+    <!-- Phosphor Starfield -->
+    <div class="absolute inset-0 bg-phosphor-stars opacity-90"></div>
+    <!-- Ambient Toxic Emerald & Magenta Nebula Aura -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_25%,rgba(0,255,136,0.10)_0%,transparent_50%),radial-gradient(circle_at_85%_75%,rgba(255,0,127,0.06)_0%,transparent_50%)] pointer-events-none"></div>
   </div>
 
-  <!-- Distant Crater Moon -->
-  <div class="absolute top-[26%] left-[6%] sm:left-[10%] w-[45px] h-[45px] sm:w-[60px] sm:h-[60px] rounded-full bg-gradient-to-tr from-[#090d1a] via-[#1e293b] to-[#475569] border border-slate-600/30 shadow-[0_0_15px_rgba(71,85,105,0.2)] opacity-60">
-    <div class="absolute top-2 left-2.5 w-2.5 h-2.5 rounded-full bg-black/40 border border-slate-600/30"></div>
-    <div class="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 rounded-full bg-black/40 border border-slate-600/30"></div>
+  <!-- ========================================================================
+       THEME 2: 8-BIT ODYSSEY (Kirby Star & Mario NES Sunset Sky)
+       ======================================================================== -->
+  <div class="theme-layer theme-layer-kirby-mario absolute inset-0 pointer-events-none">
+    <!-- Dreamy Sunset Twilight Sky -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#120a2e] via-[#2a114d] to-[#451659] opacity-95"></div>
+
+    <!-- Golden Super Star Moon -->
+    <div class="absolute top-[8%] right-[8%] sm:right-[14%] w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] pointer-events-none">
+      <div class="w-full h-full rounded-full bg-gradient-to-tr from-[#f59e0b] via-[#fbbf24] to-[#fef08a] shadow-[0_0_30px_rgba(251,191,36,0.45)] flex items-center justify-center border-2 border-yellow-200/80">
+        <span class="text-3xl sm:text-4xl">⭐</span>
+      </div>
+    </div>
+
+    <!-- Pixel 8-Bit Clouds -->
+    <div class="absolute top-[18%] left-[6%] sm:left-[12%] flex gap-1.5 opacity-40">
+      <div class="w-16 sm:w-24 h-6 sm:h-8 rounded-full bg-white/20 shadow-[0_0_8px_rgba(255,255,255,0.2)]"></div>
+      <div class="w-10 sm:w-16 h-8 sm:h-12 -ml-6 -mt-3 rounded-full bg-white/25"></div>
+    </div>
+
+    <div class="absolute top-[38%] right-[5%] sm:right-[18%] flex gap-1.5 opacity-35">
+      <div class="w-20 sm:w-28 h-7 sm:h-9 rounded-full bg-pink-200/20 shadow-[0_0_8px_rgba(244,114,182,0.2)]"></div>
+      <div class="w-12 sm:w-18 h-9 sm:h-13 -ml-8 -mt-4 rounded-full bg-pink-200/25"></div>
+    </div>
+
+    <!-- Pastel Candy Starfield -->
+    <div class="absolute inset-0 bg-pastel-stars opacity-95"></div>
+    <!-- Warm Kirby Bubblegum & Sky Cyan Ambient Aura -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(244,114,182,0.14)_0%,transparent_50%),radial-gradient(circle_at_80%_65%,rgba(56,189,248,0.10)_0%,transparent_50%)] pointer-events-none"></div>
   </div>
 
-  <!-- Layer 1: Crisp Static Pixel Starfield (Zero GPU Repaint overhead) -->
-  <div class="absolute inset-0 bg-nes-stars-static opacity-90"></div>
+  <!-- ========================================================================
+       THEME 3: CYBERPUNK 2099 (Synthwave Sliced Sun & Horizon Grid)
+       ======================================================================== -->
+  <div class="theme-layer theme-layer-cyberpunk absolute inset-0 pointer-events-none">
+    <div class="absolute inset-0 bg-gradient-to-b from-[#05010c] via-[#110426] to-[#1a0636]"></div>
 
-  <!-- Layer 2: Subtle Ambient Star Dust Glow -->
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,45,96,0.06)_0%,transparent_50%),radial-gradient(circle_at_80%_70%,rgba(0,229,255,0.06)_0%,transparent_50%)] pointer-events-none"></div>
+    <!-- Giant Retro Synthwave Sliced Sun -->
+    <div class="absolute top-[8%] left-1/2 -translate-x-1/2 w-[140px] h-[140px] sm:w-[190px] sm:h-[190px] pointer-events-none opacity-85">
+      <div class="relative w-full h-full rounded-full bg-gradient-to-b from-[#ffea00] via-[#ff0055] to-[#7928ca] shadow-[0_0_35px_rgba(255,0,85,0.4)] overflow-hidden">
+        <div class="absolute inset-0 bg-[repeating-linear-gradient(180deg,transparent_0px,transparent_6px,#05010c_6px,#05010c_9px,transparent_9px,transparent_18px,#05010c_18px,#05010c_22px)] opacity-90"></div>
+      </div>
+    </div>
+
+    <!-- Synthwave Cyber Grid at bottom -->
+    <div class="absolute bottom-0 inset-x-0 h-[38%] bg-synthwave-horizon-grid opacity-40"></div>
+
+    <!-- Cyberpunk Starfield -->
+    <div class="absolute inset-0 bg-cyberpunk-stars opacity-85"></div>
+    <!-- Hot Magenta & Cyan Circuit Aura -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,0,85,0.12)_0%,transparent_60%),radial-gradient(circle_at_50%_90%,rgba(0,240,255,0.12)_0%,transparent_50%)] pointer-events-none"></div>
+  </div>
+
+  <!-- ========================================================================
+       THEME 4: TETRIS MATRIX (Ghost Tetrominoes & Russian Block Arcade Grid)
+       ======================================================================== -->
+  <div class="theme-layer theme-layer-tetris absolute inset-0 pointer-events-none">
+    <div class="absolute inset-0 bg-gradient-to-b from-[#030614] via-[#09102b] to-[#04081c]"></div>
+
+    <!-- Static Ghost Tetromino Silhouettes in Background -->
+    <div class="absolute top-[12%] left-[8%] sm:left-[15%] w-12 h-8 border border-purple-400/35 bg-purple-500/10 shadow-[0_0_10px_rgba(168,85,247,0.25)] rounded-sm opacity-40 rotate-[12deg]"></div>
+    <div class="absolute top-[25%] right-[10%] sm:right-[18%] w-4 h-22 border border-cyan-400/35 bg-cyan-500/10 shadow-[0_0_12px_rgba(6,182,212,0.25)] rounded-sm opacity-45 rotate-[-15deg]"></div>
+    <div class="absolute bottom-[28%] left-[6%] sm:left-[12%] w-14 h-8 border border-red-500/35 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.25)] rounded-sm opacity-35 rotate-[25deg]"></div>
+    <div class="absolute bottom-[20%] right-[8%] sm:right-[15%] w-9 h-9 border border-amber-400/35 bg-amber-500/10 shadow-[0_0_10px_rgba(245,158,11,0.25)] rounded-sm opacity-40 rotate-[-8deg]"></div>
+
+    <!-- Vertical Arcade Tetris Column Grid Texture -->
+    <div class="absolute inset-0 bg-tetris-matrix-grid opacity-50"></div>
+    <!-- Tetris RGB Starfield -->
+    <div class="absolute inset-0 bg-tetris-stars opacity-90"></div>
+    <!-- Ambient Blue & Amber Primary RGB Glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,rgba(59,130,246,0.12)_0%,transparent_50%),radial-gradient(circle_at_80%_60%,rgba(245,158,11,0.10)_0%,transparent_50%)] pointer-events-none"></div>
+  </div>
 
 </div>
 
 <style>
-  /* Static Starfield with zero ongoing repaint cost */
-  .bg-nes-stars-static {
+  /* CULL INACTIVE THEME LAYERS COMPLETELY (0% CPU / 0% GPU overhead) */
+  .theme-layer {
+    display: none !important;
+  }
+
+  [data-theme="space_invaders"] .theme-layer-space-invaders,
+  #stage-backdrop[data-theme="space_invaders"] .theme-layer-space-invaders {
+    display: block !important;
+  }
+  [data-theme="kirby_mario"] .theme-layer-kirby-mario,
+  #stage-backdrop[data-theme="kirby_mario"] .theme-layer-kirby-mario {
+    display: block !important;
+  }
+  [data-theme="cyberpunk"] .theme-layer-cyberpunk,
+  #stage-backdrop[data-theme="cyberpunk"] .theme-layer-cyberpunk {
+    display: block !important;
+  }
+  [data-theme="tetris"] .theme-layer-tetris,
+  #stage-backdrop[data-theme="tetris"] .theme-layer-tetris {
+    display: block !important;
+  }
+
+  /* Backdrop container background sync */
+  #stage-backdrop[data-theme="space_invaders"] { background-color: #020906; }
+  #stage-backdrop[data-theme="kirby_mario"] { background-color: #120a2e; }
+  #stage-backdrop[data-theme="cyberpunk"] { background-color: #05010c; }
+  #stage-backdrop[data-theme="tetris"] { background-color: #030614; }
+
+  /* Theme 1: Phosphor radar grid & starfield */
+  .bg-space-radar-grid {
     background-image: 
-      radial-gradient(1.5px 1.5px at 25px 35px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 110px 180px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 230px 80px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 360px 270px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 480px 140px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 620px 240px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 750px 60px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 870px 340px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 990px 160px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 75px 130px, #00e5ff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 180px 300px, #ff2d60, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 290px 35px, #facc15, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 430px 220px, #00e5ff, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 570px 95px, #a855f7, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 710px 290px, #ff2d60, rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 840px 180px, #facc15, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 960px 50px, #00e5ff, rgba(0,0,0,0));
+      linear-gradient(to right, rgba(0, 255, 136, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 255, 136, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .bg-phosphor-stars {
+    background-image: 
+      radial-gradient(1.5px 1.5px at 30px 40px, #00ff88, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 120px 190px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 240px 90px, #ff007f, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 370px 280px, #00ff88, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 490px 150px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 630px 250px, #76ff03, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 760px 70px, #00ff88, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 890px 320px, #ff007f, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 550px 380px;
+  }
+
+  /* Theme 2: Pastel Candy Stars */
+  .bg-pastel-stars {
+    background-image: 
+      radial-gradient(1.5px 1.5px at 40px 50px, #ffd1dc, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 140px 170px, #fde047, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 250px 70px, #38bdf8, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 380px 260px, #f472b6, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 510px 130px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 640px 230px, #4ade80, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 780px 80px, #fde047, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 910px 310px, #f472b6, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 550px 380px;
+  }
+
+  /* Theme 3: Synthwave Grid & Cyber Stars */
+  .bg-synthwave-horizon-grid {
+    background-image: 
+      linear-gradient(to right, rgba(0, 240, 255, 0.18) 1px, transparent 1px),
+      linear-gradient(to top, rgba(255, 0, 85, 0.22) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .bg-cyberpunk-stars {
+    background-image: 
+      radial-gradient(1.5px 1.5px at 35px 45px, #00f0ff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 150px 180px, #ff0055, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 270px 85px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 400px 270px, #00f0ff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 530px 140px, #a855f7, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 660px 240px, #ff0055, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 800px 90px, #00f0ff, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 550px 380px;
+  }
+
+  /* Theme 4: Tetris Matrix Grid & Stars */
+  .bg-tetris-matrix-grid {
+    background-image: 
+      linear-gradient(to right, rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(59, 130, 246, 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .bg-tetris-stars {
+    background-image: 
+      radial-gradient(1.5px 1.5px at 50px 60px, #06b6d4, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 160px 190px, #ef4444, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 280px 90px, #f59e0b, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 410px 280px, #3b82f6, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 540px 150px, #22c55e, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 680px 250px, #a855f7, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 820px 95px, #06b6d4, rgba(0,0,0,0));
     background-repeat: repeat;
     background-size: 550px 380px;
   }

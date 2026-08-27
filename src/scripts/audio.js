@@ -199,8 +199,16 @@ export class SoundEngine {
 
         if (this.currentTrack === 'menu') {
             this.playMenuTrackStep(step, time);
+        } else if (this.currentTrack === 'space_invaders') {
+            this.playSpaceInvadersTrackStep(step, time);
+        } else if (this.currentTrack === 'kirby_mario') {
+            this.playKirbyMarioTrackStep(step, time);
+        } else if (this.currentTrack === 'tetris') {
+            this.playTetrisTrackStep(step, time);
+        } else if (this.currentTrack === 'cyberpunk' || this.currentTrack === 'game') {
+            this.playCyberpunkTrackStep(step, time);
         } else {
-            this.playGameTrackStep(step, time);
+            this.playCyberpunkTrackStep(step, time);
         }
     }
 
@@ -238,12 +246,85 @@ export class SoundEngine {
         }
     }
 
-    // GAME BGM: Fast, Addicting 136 BPM Arcade Tactical Loop (A Minor / Street Fighter Style)
-    playGameTrackStep(step, time) {
+    // THEME 1: SPACE INVADERS (1978 Arcade • 4-tone descending alien march & laser pulses)
+    playSpaceInvadersTrackStep(step, time) {
+        const step16 = step % 16;
+        const beat4 = Math.floor(step16 / 4); // 0, 1, 2, 3
+
+        // Iconic 4-Note Descending Alien Pulse: D2 -> C#2 -> C2 -> B1
+        const marchNotes = [146.83, 138.59, 130.81, 123.47];
+        if (step16 % 4 === 0) {
+            const marchFreq = marchNotes[beat4];
+            this.playChiptuneNote(marchFreq, 'square', time, 0.14, 0.28, 450);
+            this.playRetroKick(time, 0.24);
+        }
+
+        // Space Laser Arpeggios & Radar Blips
+        const laserArp = [
+            0, 587.33, 0, 880.00, 0, 587.33, 0, 1174.66,
+            0, 523.25, 0, 783.99, 0, 659.25, 880.00, 0
+        ];
+        const laserFreq = laserArp[step16];
+        if (laserFreq > 0) {
+            this.playChiptuneNote(laserFreq, 'sawtooth', time, 0.07, 0.13, 3200);
+        }
+
+        // Retro Arcade Crisp Noise Ticks
+        if (step16 % 2 === 0) {
+            this.playRetroNoise(time, 0.02, 0.07, 9000);
+        }
+        if (step16 === 4 || step16 === 12) {
+            this.playRetroSnare(time, 0.20);
+        }
+    }
+
+    // THEME 2: 8-BIT ODYSSEY (Kirby & Mario NES • Upbeat joyful bouncy chiptune arpeggio)
+    playKirbyMarioTrackStep(step, time) {
         const step16 = step % 16;
         const bar = Math.floor(step / 16);
 
-        // 1. Driving Slap-Bass Pulse (A1 -> C2 -> D2 -> F2 -> E2)
+        // Bouncy Walking Bass in C Major / F Major
+        const bassLine = (bar === 0) ? [
+            130.81, 0, 164.81, 0, 196.00, 0, 220.00, 0, // C3, E3, G3, A3
+            174.61, 0, 220.00, 0, 196.00, 0, 164.81, 0  // F3, A3, G3, E3
+        ] : [
+            174.61, 0, 220.00, 0, 261.63, 0, 220.00, 0, // F3, A3, C4, A3
+            196.00, 0, 246.94, 0, 261.63, 0, 196.00, 0  // G3, B3, C4, G3
+        ];
+        const bassFreq = bassLine[step16];
+        if (bassFreq > 0) {
+            this.playChiptuneNote(bassFreq, 'triangle', time, 0.11, 0.26, 1200);
+        }
+
+        // Cheerful Bouncy Mario/Kirby 8-bit Lead Arpeggio
+        const leadNotes = (bar === 0) ? [
+            523.25, 0, 659.25, 783.99, 1046.50, 0, 783.99, 0,
+            880.00, 0, 659.25, 0, 783.99, 659.25, 523.25, 0
+        ] : [
+            698.46, 0, 880.00, 1046.50, 1318.51, 0, 1046.50, 0,
+            987.77, 0, 783.99, 0, 1046.50, 0, 1318.51, 1046.50
+        ];
+        const leadFreq = leadNotes[step16];
+        if (leadFreq > 0) {
+            this.playChiptuneNote(leadFreq, 'square', time, 0.08, 0.18, 3000);
+        }
+
+        // Playful Percussion
+        this.playRetroNoise(time, 0.02, 0.05, 7000);
+        if (step16 === 4 || step16 === 12) {
+            this.playRetroSnare(time, 0.22);
+        }
+        if (step16 === 0 || step16 === 6 || step16 === 10) {
+            this.playRetroKick(time, 0.24);
+        }
+    }
+
+    // THEME 3: CYBERPUNK 2099 (Synthwave / Outrun • Driving 136 BPM cyberpunk bassline)
+    playCyberpunkTrackStep(step, time) {
+        const step16 = step % 16;
+        const bar = Math.floor(step / 16);
+
+        // Driving Slap-Bass Pulse (A1 -> C2 -> D2 -> F2 -> E2)
         const bassLine = [
             110.00, 110.00, 0, 110.00, 130.81, 0, 146.83, 110.00, // A2, C3, D3
             110.00, 110.00, 0, 174.61, 164.81, 0, 130.81, 146.83  // F3, E3, C3
@@ -253,7 +334,7 @@ export class SoundEngine {
             this.playChiptuneNote(bassFreq, 'square', time, 0.09, 0.22, 900);
         }
 
-        // 2. High-Energy Arcade Melody & Arpeggio (Pulse Wave)
+        // High-Energy Arcade Melody & Arpeggio (Pulse Wave)
         const leadNotes = (bar === 0) ? [
             440.00, 0, 523.25, 0, 659.25, 0, 880.00, 0,
             783.99, 0, 659.25, 0, 587.33, 523.25, 440.00, 0
@@ -264,21 +345,60 @@ export class SoundEngine {
 
         const leadFreq = leadNotes[step16];
         if (leadFreq > 0) {
-            this.playChiptuneNote(leadFreq, 'square', time, 0.08, 0.16, 2400);
+            this.playChiptuneNote(leadFreq, 'sawtooth', time, 0.08, 0.16, 2600);
         }
 
-        // 3. Arcade Percussion (Kick, Snare, Hi-Hat)
-        // Hi-Hat on every 16th note
+        // Arcade Percussion (Kick, Snare, Hi-Hat)
         this.playRetroNoise(time, 0.025, 0.06, 8000);
-
-        // Punchy Chiptune Snare on beats 2 and 4 (step 4, 12)
         if (step16 === 4 || step16 === 12) {
             this.playRetroSnare(time, 0.26);
         }
-
-        // 8-bit Pitch-Dropped Kick on beats 1 and 3 (step 0, 8, and syncopated step 14)
         if (step16 === 0 || step16 === 8 || step16 === 14) {
             this.playRetroKick(time, 0.28);
+        }
+    }
+
+    // THEME 4: TETRIS MATRIX (1989 Block Arcade • Iconic Korobeiniki folk melody)
+    playTetrisTrackStep(step, time) {
+        const step16 = step % 16;
+        const bar = Math.floor(step / 16);
+
+        // Authentic Russian Folk Korobeiniki 8-Bit Lead Melody
+        // Bar 1: E4, B3, C4, D4, C4, B3, A3, A3, C4, E4, D4, C4, B3
+        // Bar 2: C4, D4, E4, C4, A3, A3, D4, F4, A4, G4, F4, E4
+        const korobeinikiNotes = (bar === 0) ? [
+            659.25, 0, 493.88, 523.25, 587.33, 0, 523.25, 493.88, // E5, B4, C5, D5, C5, B4
+            440.00, 0, 440.00, 523.25, 659.25, 0, 587.33, 523.25  // A4, A4, C5, E5, D5, C5
+        ] : [
+            493.88, 0, 523.25, 587.33, 659.25, 0, 523.25, 0,      // B4, C5, D5, E5, C5
+            440.00, 0, 440.00, 0, 587.33, 698.46, 880.00, 783.99  // A4, A4, D5, F5, A5, G5
+        ];
+
+        const leadFreq = korobeinikiNotes[step16];
+        if (leadFreq > 0) {
+            this.playChiptuneNote(leadFreq, 'square', time, 0.09, 0.20, 2200);
+        }
+
+        // Iconic Russian Folk Polka Bassline (A2 -> E2 -> D2 -> G#2)
+        const tetrisBass = (bar === 0) ? [
+            110.00, 0, 82.41, 0, 146.83, 0, 82.41, 0,  // A2, E2, D3, E2
+            110.00, 0, 82.41, 0, 103.83, 0, 82.41, 0   // A2, E2, G#2, E2
+        ] : [
+            103.83, 0, 82.41, 0, 110.00, 0, 130.81, 0, // G#2, E2, A2, C3
+            110.00, 0, 82.41, 0, 146.83, 0, 164.81, 0  // A2, E2, D3, E3
+        ];
+        const bassFreq = tetrisBass[step16];
+        if (bassFreq > 0) {
+            this.playChiptuneNote(bassFreq, 'triangle', time, 0.10, 0.25, 800);
+        }
+
+        // Crisp Arcade Percussion
+        this.playRetroNoise(time, 0.02, 0.05, 8500);
+        if (step16 === 4 || step16 === 12) {
+            this.playRetroSnare(time, 0.24);
+        }
+        if (step16 === 0 || step16 === 8) {
+            this.playRetroKick(time, 0.26);
         }
     }
 

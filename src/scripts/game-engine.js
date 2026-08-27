@@ -6,7 +6,7 @@
  */
 
 import { HexMath } from './hex-math.js';
-import { PLAYERS, BOARD_PRESETS } from './boards.js';
+import { PLAYERS, BOARD_PRESETS, STAGE_THEMES } from './boards.js';
 import { sound } from './audio.js';
 import { HexxagonAI } from './ai.js';
 import { ParticleEngine } from './particles.js';
@@ -19,6 +19,7 @@ export class HexxagonGame {
         this.ai = new HexxagonAI('medium');
 
         this.presetId = options.presetId || 'classic';
+        this.themeId = options.themeId || 'space_invaders';
         this.gameMode = options.gameMode || 'pve-medium';
 
         this.state = null;
@@ -123,6 +124,22 @@ export class HexxagonGame {
         this.initGame(presetId);
     }
 
+    getTheme() {
+        return STAGE_THEMES[this.themeId] || STAGE_THEMES.space_invaders;
+    }
+
+    getPlayerColor(player) {
+        const theme = this.getTheme();
+        return theme.players[player]?.color || PLAYERS[player]?.color || '#00e5ff';
+    }
+
+    setTheme(themeId) {
+        if (STAGE_THEMES[themeId]) {
+            this.themeId = themeId;
+            this.renderBoard();
+        }
+    }
+
     calculateScores(board = this.state.board, players = this.state.players) {
         const scores = {};
         for (let i = 0; i < players.length; i++) {
@@ -212,33 +229,36 @@ export class HexxagonGame {
         this.activeThreatCellElements = [];
         this.currentHoveredKey = null;
 
+        const theme = this.getTheme();
+
+        // Update Theme Attributes for CSS Styling
+        if (this.svgContainer) {
+            this.svgContainer.setAttribute('data-theme', this.themeId);
+        }
+        const boardViewport = document.getElementById('board-viewport');
+        if (boardViewport) {
+            boardViewport.setAttribute('data-theme', this.themeId);
+        }
+        const arenaContainer = document.querySelector('.board-arena-container');
+        if (arenaContainer) {
+            arenaContainer.setAttribute('data-theme', this.themeId);
+        }
+
         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        defs.innerHTML = `
-            <!-- 3D Ruby Radial Gradient -->
-            <radialGradient id="grad-ruby" cx="30%" cy="26%" r="72%">
-                <stop offset="0%" stop-color="#ff7b96"/>
-                <stop offset="22%" stop-color="#ff0844"/>
-                <stop offset="60%" stop-color="#ba002c"/>
-                <stop offset="90%" stop-color="#5a0014"/>
-                <stop offset="100%" stop-color="#240008"/>
-            </radialGradient>
-            <!-- 3D Pearl Radial Gradient -->
-            <radialGradient id="grad-pearl" cx="30%" cy="26%" r="72%">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="25%" stop-color="#f2f7fc"/>
-                <stop offset="60%" stop-color="#c5d1d9"/>
-                <stop offset="85%" stop-color="#607d8b"/>
-                <stop offset="100%" stop-color="#263238"/>
-            </radialGradient>
-            <!-- 3D Emerald Radial Gradient -->
-            <radialGradient id="grad-emerald" cx="30%" cy="26%" r="72%">
-                <stop offset="0%" stop-color="#a7f3d0"/>
-                <stop offset="22%" stop-color="#00e676"/>
-                <stop offset="60%" stop-color="#059669"/>
-                <stop offset="90%" stop-color="#064e3b"/>
-                <stop offset="100%" stop-color="#022c22"/>
-            </radialGradient>
-        `;
+        let gradsHtml = '';
+        for (const [pId, pData] of Object.entries(theme.players)) {
+            gradsHtml += `
+                <!-- 3D ${pData.name} Radial Gradient -->
+                <radialGradient id="grad-${pId}" cx="30%" cy="26%" r="72%">
+                    <stop offset="0%" stop-color="${pData.grad[0]}"/>
+                    <stop offset="22%" stop-color="${pData.grad[1]}"/>
+                    <stop offset="60%" stop-color="${pData.grad[2]}"/>
+                    <stop offset="90%" stop-color="${pData.grad[3]}"/>
+                    <stop offset="100%" stop-color="${pData.grad[4]}"/>
+                </radialGradient>
+            `;
+        }
+        defs.innerHTML = gradsHtml;
         this.svgContainer.appendChild(defs);
 
         const cellsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -283,7 +303,7 @@ export class HexxagonGame {
             if (this.lastMove) {
                 if (key === this.lastMove.toKey) {
                     polygon.classList.add('hex-cell-last-dest');
-                    const playerColor = PLAYERS[this.lastMove.player]?.color || '#00e5ff';
+                    const playerColor = this.getPlayerColor(this.lastMove.player);
                     polygon.style.stroke = playerColor;
                 } else if (this.lastMove.type === 'jump' && key === this.lastMove.fromKey) {
                     polygon.classList.add('hex-cell-last-origin');
@@ -508,6 +528,8 @@ export class HexxagonGame {
     }
 
     createPieceElement(key, owner, x, y) {
+        const theme = this.getTheme();
+        const playerData = theme.players[owner] || PLAYERS[owner];
         const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         group.setAttribute('data-piece-key', key);
         group.setAttribute('data-owner', owner);
@@ -531,8 +553,8 @@ export class HexxagonGame {
         circle.setAttribute('cy', y);
         circle.setAttribute('r', this.cellSize * 0.54);
         circle.setAttribute('fill', `url(#grad-${owner})`);
-        circle.setAttribute('stroke', 'rgba(255, 255, 255, 0.45)');
-        circle.setAttribute('stroke-width', '1.2');
+        circle.setAttribute('stroke', playerData?.color || 'rgba(255, 255, 255, 0.45)');
+        circle.setAttribute('stroke-width', '1.4');
 
         // 3. Crisp Specular Glass Highlight
         const glossHighlight = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -547,10 +569,21 @@ export class HexxagonGame {
         glossCore.setAttribute('r', this.cellSize * 0.06);
         glossCore.setAttribute('fill', '#ffffff');
 
+        // 4. Subtle Theme Retro Icon Glyph
+        const iconText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        iconText.setAttribute('x', x);
+        iconText.setAttribute('y', y + this.cellSize * 0.06);
+        iconText.setAttribute('text-anchor', 'middle');
+        iconText.setAttribute('dominant-baseline', 'central');
+        iconText.setAttribute('font-size', `${this.cellSize * 0.40}px`);
+        iconText.setAttribute('class', 'piece-glyph-icon select-none pointer-events-none');
+        iconText.textContent = playerData?.icon || '';
+
         group.appendChild(shadow);
         group.appendChild(circle);
         group.appendChild(glossHighlight);
         group.appendChild(glossCore);
+        group.appendChild(iconText);
 
         group.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -880,10 +913,10 @@ export class HexxagonGame {
             if (key === this.selectedCell) {
                 poly.classList.add('hex-cell-selected');
                 const owner = this.state.board[key];
-                poly.style.stroke = PLAYERS[owner]?.color || '#ffffff';
+                poly.style.stroke = this.getPlayerColor(owner) || '#ffffff';
             } else if (this.lastMove && key === this.lastMove.toKey) {
                 poly.classList.add('hex-cell-last-dest');
-                const playerColor = PLAYERS[this.lastMove.player]?.color || '#00e5ff';
+                const playerColor = this.getPlayerColor(this.lastMove.player);
                 poly.style.stroke = playerColor;
             } else if (this.lastMove && this.lastMove.type === 'jump' && key === this.lastMove.fromKey) {
                 poly.classList.add('hex-cell-last-origin');
@@ -959,7 +992,7 @@ export class HexxagonGame {
         // Exact SVG Coordinate Calculation
         const toCoords = HexMath.hexToPixel(move.to.q, move.to.r, this.cellSize, this.originX, this.originY);
         const fromCoords = HexMath.hexToPixel(move.from.q, move.from.r, this.cellSize, this.originX, this.originY);
-        const playerColor = PLAYERS[player]?.color || '#ff2d60';
+        const playerColor = this.getPlayerColor(player);
 
         const piecesGroup = document.getElementById('hex-pieces-group');
 
@@ -1224,7 +1257,7 @@ export class HexxagonGame {
         }
 
         const piecesGroup = document.getElementById('hex-pieces-group');
-        const color = PLAYERS[winnerPlayer]?.color || '#00e5ff';
+        const color = this.getPlayerColor(winnerPlayer);
 
         for (let i = 0; i < emptyCells.length; i++) {
             const key = emptyCells[i];
