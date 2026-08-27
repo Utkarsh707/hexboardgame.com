@@ -189,6 +189,42 @@ export class ParticleEngine {
         this.startLoop();
     }
 
+    spawnVictoryFireworks(winningColor = '#ff2d60') {
+        const bursts = [
+            { x: this.width * 0.35, y: this.height * 0.35, delay: 0 },
+            { x: this.width * 0.65, y: this.height * 0.30, delay: 180 },
+            { x: this.width * 0.50, y: this.height * 0.60, delay: 360 },
+            { x: this.width * 0.25, y: this.height * 0.70, delay: 540 },
+            { x: this.width * 0.75, y: this.height * 0.75, delay: 720 }
+        ];
+
+        const palette = [winningColor, '#ffd000', '#00e5ff', '#ffffff', '#ff2d60', '#10b981'];
+
+        bursts.forEach(b => {
+            setTimeout(() => {
+                this.createShockwave(b.x, b.y, winningColor, 75);
+                const count = 28;
+                for (let i = 0; i < count; i++) {
+                    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
+                    const speed = Math.random() * 4.5 + 2;
+                    this.particles.push({
+                        x: b.x,
+                        y: b.y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 1.5,
+                        color: palette[Math.floor(Math.random() * palette.length)],
+                        alpha: 1,
+                        size: Math.random() * 3.5 + 2,
+                        decay: 0.018,
+                        drag: 0.97,
+                        gravity: 0.08
+                    });
+                }
+                this.startLoop();
+            }, b.delay);
+        });
+    }
+
     loop() {
         if (!this.ctx) return;
         this.ctx.clearRect(0, 0, this.width, this.height);

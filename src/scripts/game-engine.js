@@ -812,6 +812,67 @@ export class HexxagonGame {
         setTimeout(() => beam.remove(), 520);
     }
 
+    triggerLandingShockwave(x, y, color = '#00e5ff', captureCount = 1) {
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (!effectsGroup) return;
+
+        const shockwave = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        shockwave.setAttribute('cx', x);
+        shockwave.setAttribute('cy', y);
+        shockwave.setAttribute('r', '12');
+        shockwave.setAttribute('stroke', color);
+        shockwave.setAttribute('class', 'svg-landing-shockwave');
+        effectsGroup.appendChild(shockwave);
+
+        if (captureCount >= 3) {
+            setTimeout(() => {
+                const secondWave = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                secondWave.setAttribute('cx', x);
+                secondWave.setAttribute('cy', y);
+                secondWave.setAttribute('r', '12');
+                secondWave.setAttribute('stroke', color);
+                secondWave.setAttribute('class', 'svg-landing-shockwave');
+                effectsGroup.appendChild(secondWave);
+                setTimeout(() => secondWave.remove(), 490);
+            }, 80);
+        }
+
+        setTimeout(() => shockwave.remove(), 490);
+    }
+
+    triggerComboCallout(pixelX, pixelY, captureCount) {
+        if (captureCount < 2) return;
+        const overlay = document.getElementById('combo-callout-overlay');
+        if (!overlay) return;
+
+        // Convert SVG coordinates to container percentage
+        const pctX = (pixelX / 700) * 100;
+        const pctY = (pixelY / 700) * 100;
+
+        const badge = document.createElement('div');
+        let text = 'DOUBLE STRIKE!';
+        let cls = 'combo-badge-double';
+
+        if (captureCount === 3) {
+            text = 'TRIPLE CAPTURE!';
+            cls = 'combo-badge-triple';
+        } else if (captureCount === 4) {
+            text = 'MEGA COMBO!';
+            cls = 'combo-badge-mega';
+        } else if (captureCount >= 5) {
+            text = 'DOMINATION!';
+            cls = 'combo-badge-domination';
+        }
+
+        badge.className = `combo-badge ${cls}`;
+        badge.style.left = `${pctX}%`;
+        badge.style.top = `${pctY}%`;
+        badge.innerHTML = `<span>✨ ${text} +${captureCount}</span>`;
+
+        overlay.appendChild(badge);
+        setTimeout(() => badge.remove(), 950);
+    }
+
     triggerBoardShake(intensity = 'medium') {
         if (typeof window !== 'undefined' && localStorage.getItem('hexxagon_shake') === 'false') return;
         const boardViewport = document.getElementById('board-viewport');
@@ -1048,9 +1109,9 @@ export class HexxagonGame {
                 sound.playClone();
                 this.triggerCloneVFX(toCoords.x, toCoords.y, playerColor);
 
-                // Create cloned piece element with pop-in animation
+                // Create cloned piece element with juicy elastic spring animation
                 const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
-                newPiece.classList.add('piece-popping-in');
+                newPiece.classList.add('piece-cloned');
                 this.pieceElements.set(move.toKey, newPiece);
                 if (piecesGroup) piecesGroup.appendChild(newPiece);
 
@@ -1068,7 +1129,7 @@ export class HexxagonGame {
                 }
 
                 const newPiece = this.createPieceElement(move.toKey, player, toCoords.x, toCoords.y);
-                newPiece.classList.add('piece-popping-in');
+                newPiece.classList.add('piece-jumped');
                 this.pieceElements.set(move.toKey, newPiece);
                 if (piecesGroup) piecesGroup.appendChild(newPiece);
             }
@@ -1093,6 +1154,12 @@ export class HexxagonGame {
         // Staggered conversion audio & native vector animation
         if (move.captures.length > 0) {
             this.triggerBoardShake(move.captures.length >= 3 ? 'heavy' : 'medium');
+            this.triggerLandingShockwave(landingCoords.x, landingCoords.y, playerColor, move.captures.length);
+
+            if (move.captures.length >= 2) {
+                this.triggerComboCallout(landingCoords.x, landingCoords.y, move.captures.length);
+                sound.playComboCallout(move.captures.length);
+            }
 
             move.captures.forEach((capKey, idx) => {
                 setTimeout(() => {
@@ -1333,6 +1400,10 @@ export class HexxagonGame {
         if (!this.isTutorialMode && this.gameMode !== 'tutorial') {
             if (winner === 'ruby' || (winner !== 'pearl' && winner !== 'tie')) {
                 sound.playVictory();
+                if (this.particleEngine) {
+                    const winColor = this.getPlayerColor(winner);
+                    this.particleEngine.spawnVictoryFireworks(winColor);
+                }
             } else if (winner === 'pearl' && this.gameMode.startsWith('pve-')) {
                 sound.playDefeat();
             }

@@ -67,6 +67,17 @@
     padding-right: var(--safe-right);
     transition: background-color 0.3s ease;
   }
+
+  /* Desktop Custom Cosmic Cursor System */
+  @media (pointer: fine) {
+    * {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpolygon points='12,2 20,6.5 20,15.5 12,20 4,15.5 4,6.5' fill='rgba(0,229,255,0.2)' stroke='%2300e5ff' stroke-width='1.5'/%3E%3Ccircle cx='12' cy='11' r='2' fill='%23ffffff'/%3E%3C/svg%3E") 12 11, crosshair;
+    }
+
+    button, a, select, input, .hex-cell, .poki-btn, [role="button"], label, .clickable {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpolygon points='14,2 24,7.5 24,18.5 14,24 4,18.5 4,7.5' fill='rgba(255,45,96,0.25)' stroke='%23ff2d60' stroke-width='2'/%3E%3Ccircle cx='14' cy='13' r='3' fill='%2300e5ff' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E") 14 13, pointer;
+    }
+  }
 }
 
 /* ==========================================================================
@@ -264,22 +275,116 @@
   will-change: opacity;
 }
 
-/* 3D Piece Conversion Animation */
-@keyframes piece-convert {
+/* ==========================================================================
+   JUICY PIECE PHYSICS & SQUASH-AND-STRETCH ANIMATIONS
+   ========================================================================== */
+
+/* 1. Clone Spawn Elastic Overshoot Bounce */
+@keyframes piece-clone-spring {
   0% {
-    transform: scale(1);
+    transform: scale(0.15);
+    opacity: 0.4;
   }
-  40% {
-    transform: scale(1.22);
+  45% {
+    transform: scale(1.28);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.92);
+  }
+  88% {
+    transform: scale(1.06);
   }
   100% {
     transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.piece-cloned {
+  animation: piece-clone-spring 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* 2. Jump Impact Squash & Stretch */
+@keyframes piece-jump-squash {
+  0% {
+    transform: scale(0.7, 1.35);
+    opacity: 0.7;
+  }
+  35% {
+    transform: scale(1.38, 0.62);
+    opacity: 1;
+  }
+  65% {
+    transform: scale(0.92, 1.1);
+  }
+  85% {
+    transform: scale(1.05, 0.96);
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+}
+
+.piece-jumped {
+  animation: piece-jump-squash 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* 3. 3D Piece Conversion Animation */
+@keyframes piece-convert-pop {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  35% {
+    transform: scale(1.32) rotate(15deg);
+    filter: brightness(1.6) drop-shadow(0 0 12px currentColor);
+  }
+  65% {
+    transform: scale(0.92) rotate(-8deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
   }
 }
 
 .piece-converting {
-  animation: piece-convert 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: piece-convert-pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
   will-change: transform;
+}
+
+/* 4. Dynamic Expanding Landing Shockwave Ripple */
+@keyframes shockwave-ripple {
+  0% {
+    r: 10px;
+    opacity: 0.9;
+    stroke-width: 4.5px;
+  }
+  60% {
+    r: 65px;
+    opacity: 0.6;
+    stroke-width: 2.5px;
+  }
+  100% {
+    r: 100px;
+    opacity: 0;
+    stroke-width: 0.5px;
+  }
+}
+
+.svg-landing-shockwave {
+  animation: shockwave-ripple 0.48s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+  pointer-events: none;
+  fill: none;
 }
 
 /* SVG Vector Animation & Laser Arcs */
@@ -327,29 +432,74 @@
   pointer-events: none;
 }
 
-/* Floating Combo Badge */
-@keyframes float-badge {
+/* ==========================================================================
+   ARCADE COMBO HYPE FLOATING BADGES
+   ========================================================================== */
+@keyframes combo-badge-pop {
   0% {
-    transform: translateY(0) scale(0.85);
+    transform: translate(-50%, -50%) scale(0.2) rotate(-8deg);
     opacity: 0;
   }
-  20% {
-    transform: translateY(-8px) scale(1.1);
+  30% {
+    transform: translate(-50%, -65%) scale(1.25) rotate(4deg);
     opacity: 1;
   }
-  80% {
-    transform: translateY(-22px) scale(1);
+  60% {
+    transform: translate(-50%, -85%) scale(1.05) rotate(-2deg);
     opacity: 1;
   }
   100% {
-    transform: translateY(-32px) scale(0.9);
+    transform: translate(-50%, -120%) scale(0.9) rotate(0deg);
     opacity: 0;
   }
 }
 
-.float-badge {
-  animation: float-badge 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  will-change: transform, opacity;
+.combo-badge {
+  position: absolute;
+  pointer-events: none;
+  z-index: 50;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+  animation: combo-badge-pop 0.95s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.combo-badge-double {
+  background: linear-gradient(135deg, #00e5ff 0%, #0284c7 100%);
+  color: #040814;
+  border: 2px solid #ffffff;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+.combo-badge-triple {
+  background: linear-gradient(135deg, #ffab00 0%, #d97706 100%);
+  color: #1a0b02;
+  border: 2px solid #fffbeb;
+  font-size: 0.85rem;
+}
+
+.combo-badge-mega {
+  background: linear-gradient(135deg, #c084fc 0%, #7e22ce 100%);
+  color: #ffffff;
+  border: 2px solid #f3e8ff;
+  font-size: 0.95rem;
+  box-shadow: 0 0 24px rgba(192, 132, 252, 0.6);
+}
+
+.combo-badge-domination {
+  background: linear-gradient(135deg, #ff0844 0%, #ff7b96 50%, #ffd700 100%);
+  color: #ffffff;
+  border: 2.5px solid #ffffff;
+  font-size: 1.1rem;
+  box-shadow: 0 0 32px rgba(255, 8, 68, 0.8);
+  letter-spacing: 0.08em;
 }
 
 .piece-capture-threat {

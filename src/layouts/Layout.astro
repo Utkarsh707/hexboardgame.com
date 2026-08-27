@@ -1,5 +1,6 @@
 ---
 import SpaceBackdrop from '../components/SpaceBackdrop.astro';
+import CustomCursor from '../components/CustomCursor.astro';
 
 interface Props {
   title?: string;
@@ -198,6 +199,9 @@ const schemaData = [
 
   <!-- Retro Space Backdrop -->
   <SpaceBackdrop />
+
+  <!-- Animated Custom Game Cursor -->
+  <CustomCursor />
 
   <div class={`relative z-10 flex flex-col ${scrollable ? 'min-h-screen w-full' : 'h-full h-[100dvh] overflow-hidden'}`}>
     <slot />

@@ -744,11 +744,33 @@ export class SoundEngine {
         }
     }
 
-    // Capture Chain Step Explosion (for staggered chain conversions)
+    // Capture Chain Step Explosion (with crescendo harmonic pitch scaling)
     playCaptureStep(stepIndex = 0, totalCaptures = 1) {
         if (this.muted) return;
         this.init();
         if (!this.ctx || !this.sfxGain) return;
+
+        // Ascending harmonic major scale: C4, E4, G4, C5, E5, G5, C6
+        const musicalScale = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+        const pitchFreq = musicalScale[stepIndex % musicalScale.length] * Math.pow(1.25, Math.floor(stepIndex / musicalScale.length));
+
+        // Musical harmonic overtone chime
+        try {
+            const now = this.ctx.currentTime;
+            const harmonic = this.ctx.createOscillator();
+            const harmGain = this.ctx.createGain();
+            harmonic.type = 'triangle';
+            harmonic.frequency.setValueAtTime(pitchFreq, now);
+            harmonic.frequency.exponentialRampToValueAtTime(pitchFreq * 1.08, now + 0.14);
+
+            harmGain.gain.setValueAtTime(0.20, now);
+            harmGain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+
+            harmonic.connect(harmGain);
+            harmGain.connect(this.sfxGain);
+            harmonic.start(now);
+            harmonic.stop(now + 0.18);
+        } catch (e) { }
 
         if (totalCaptures >= 3 && stepIndex === totalCaptures - 1) {
             // Climax explosion on final piece of a combo
@@ -758,6 +780,40 @@ export class SoundEngine {
         } else {
             this.play8BitExplosionPop(stepIndex);
         }
+    }
+
+    // Play Combo Announcement Power Chime (Double, Triple, Mega, Domination)
+    playComboCallout(comboCount = 2) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx || !this.sfxGain) return;
+
+        try {
+            const now = this.ctx.currentTime;
+            let chordFreqs = [523.25, 659.25]; // C5, E5
+            if (comboCount === 3) chordFreqs = [523.25, 659.25, 783.99]; // C5, E5, G5
+            else if (comboCount === 4) chordFreqs = [523.25, 659.25, 783.99, 987.77]; // C5, E5, G5, B5
+            else if (comboCount >= 5) chordFreqs = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
+
+            chordFreqs.forEach((freq, idx) => {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                const noteTime = now + idx * 0.04;
+
+                osc.type = comboCount >= 4 ? 'sawtooth' : 'triangle';
+                osc.frequency.setValueAtTime(freq, noteTime);
+                osc.frequency.exponentialRampToValueAtTime(freq * 1.02, noteTime + 0.32);
+
+                gain.gain.setValueAtTime(0.18 / Math.sqrt(chordFreqs.length), noteTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.38);
+
+                osc.connect(gain);
+                gain.connect(this.sfxGain);
+
+                osc.start(noteTime);
+                osc.stop(noteTime + 0.40);
+            });
+        } catch (e) { }
     }
 
     // Variation A: Crisp 8-Bit Laser Pop & Crackle (Single target blast)
