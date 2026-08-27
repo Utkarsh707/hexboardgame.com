@@ -572,11 +572,15 @@ export class HexxagonGame {
         // 4. Subtle Theme Retro Icon Glyph
         const iconText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         iconText.setAttribute('x', x);
-        iconText.setAttribute('y', y + this.cellSize * 0.06);
+        iconText.setAttribute('y', y + this.cellSize * 0.05);
         iconText.setAttribute('text-anchor', 'middle');
         iconText.setAttribute('dominant-baseline', 'central');
-        iconText.setAttribute('font-size', `${this.cellSize * 0.40}px`);
+        iconText.setAttribute('alignment-baseline', 'central');
+        iconText.setAttribute('font-size', `${this.cellSize * 0.44}px`);
+        iconText.setAttribute('fill', '#ffffff');
         iconText.setAttribute('class', 'piece-glyph-icon select-none pointer-events-none');
+        iconText.style.pointerEvents = 'none';
+        iconText.style.userSelect = 'none';
         iconText.textContent = playerData?.icon || '';
 
         group.appendChild(shadow);
@@ -1082,25 +1086,27 @@ export class HexxagonGame {
 
             move.captures.forEach((capKey, idx) => {
                 setTimeout(() => {
-                    const capPiece = this.pieceElements.get(capKey);
-                    if (capPiece) {
-                        capPiece.setAttribute('data-owner', player);
-                        const circleBody = capPiece.querySelector('.gem-circle-body') || capPiece.querySelector('circle');
-                        if (circleBody) {
-                            circleBody.setAttribute('fill', `url(#grad-${player})`);
-                        }
-                        capPiece.classList.remove('piece-converting');
-                        void capPiece.offsetWidth; // Trigger reflow for animation restart
-                        capPiece.classList.add('piece-converting');
-                    }
-
                     const capPos = HexMath.parseKey(capKey);
                     const capCoords = HexMath.hexToPixel(capPos.q, capPos.r, this.cellSize, this.originX, this.originY);
 
-                    // Trigger 8-Bit Retro Explosion Sound Variation for this chain step
-                    sound.playCaptureStep(idx, move.captures.length);
+                    // 1. Remove old piece element
+                    const oldPiece = this.pieceElements.get(capKey);
+                    if (oldPiece) {
+                        oldPiece.remove();
+                    }
 
-                    // Trigger Native Vector VFX (Beam, Shockwave Ring, Sparks, Floating +1)
+                    // 2. Re-create completely fresh piece element for the new owner (guarantees 100% theme glyph, gradient, and stroke update)
+                    const newPiece = this.createPieceElement(capKey, player, capCoords.x, capCoords.y);
+                    newPiece.classList.add('piece-converting');
+                    this.pieceElements.set(capKey, newPiece);
+
+                    const piecesGroup = document.getElementById('hex-pieces-group');
+                    if (piecesGroup) {
+                        piecesGroup.appendChild(newPiece);
+                    }
+
+                    // 3. Trigger 8-Bit Retro Explosion Sound & VFX
+                    sound.playCaptureStep(idx, move.captures.length);
                     this.triggerCaptureVFX(landingCoords.x, landingCoords.y, capCoords.x, capCoords.y, playerColor);
                 }, idx * 60);
             });
