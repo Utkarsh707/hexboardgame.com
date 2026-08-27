@@ -318,9 +318,9 @@ export class HexxagonGame {
             polygon.setAttribute('points', points);
             polygon.setAttribute('data-key', key);
             polygon.setAttribute('class', 'hex-cell hex-cell-empty');
-            polygon.setAttribute('tabindex', '0');
             polygon.setAttribute('role', 'button');
             polygon.setAttribute('aria-label', `Hex cell ${key}`);
+            polygon.style.outline = 'none';
 
             if (this.lastMove) {
                 if (key === this.lastMove.toKey) {
@@ -560,6 +560,9 @@ export class HexxagonGame {
         group.style.cursor = (owner === this.getCurrentPlayer() && !this.isAiTurn) ? 'pointer' : 'default';
         group.style.transformOrigin = `${x}px ${y}px`;
         group.style.transformBox = 'view-box';
+        group.style.outline = 'none';
+        group.style.userSelect = 'none';
+        group.style.webkitUserSelect = 'none';
 
         // 1. Soft Ambient Drop Shadow
         const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
@@ -885,24 +888,27 @@ export class HexxagonGame {
         badge.className = `combo-badge ${cls}`;
         badge.style.left = `${pctX}%`;
         badge.style.top = `${pctY}%`;
-        badge.innerHTML = `<span>✨ ${text} +${captureCount}</span>`;
+        badge.textContent = `${text} +${captureCount}`;
 
         overlay.appendChild(badge);
-        setTimeout(() => badge.remove(), 950);
+        setTimeout(() => badge.remove(), 880);
     }
 
     triggerBoardShake(intensity = 'medium') {
         if (typeof window !== 'undefined' && localStorage.getItem('hexxagon_shake') === 'false') return;
         const boardViewport = document.getElementById('board-viewport');
         if (boardViewport) {
-            boardViewport.classList.remove('board-rumble', 'board-rumble-heavy');
+            boardViewport.classList.remove('board-rumble-light', 'board-rumble-medium', 'board-rumble-heavy', 'board-rumble-mega', 'board-rumble');
             // Force reflow to reliably restart CSS keyframe animation
             void boardViewport.offsetWidth;
-            const cls = intensity === 'heavy' ? 'board-rumble-heavy' : 'board-rumble';
+            const cls = intensity === 'mega' ? 'board-rumble-mega' : 
+                        (intensity === 'heavy' ? 'board-rumble-heavy' : 
+                        (intensity === 'medium' ? 'board-rumble-medium' : 'board-rumble-light'));
+            const duration = intensity === 'mega' ? 580 : (intensity === 'heavy' ? 460 : (intensity === 'medium' ? 350 : 220));
             boardViewport.classList.add(cls);
             setTimeout(() => {
-                boardViewport.classList.remove('board-rumble', 'board-rumble-heavy');
-            }, intensity === 'heavy' ? 460 : 360);
+                boardViewport.classList.remove('board-rumble-light', 'board-rumble-medium', 'board-rumble-heavy', 'board-rumble-mega', 'board-rumble');
+            }, duration);
         }
     }
 
@@ -1171,12 +1177,31 @@ export class HexxagonGame {
 
         // Staggered conversion audio & native vector animation
         if (move.captures.length > 0) {
-            this.triggerBoardShake(move.captures.length >= 3 ? 'heavy' : 'medium');
-            this.triggerLandingShockwave(landingCoords.x, landingCoords.y, playerColor, move.captures.length);
+            const capCount = move.captures.length;
+            const shakeIntensity = capCount >= 5 ? 'mega' : (capCount === 4 ? 'heavy' : (capCount === 3 ? 'medium' : 'light'));
+            this.triggerBoardShake(shakeIntensity);
+            this.triggerLandingShockwave(landingCoords.x, landingCoords.y, playerColor, capCount);
 
-            if (move.captures.length >= 2) {
-                this.triggerComboCallout(landingCoords.x, landingCoords.y, move.captures.length);
-                sound.playComboCallout(move.captures.length);
+            if (capCount >= 2) {
+                this.triggerComboCallout(landingCoords.x, landingCoords.y, capCount);
+                sound.playComboCallout(capCount);
+
+                // Multi-tiered dynamic canvas shockwaves and spark bursts
+                if (this.particleEngine) {
+                    if (capCount === 3) {
+                        this.particleEngine.createShockwave(landingCoords.x, landingCoords.y, playerColor, 55);
+                        this.particleEngine.createSparks(landingCoords.x, landingCoords.y, '#fbbf24', 12, 1.2);
+                    } else if (capCount === 4) {
+                        this.particleEngine.createShockwave(landingCoords.x, landingCoords.y, playerColor, 75);
+                        this.particleEngine.createSparks(landingCoords.x, landingCoords.y, '#f472b6', 22, 1.6);
+                    } else if (capCount >= 5) {
+                        this.particleEngine.createShockwave(landingCoords.x, landingCoords.y, playerColor, 105);
+                        this.particleEngine.createSparks(landingCoords.x, landingCoords.y, '#ff0055', 38, 2.3);
+                        setTimeout(() => {
+                            this.particleEngine?.createShockwave(landingCoords.x, landingCoords.y, '#ffd700', 85);
+                        }, 120);
+                    }
+                }
             }
 
             move.captures.forEach((capKey, idx) => {

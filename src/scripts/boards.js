@@ -218,34 +218,23 @@ export const BOARD_PRESETS = {
     classic: {
         id: 'classic',
         mazeNumber: 1,
-        name: 'Classic Hexxagon (58 Cells)',
-        shortName: 'Classic (58)',
-        description: 'The authentic 1993 hexagonal arena with 3 central void holes: Rubies vs Pearls.',
+        name: 'Classic Hexxagon (61 Cells)',
+        shortName: 'Classic (61)',
+        description: 'The authentic hexagonal arena: Rubies vs Pearls.',
         radius: 4,
-        cellsCount: 58,
+        cellsCount: 61,
         players: ['ruby', 'pearl'],
         generate: () => {
             const cells = new Set();
             const obstacles = new Set();
             const radius = 4;
 
-            // Authentic 1993 3-Hole Triangular Void in Center
-            const centerVoids = new Set([
-                HexMath.key(0, -1),
-                HexMath.key(-1, 1),
-                HexMath.key(1, 0)
-            ]);
-
             for (let q = -radius; q <= radius; q++) {
                 const r1 = Math.max(-radius, -q - radius);
                 const r2 = Math.min(radius, -q + radius);
                 for (let r = r1; r <= r2; r++) {
                     const key = HexMath.key(q, r);
-                    if (centerVoids.has(key)) {
-                        obstacles.add(key);
-                    } else {
-                        cells.add(key);
-                    }
+                    cells.add(key);
                 }
             }
 

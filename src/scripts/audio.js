@@ -790,29 +790,174 @@ export class SoundEngine {
 
         try {
             const now = this.ctx.currentTime;
-            let chordFreqs = [523.25, 659.25]; // C5, E5
-            if (comboCount === 3) chordFreqs = [523.25, 659.25, 783.99]; // C5, E5, G5
-            else if (comboCount === 4) chordFreqs = [523.25, 659.25, 783.99, 987.77]; // C5, E5, G5, B5
-            else if (comboCount >= 5) chordFreqs = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
 
-            chordFreqs.forEach((freq, idx) => {
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                const noteTime = now + idx * 0.04;
+            if (comboCount === 2) {
+                // Tier 1: Double Strike - Crisp, clean 2-tone melodic chime + mini sub
+                const notes = [523.25, 659.25]; // C5, E5
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    const noteTime = now + idx * 0.05;
 
-                osc.type = comboCount >= 4 ? 'sawtooth' : 'triangle';
-                osc.frequency.setValueAtTime(freq, noteTime);
-                osc.frequency.exponentialRampToValueAtTime(freq * 1.02, noteTime + 0.32);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, noteTime);
+                    osc.frequency.exponentialRampToValueAtTime(freq * 1.03, noteTime + 0.28);
 
-                gain.gain.setValueAtTime(0.18 / Math.sqrt(chordFreqs.length), noteTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.38);
+                    gain.gain.setValueAtTime(0.18, noteTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.32);
 
-                osc.connect(gain);
-                gain.connect(this.sfxGain);
+                    osc.connect(gain);
+                    gain.connect(this.sfxGain);
+                    osc.start(noteTime);
+                    osc.stop(noteTime + 0.34);
+                });
 
-                osc.start(noteTime);
-                osc.stop(noteTime + 0.40);
-            });
+                // Soft sub kick
+                const sub = this.ctx.createOscillator();
+                const subGain = this.ctx.createGain();
+                sub.type = 'sine';
+                sub.frequency.setValueAtTime(65, now);
+                sub.frequency.exponentialRampToValueAtTime(32, now + 0.12);
+                subGain.gain.setValueAtTime(0.22, now);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+                sub.connect(subGain);
+                subGain.connect(this.sfxGain);
+                sub.start(now);
+                sub.stop(now + 0.15);
+
+            } else if (comboCount === 3) {
+                // Tier 2: Triple Capture - Bright 3-note major arpeggio + resonant arcade bass
+                const notes = [523.25, 783.99, 1046.50]; // C5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    const noteTime = now + idx * 0.055;
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, noteTime);
+                    osc.frequency.exponentialRampToValueAtTime(freq * 1.02, noteTime + 0.35);
+
+                    gain.gain.setValueAtTime(0.22, noteTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.40);
+
+                    osc.connect(gain);
+                    gain.connect(this.sfxGain);
+                    osc.start(noteTime);
+                    osc.stop(noteTime + 0.42);
+                });
+
+                // Warm resonant sub boom
+                const sub = this.ctx.createOscillator();
+                const subGain = this.ctx.createGain();
+                sub.type = 'triangle';
+                sub.frequency.setValueAtTime(90, now);
+                sub.frequency.exponentialRampToValueAtTime(35, now + 0.18);
+                subGain.gain.setValueAtTime(0.30, now);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.20);
+                sub.connect(subGain);
+                subGain.connect(this.sfxGain);
+                sub.start(now);
+                sub.stop(now + 0.22);
+
+            } else if (comboCount === 4) {
+                // Tier 3: Mega Combo - Brassy synth fanfare arpeggio + noise swell + deep bass drop
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+                    const noteTime = now + idx * 0.05;
+
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, noteTime);
+
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(3200, noteTime);
+                    filter.frequency.exponentialRampToValueAtTime(600, noteTime + 0.45);
+                    filter.Q.value = 3.0;
+
+                    gain.gain.setValueAtTime(0.20, noteTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.48);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.sfxGain);
+                    osc.start(noteTime);
+                    osc.stop(noteTime + 0.50);
+                });
+
+                // Heavy sub drop
+                const sub = this.ctx.createOscillator();
+                const subGain = this.ctx.createGain();
+                sub.type = 'sawtooth';
+                sub.frequency.setValueAtTime(120, now);
+                sub.frequency.exponentialRampToValueAtTime(28, now + 0.26);
+                subGain.gain.setValueAtTime(0.35, now);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                sub.connect(subGain);
+                subGain.connect(this.sfxGain);
+                sub.start(now);
+                sub.stop(now + 0.30);
+
+            } else {
+                // Tier 4: Domination (5+) - Epic victory fanfare, seismic sub blast & crystal chime cascade
+                const chordNotes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00]; // Full grand major stack
+                chordNotes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+                    const noteTime = now + idx * 0.045;
+
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, noteTime);
+
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(4500, noteTime);
+                    filter.frequency.exponentialRampToValueAtTime(800, noteTime + 0.65);
+                    filter.Q.value = 4.0;
+
+                    gain.gain.setValueAtTime(0.24, noteTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.68);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.sfxGain);
+                    osc.start(noteTime);
+                    osc.stop(noteTime + 0.70);
+                });
+
+                // Crystalline High Chimes Shower
+                [2093.00, 2637.02, 3135.96, 4186.01].forEach((freq, idx) => {
+                    const chime = this.ctx.createOscillator();
+                    const cGain = this.ctx.createGain();
+                    const chimeTime = now + 0.20 + idx * 0.06;
+
+                    chime.type = 'sine';
+                    chime.frequency.setValueAtTime(freq, chimeTime);
+                    chime.frequency.exponentialRampToValueAtTime(freq * 1.05, chimeTime + 0.35);
+
+                    cGain.gain.setValueAtTime(0.14, chimeTime);
+                    cGain.gain.exponentialRampToValueAtTime(0.001, chimeTime + 0.38);
+
+                    chime.connect(cGain);
+                    cGain.connect(this.sfxGain);
+                    chime.start(chimeTime);
+                    chime.stop(chimeTime + 0.40);
+                });
+
+                // Seismic Sub-Bass Blast
+                const sub = this.ctx.createOscillator();
+                const subGain = this.ctx.createGain();
+                sub.type = 'triangle';
+                sub.frequency.setValueAtTime(150, now);
+                sub.frequency.exponentialRampToValueAtTime(24, now + 0.38);
+                subGain.gain.setValueAtTime(0.45, now);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+                sub.connect(subGain);
+                subGain.connect(this.sfxGain);
+                sub.start(now);
+                sub.stop(now + 0.45);
+            }
         } catch (e) { }
     }
 

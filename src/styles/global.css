@@ -254,10 +254,39 @@
   stroke: rgba(0, 0, 0, 0.8);
 }
 
+/* Prevent square focus boxes, text selection, and tap highlights on board elements */
+#board-svg,
+#board-svg *,
+.hex-cell,
+.hex-cell-socket-group,
+.hex-piece,
+.warp-portal-glyph,
+#board-viewport,
+#particle-canvas {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+#board-svg:focus,
+#board-svg *:focus,
+.hex-cell:focus,
+.hex-cell:focus-visible,
+.hex-piece:focus,
+.hex-piece:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .hex-cell {
   transition: fill 0.12s ease, stroke 0.12s ease, stroke-width 0.12s ease;
   cursor: pointer;
   shape-rendering: geometricPrecision;
+  outline: none !important;
 }
 
 .hex-cell-empty {
@@ -483,25 +512,36 @@
 }
 
 /* ==========================================================================
-   ARCADE COMBO HYPE FLOATING BADGES
+/* ==========================================================================
+   ARCADE COMBO HYPE FLOATING TEXTS (Multi-Tiered Feedback Escalation)
    ========================================================================== */
-@keyframes combo-badge-pop {
-  0% {
-    transform: translate(-50%, -50%) scale(0.2) rotate(-8deg);
-    opacity: 0;
-  }
-  30% {
-    transform: translate(-50%, -65%) scale(1.25) rotate(4deg);
-    opacity: 1;
-  }
-  60% {
-    transform: translate(-50%, -85%) scale(1.05) rotate(-2deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -120%) scale(0.9) rotate(0deg);
-    opacity: 0;
-  }
+@keyframes combo-pop-double {
+  0% { transform: translate(-50%, -20%) scale(0.7); opacity: 0; }
+  25% { transform: translate(-50%, -45%) scale(1.05); opacity: 1; }
+  65% { transform: translate(-50%, -70%) scale(1.0); opacity: 1; }
+  100% { transform: translate(-50%, -95%) scale(0.92); opacity: 0; }
+}
+
+@keyframes combo-pop-triple {
+  0% { transform: translate(-50%, -20%) scale(0.6) rotate(-4deg); opacity: 0; }
+  22% { transform: translate(-50%, -50%) scale(1.25) rotate(2deg); opacity: 1; }
+  65% { transform: translate(-50%, -80%) scale(1.1) rotate(-1deg); opacity: 1; }
+  100% { transform: translate(-50%, -110%) scale(0.95) rotate(0deg); opacity: 0; }
+}
+
+@keyframes combo-pop-mega {
+  0% { transform: translate(-50%, -15%) scale(0.4) rotate(6deg); opacity: 0; }
+  20% { transform: translate(-50%, -55%) scale(1.45) rotate(-3deg); opacity: 1; filter: drop-shadow(0 0 20px rgba(192, 132, 252, 1)); }
+  60% { transform: translate(-50%, -90%) scale(1.2) rotate(1deg); opacity: 1; }
+  100% { transform: translate(-50%, -125%) scale(1.0) rotate(0deg); opacity: 0; }
+}
+
+@keyframes combo-pop-domination {
+  0% { transform: translate(-50%, -10%) scale(0.3) rotate(-8deg); opacity: 0; }
+  18% { transform: translate(-50%, -60%) scale(1.7) rotate(4deg); opacity: 1; filter: drop-shadow(0 0 30px rgba(255, 45, 96, 1)) drop-shadow(0 0 10px #ffd700); }
+  35% { transform: translate(-50%, -75%) scale(1.4) rotate(-2deg); opacity: 1; }
+  70% { transform: translate(-50%, -105%) scale(1.3) rotate(1deg); opacity: 1; }
+  100% { transform: translate(-50%, -140%) scale(1.1) rotate(0deg); opacity: 0; }
 }
 
 .combo-badge {
@@ -511,45 +551,49 @@
   font-family: 'Outfit', sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
-  animation: combo-badge-pop 0.95s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
   user-select: none;
   white-space: nowrap;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.95));
 }
 
 .combo-badge-double {
-  background: linear-gradient(135deg, #00e5ff 0%, #0284c7 100%);
-  color: #040814;
-  border: 2px solid #ffffff;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
-  font-size: 0.75rem;
+  color: #38bdf8;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.85), 0 0 2px #00e5ff;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  animation: combo-pop-double 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .combo-badge-triple {
-  background: linear-gradient(135deg, #ffab00 0%, #d97706 100%);
-  color: #1a0b02;
-  border: 2px solid #fffbeb;
-  font-size: 0.85rem;
+  color: #fbbf24;
+  text-shadow: 0 0 18px rgba(251, 191, 36, 0.95), 0 0 4px #ffab00, 0 1px 2px #000;
+  font-size: 1.15rem;
+  letter-spacing: 0.07em;
+  animation: combo-pop-triple 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .combo-badge-mega {
-  background: linear-gradient(135deg, #c084fc 0%, #7e22ce 100%);
-  color: #ffffff;
-  border: 2px solid #f3e8ff;
-  font-size: 0.95rem;
-  box-shadow: 0 0 24px rgba(192, 132, 252, 0.6);
+  color: #f472b6;
+  text-shadow: 0 0 22px rgba(244, 114, 182, 1), 0 0 12px rgba(192, 132, 252, 0.9), 0 0 4px #fff;
+  font-size: 1.35rem;
+  letter-spacing: 0.09em;
+  animation: combo-pop-mega 1.05s cubic-bezier(0.16, 1.2, 0.3, 1) forwards;
 }
 
 .combo-badge-domination {
-  background: linear-gradient(135deg, #ff0844 0%, #ff7b96 50%, #ffd700 100%);
-  color: #ffffff;
-  border: 2.5px solid #ffffff;
-  font-size: 1.1rem;
-  box-shadow: 0 0 32px rgba(255, 8, 68, 0.8);
-  letter-spacing: 0.08em;
+  color: #ff0055;
+  background: linear-gradient(180deg, #ffffff 0%, #ffd700 40%, #ff0844 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 16px rgba(255, 8, 68, 0.95)) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+  font-size: 1.65rem;
+  letter-spacing: 0.12em;
+  animation: combo-pop-domination 1.2s cubic-bezier(0.16, 1.3, 0.3, 1) forwards;
 }
 
 .piece-capture-threat {
@@ -652,36 +696,67 @@ dialog[open] {
   }
 }
 
-/* Screen Shake / Rumble Impact FX */
+/* Multi-Tiered Screen Shake / Rumble Impact FX */
+.board-rumble-light {
+  animation: board-rumble-light-anim 0.22s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  will-change: transform;
+}
+
+.board-rumble-medium,
 .board-rumble {
-  animation: board-rumble-anim 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: board-rumble-medium-anim 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   will-change: transform;
 }
 
 .board-rumble-heavy {
-  animation: board-rumble-heavy-anim 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: board-rumble-heavy-anim 0.46s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   will-change: transform;
 }
 
-@keyframes board-rumble-anim {
+.board-rumble-mega {
+  animation: board-rumble-mega-anim 0.58s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  will-change: transform;
+}
+
+@keyframes board-rumble-light-anim {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1.5px); }
+  50% { transform: translate(2px, -1.5px); }
+  75% { transform: translate(-1px, 0.5px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes board-rumble-medium-anim {
   0% { transform: translate(0, 0) rotate(0deg); }
-  15% { transform: translate(-3.5px, 2.5px) rotate(-0.6deg); }
-  30% { transform: translate(3.5px, -2.5px) rotate(0.6deg); }
-  45% { transform: translate(-2.5px, -1.5px) rotate(-0.3deg); }
-  60% { transform: translate(2.5px, 1.5px) rotate(0.3deg); }
-  75% { transform: translate(-1px, 1px) rotate(0deg); }
+  15% { transform: translate(-4px, 3px) rotate(-0.6deg); }
+  30% { transform: translate(4px, -3px) rotate(0.6deg); }
+  45% { transform: translate(-3px, -2px) rotate(-0.3deg); }
+  60% { transform: translate(3px, 2px) rotate(0.3deg); }
+  75% { transform: translate(-1.5px, 1px) rotate(0deg); }
   100% { transform: translate(0, 0) rotate(0deg); }
 }
 
 @keyframes board-rumble-heavy-anim {
   0% { transform: translate(0, 0) rotate(0deg); }
-  12% { transform: translate(-6px, 4px) rotate(-1.2deg); }
-  25% { transform: translate(6px, -4px) rotate(1.2deg); }
-  38% { transform: translate(-4.5px, -3px) rotate(-0.8deg); }
-  50% { transform: translate(4.5px, 3px) rotate(0.8deg); }
-  65% { transform: translate(-3px, 2px) rotate(-0.4deg); }
-  80% { transform: translate(2px, -1px) rotate(0.2deg); }
+  12% { transform: translate(-7.5px, 5px) rotate(-1.4deg); }
+  25% { transform: translate(7.5px, -5px) rotate(1.4deg); }
+  38% { transform: translate(-5.5px, -4px) rotate(-0.9deg); }
+  50% { transform: translate(5.5px, 4px) rotate(0.9deg); }
+  65% { transform: translate(-3.5px, 2.5px) rotate(-0.5deg); }
+  80% { transform: translate(2px, -1.5px) rotate(0.2deg); }
   100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes board-rumble-mega-anim {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  10% { transform: translate(-12px, 8px) rotate(-2.2deg) scale(1.03); }
+  20% { transform: translate(12px, -8px) rotate(2.2deg) scale(1.02); }
+  32% { transform: translate(-9px, -6px) rotate(-1.5deg) scale(1.01); }
+  45% { transform: translate(9px, 6px) rotate(1.5deg) scale(1.01); }
+  60% { transform: translate(-6px, 4px) rotate(-0.8deg) scale(1); }
+  75% { transform: translate(4px, -3px) rotate(0.4deg) scale(1); }
+  90% { transform: translate(-2px, 1.5px) rotate(-0.2deg) scale(1); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
 }
 
 /* Theme Selection Cards */
