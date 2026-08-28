@@ -226,32 +226,106 @@
   pointer-events: none;
 }
 
-/* Theme-Specific Jewel Socket Variations */
-[data-theme="kirby_mario"] .hex-cell-rim {
-  fill: #5a126a;
-  stroke: rgba(255, 220, 255, 0.45);
-}
-[data-theme="kirby_mario"] .hex-cell-bed {
-  fill: #2c0636;
-  stroke: rgba(0, 0, 0, 0.8);
-}
+/* ==========================================================================
+   THEME-SPECIFIC CONTEXTUAL BOARD AESTHETICS & JEWEL TRAY SYSTEM
+   ========================================================================== */
 
-[data-theme="cyberpunk"] .hex-cell-rim {
-  fill: #340958;
-  stroke: rgba(255, 60, 160, 0.4);
+/* 1. Cosmic Arena (space_invaders) - Galactic Steel & Cosmic Cyan */
+[data-theme="space_invaders"] .hex-cell-rim {
+  fill: #131c3c;
+  stroke: rgba(56, 189, 248, 0.45);
+  stroke-width: 1.4;
 }
-[data-theme="cyberpunk"] .hex-cell-bed {
-  fill: #160328;
+[data-theme="space_invaders"] .hex-cell-bed {
+  fill: #080f22;
   stroke: rgba(0, 0, 0, 0.85);
 }
+[data-theme="space_invaders"] .hex-cell-empty:hover {
+  fill: rgba(0, 229, 255, 0.24) !important;
+  stroke: #00e5ff !important;
+  stroke-width: 2.4 !important;
+}
+[data-theme="space_invaders"] .hex-cell-selected {
+  stroke-width: 3 !important;
+  fill: #182e5c !important;
+  stroke: #00e5ff !important;
+}
+.board-arena-container[data-theme="space_invaders"] #arena-ambient-aura {
+  background: radial-gradient(circle at center, rgba(0, 229, 255, 0.22) 0%, rgba(255, 0, 128, 0.10) 50%, transparent 72%);
+}
 
+/* 2. Sunset Horizon / Fantasy Star Hills (kirby_mario) - Warm Plum & Sun Gold */
+[data-theme="kirby_mario"] .hex-cell-rim {
+  fill: #4c1445;
+  stroke: rgba(254, 240, 138, 0.55);
+  stroke-width: 1.4;
+}
+[data-theme="kirby_mario"] .hex-cell-bed {
+  fill: #260729;
+  stroke: rgba(0, 0, 0, 0.85);
+}
+[data-theme="kirby_mario"] .hex-cell-empty:hover {
+  fill: rgba(251, 191, 36, 0.28) !important;
+  stroke: #fde047 !important;
+  stroke-width: 2.4 !important;
+}
+[data-theme="kirby_mario"] .hex-cell-selected {
+  stroke-width: 3 !important;
+  fill: #61184a !important;
+  stroke: #fde047 !important;
+}
+.board-arena-container[data-theme="kirby_mario"] #arena-ambient-aura {
+  background: radial-gradient(circle at center, rgba(254, 240, 138, 0.26) 0%, rgba(244, 114, 182, 0.18) 45%, rgba(251, 146, 60, 0.08) 65%, transparent 75%);
+}
+
+/* 3. Cyber Metropolis / Synthwave (cyberpunk) - Laser Magenta & Cyber Cyan */
+[data-theme="cyberpunk"] .hex-cell-rim {
+  fill: #290740;
+  stroke: #ff007f;
+  stroke-width: 1.6;
+  filter: drop-shadow(0 0 3px rgba(255, 0, 127, 0.55));
+}
+[data-theme="cyberpunk"] .hex-cell-bed {
+  fill: #0d0218;
+  stroke: rgba(0, 0, 0, 0.95);
+}
+[data-theme="cyberpunk"] .hex-cell-empty:hover {
+  fill: rgba(255, 0, 127, 0.32) !important;
+  stroke: #ff007f !important;
+  stroke-width: 2.5 !important;
+}
+[data-theme="cyberpunk"] .hex-cell-selected {
+  stroke-width: 3 !important;
+  fill: #48084e !important;
+  stroke: #00f0ff !important;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8));
+}
+.board-arena-container[data-theme="cyberpunk"] #arena-ambient-aura {
+  background: radial-gradient(circle at center, rgba(255, 0, 127, 0.26) 0%, rgba(0, 240, 255, 0.18) 50%, transparent 75%);
+}
+
+/* 4. Coral Reef Kingdom / Ocean Depths (tetris) - Abyssal Marine Teal & Aqua */
 [data-theme="tetris"] .hex-cell-rim {
-  fill: #0c2b54;
-  stroke: rgba(56, 189, 248, 0.38);
+  fill: #062640;
+  stroke: rgba(45, 212, 191, 0.55);
+  stroke-width: 1.4;
 }
 [data-theme="tetris"] .hex-cell-bed {
-  fill: #04142a;
-  stroke: rgba(0, 0, 0, 0.8);
+  fill: #021222;
+  stroke: rgba(0, 0, 0, 0.85);
+}
+[data-theme="tetris"] .hex-cell-empty:hover {
+  fill: rgba(6, 182, 212, 0.28) !important;
+  stroke: #22d3ee !important;
+  stroke-width: 2.4 !important;
+}
+[data-theme="tetris"] .hex-cell-selected {
+  stroke-width: 3 !important;
+  fill: #0a3858 !important;
+  stroke: #2dd4bf !important;
+}
+.board-arena-container[data-theme="tetris"] #arena-ambient-aura {
+  background: radial-gradient(circle at center, rgba(45, 212, 191, 0.25) 0%, rgba(6, 182, 212, 0.16) 50%, rgba(244, 114, 182, 0.08) 65%, transparent 75%);
 }
 
 /* Prevent square focus boxes, text selection, and tap highlights on board elements */
@@ -355,24 +429,18 @@
 }
 
 /* ==========================================================================
-   JUICY PIECE PHYSICS & SQUASH-AND-STRETCH ANIMATIONS
+   JUICY PIECE PHYSICS & TACTILE MARBLE-SNAP ANIMATIONS
    ========================================================================== */
 
-/* 1. Clone Spawn Elastic Overshoot Bounce */
+/* 1. Clone Spawn Elastic Marble Pop */
 @keyframes piece-clone-spring {
   0% {
-    transform: scale(0.15);
-    opacity: 0.4;
+    transform: scale(0.2);
+    opacity: 0.5;
   }
-  45% {
-    transform: scale(1.28);
+  55% {
+    transform: scale(1.18);
     opacity: 1;
-  }
-  70% {
-    transform: scale(0.92);
-  }
-  88% {
-    transform: scale(1.06);
   }
   100% {
     transform: scale(1);
@@ -381,27 +449,21 @@
 }
 
 .piece-cloned {
-  animation: piece-clone-spring 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: piece-clone-spring 0.22s cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
   transform-box: fill-box;
   transform-origin: center;
   will-change: transform;
 }
 
-/* 2. Jump Impact Squash & Stretch */
+/* 2. Jump Impact Snappy Landing */
 @keyframes piece-jump-squash {
   0% {
-    transform: scale(0.7, 1.35);
-    opacity: 0.7;
+    transform: scale(0.85, 1.2);
+    opacity: 0.8;
   }
-  35% {
-    transform: scale(1.38, 0.62);
+  45% {
+    transform: scale(1.18, 0.85);
     opacity: 1;
-  }
-  65% {
-    transform: scale(0.92, 1.1);
-  }
-  85% {
-    transform: scale(1.05, 0.96);
   }
   100% {
     transform: scale(1, 1);
@@ -410,32 +472,30 @@
 }
 
 .piece-jumped {
-  animation: piece-jump-squash 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: piece-jump-squash 0.24s cubic-bezier(0.2, 1.15, 0.4, 1) forwards;
   transform-box: fill-box;
   transform-origin: center;
   will-change: transform;
 }
 
-/* 3. 3D Piece Conversion Animation */
+/* 3. 3D Piece Conversion Snap Pop */
 @keyframes piece-convert-pop {
   0% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
+    filter: brightness(1);
   }
-  35% {
-    transform: scale(1.32) rotate(15deg);
-    filter: brightness(1.6) drop-shadow(0 0 12px currentColor);
-  }
-  65% {
-    transform: scale(0.92) rotate(-8deg);
+  40% {
+    transform: scale(1.22);
+    filter: brightness(1.45) drop-shadow(0 0 6px currentColor);
   }
   100% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
     filter: brightness(1);
   }
 }
 
 .piece-converting {
-  animation: piece-convert-pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: piece-convert-pop 0.20s cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
   transform-box: fill-box;
   transform-origin: center;
   will-change: transform;
@@ -596,11 +656,209 @@
   animation: combo-pop-domination 1.2s cubic-bezier(0.16, 1.3, 0.3, 1) forwards;
 }
 
-.piece-capture-threat {
-  animation: piece-convert 0.6s infinite alternate ease-in-out !important;
+/* ==========================================================================
+   WORMS 2D INSPIRED LIVING ORB EMOTIONS & LEVERAGE ENGINE
+   ========================================================================== */
+
+/* 1. Asynchronous Pupil Glancing (Looking Left / Center / Right on Board) */
+@keyframes orb-pupils-glance-anim {
+  0%, 35%, 100% {
+    transform: translate(0, 0);
+  }
+  42%, 62% {
+    transform: translate(-1.8px, 0.4px);
+  }
+  70%, 90% {
+    transform: translate(1.8px, 0.4px);
+  }
+}
+
+.orb-pupils-glance {
+  animation: orb-pupils-glance-anim 5.8s infinite ease-in-out;
   transform-box: fill-box;
   transform-origin: center;
 }
+
+/* 2. Natural Asynchronous Blinking */
+@keyframes orb-natural-blink {
+  0%, 46%, 50%, 96%, 100% {
+    transform: scaleY(1);
+  }
+  48%, 98% {
+    transform: scaleY(0.1);
+  }
+}
+
+.orb-eyes-normal {
+  animation: orb-natural-blink 4.2s infinite ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Default Face Visibility: Normal smile shown, others hidden */
+.orb-eyes-scared,
+.orb-eyes-happy,
+.orb-mouth-smug,
+.orb-mouth-nervous,
+.orb-mouth-panic,
+.orb-mouth-excited,
+.orb-mouth-scared,
+.orb-mouth-triumphant,
+.orb-mouth-dismayed,
+.orb-sweat-nervous {
+  display: none;
+}
+
+.orb-mouth-normal {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   CONTEXTUAL LEVERAGE MOODS (Stationary Subtle Facial Expressions)
+   -------------------------------------------------------------------------- */
+
+/* Mood A: SMUG / DOMINATING (When leading by 4+ pieces) */
+.hex-piece[data-mood="smug"]:not(.orb-state-selected):not(.orb-state-scared):not(.orb-mood-combo-cheering):not(.orb-mood-combo-dismayed) .orb-mouth-normal {
+  display: none !important;
+}
+
+.hex-piece[data-mood="smug"]:not(.orb-state-selected):not(.orb-state-scared):not(.orb-mood-combo-cheering):not(.orb-mood-combo-dismayed) .orb-mouth-smug {
+  display: block !important;
+}
+
+/* Cocky angled eyebrow */
+.hex-piece[data-mood="smug"] .orb-eyebrow-left {
+  transform: translateY(-0.8px) rotate(-8deg);
+  transform-box: fill-box;
+}
+
+/* Mood B: NERVOUS / TRAILING (When trailing by 4+ pieces) */
+.hex-piece[data-mood="nervous"]:not(.orb-state-selected):not(.orb-state-scared):not(.orb-mood-combo-cheering):not(.orb-mood-combo-dismayed) .orb-mouth-normal {
+  display: none !important;
+}
+
+.hex-piece[data-mood="nervous"]:not(.orb-state-selected):not(.orb-state-scared):not(.orb-mood-combo-cheering):not(.orb-mood-combo-dismayed) .orb-mouth-nervous {
+  display: block !important;
+}
+
+.hex-piece[data-mood="nervous"]:not(.orb-state-selected):not(.orb-state-scared) .orb-sweat-nervous {
+  display: block !important;
+  opacity: 0.85;
+}
+
+/* Worried raised inner eyebrows */
+.hex-piece[data-mood="nervous"] .orb-eyebrow-left {
+  transform: translateY(-1.5px) rotate(12deg);
+  transform-box: fill-box;
+}
+.hex-piece[data-mood="nervous"] .orb-eyebrow-right {
+  transform: translateY(-1.5px) rotate(-12deg);
+  transform-box: fill-box;
+}
+
+/* Mood C: PANIC / NEAR EXTINCTION (Down to last 1-2 pieces) */
+.hex-piece[data-mood="panic"]:not(.orb-state-selected):not(.orb-state-scared):not(.orb-mood-combo-cheering):not(.orb-mood-combo-dismayed) .orb-mouth-normal {
+  display: none !important;
+}
+
+.hex-piece[data-mood="panic"]:not(.orb-state-selected):not(.orb-state-scared):not(.orb-mood-combo-cheering):not(.orb-mood-combo-dismayed) .orb-mouth-panic {
+  display: block !important;
+}
+
+.hex-piece[data-mood="panic"]:not(.orb-state-selected):not(.orb-state-scared) .orb-sweat-nervous {
+  display: block !important;
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   SNAPPY COMBO REACTIONS (Subtle Momentary Facial Expressions, No Jumps/Glows)
+   -------------------------------------------------------------------------- */
+
+/* Team Combo Celebration: Cheerful squint eyes and victory smile (stationary, clean) */
+.orb-mood-combo-cheering .orb-eyes-normal,
+.orb-mood-combo-cheering .orb-mouth-normal,
+.orb-mood-combo-cheering .orb-mouth-smug,
+.orb-mood-combo-cheering .orb-mouth-nervous,
+.orb-mood-combo-cheering .orb-mouth-panic {
+  display: none !important;
+}
+
+.orb-mood-combo-cheering .orb-eyes-happy,
+.orb-mood-combo-cheering .orb-mouth-triumphant {
+  display: block !important;
+}
+
+/* Opponent Team Combo Dismay: Stunned jaw-drop (stationary, clean) */
+.orb-mood-combo-dismayed .orb-eyes-normal,
+.orb-mood-combo-dismayed .orb-mouth-normal,
+.orb-mood-combo-dismayed .orb-mouth-smug,
+.orb-mood-combo-dismayed .orb-mouth-nervous,
+.orb-mood-combo-dismayed .orb-mouth-panic {
+  display: none !important;
+}
+
+.orb-mood-combo-dismayed .orb-eyes-scared,
+.orb-mood-combo-dismayed .orb-mouth-dismayed {
+  display: block !important;
+}
+
+/* --------------------------------------------------------------------------
+   INTERACTIVE USER STATES (Selected & Capture Threat)
+   -------------------------------------------------------------------------- */
+
+/* Selected Piece (Subtle Eager Smile) */
+.orb-state-selected .orb-mouth-normal,
+.orb-state-selected .orb-mouth-smug,
+.orb-state-selected .orb-mouth-nervous,
+.orb-state-selected .orb-mouth-panic {
+  display: none !important;
+}
+
+.orb-state-selected .orb-mouth-excited {
+  display: block !important;
+}
+
+/* Threatened / In Danger (Subtle Quiver, Shocked Eyes & Sweatdrop) */
+@keyframes orb-fear-subtle {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(0.6px, -0.4px); }
+}
+
+.piece-capture-threat,
+.orb-state-scared {
+  animation: orb-fear-subtle 0.25s infinite ease-in-out !important;
+}
+
+.piece-capture-threat .orb-eyes-normal,
+.orb-state-scared .orb-eyes-normal {
+  display: none !important;
+}
+
+.piece-capture-threat .orb-eyes-scared,
+.orb-state-scared .orb-eyes-scared {
+  display: block !important;
+}
+
+.piece-capture-threat .orb-mouth-normal,
+.piece-capture-threat .orb-mouth-smug,
+.piece-capture-threat .orb-mouth-nervous,
+.piece-capture-threat .orb-mouth-panic,
+.orb-state-scared .orb-mouth-normal,
+.orb-state-scared .orb-mouth-smug,
+.orb-state-scared .orb-mouth-nervous,
+.orb-state-scared .orb-mouth-panic {
+  display: none !important;
+}
+
+.piece-capture-threat .orb-mouth-scared,
+.orb-state-scared .orb-mouth-scared {
+  display: block !important;
+}
+
+/* Team-Specific Cheeks Blush */
+.hex-piece-ruby .orb-blush { fill: rgba(255, 100, 160, 0.55); }
+.hex-piece-pearl .orb-blush { fill: rgba(56, 189, 248, 0.55); }
+.hex-piece-emerald .orb-blush { fill: rgba(52, 211, 153, 0.55); }
 
 .hex-cell-capture-threat {
   stroke: #ff2d60 !important;

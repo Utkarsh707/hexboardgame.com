@@ -518,10 +518,10 @@ export class SoundEngine {
     }
 
     /* =========================================================================
-       RETRO ARCADE SFX (Space Invaders, Street Fighter, Galaga Inspired)
+       TACTILE ARCADE SFX (Classic Hexxagon Glass Marbles & Bubble Plops)
        ========================================================================= */
 
-    // 1. SELECT PIECE: Classic Street Fighter / Galaga crisp 2-tone cursor chirp
+    // 1. SELECT PIECE: Crisp glass marble tap
     playSelect() {
         if (this.muted) return;
         this.init();
@@ -531,23 +531,21 @@ export class SoundEngine {
             const now = this.ctx.currentTime;
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1400, now);
+            osc.frequency.exponentialRampToValueAtTime(750, now + 0.035);
 
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(587.33, now); // D5
-            osc.frequency.setValueAtTime(880.00, now + 0.035); // A5
-
-            gain.gain.setValueAtTime(0.18, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+            gain.gain.setValueAtTime(0.26, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
 
             osc.connect(gain);
             gain.connect(this.sfxGain);
-
             osc.start(now);
-            osc.stop(now + 0.09);
+            osc.stop(now + 0.045);
         } catch (e) { }
     }
 
-    // 2. DESELECT: Retro down-blip
+    // 2. DESELECT: Soft subtle marble release
     playDeselect() {
         if (this.muted) return;
         this.init();
@@ -557,23 +555,21 @@ export class SoundEngine {
             const now = this.ctx.currentTime;
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(620, now);
+            osc.frequency.exponentialRampToValueAtTime(320, now + 0.03);
 
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(440, now);
-            osc.frequency.exponentialRampToValueAtTime(220, now + 0.06);
-
-            gain.gain.setValueAtTime(0.14, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+            gain.gain.setValueAtTime(0.16, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
 
             osc.connect(gain);
             gain.connect(this.sfxGain);
-
             osc.start(now);
-            osc.stop(now + 0.07);
+            osc.stop(now + 0.04);
         } catch (e) { }
     }
 
-    // 3. CLONE MOVE: Space Invaders laser-pulse & crystal duplicate pop
+    // 3. CLONE MOVE: Juicy, springy bubble plop
     playClone() {
         if (this.muted) return;
         this.init();
@@ -581,41 +577,24 @@ export class SoundEngine {
 
         try {
             const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(540, now);
+            osc.frequency.exponentialRampToValueAtTime(1180, now + 0.035);
+            osc.frequency.exponentialRampToValueAtTime(420, now + 0.075);
 
-            // Retro laser chirp
-            const osc1 = this.ctx.createOscillator();
-            const gain1 = this.ctx.createGain();
-            osc1.type = 'square';
-            osc1.frequency.setValueAtTime(880, now);
-            osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.07);
+            gain.gain.setValueAtTime(0.32, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
 
-            gain1.gain.setValueAtTime(0.24, now);
-            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-
-            osc1.connect(gain1);
-            gain1.connect(this.sfxGain);
-
-            // Resonant body ping
-            const osc2 = this.ctx.createOscillator();
-            const gain2 = this.ctx.createGain();
-            osc2.type = 'triangle';
-            osc2.frequency.setValueAtTime(1174.66, now + 0.03); // D6
-            osc2.frequency.exponentialRampToValueAtTime(1480, now + 0.14);
-
-            gain2.gain.setValueAtTime(0.20, now + 0.03);
-            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
-
-            osc2.connect(gain2);
-            gain2.connect(this.sfxGain);
-
-            osc1.start(now);
-            osc1.stop(now + 0.13);
-            osc2.start(now + 0.03);
-            osc2.stop(now + 0.17);
+            osc.connect(gain);
+            gain.connect(this.sfxGain);
+            osc.start(now);
+            osc.stop(now + 0.09);
         } catch (e) { }
     }
 
-    // 4. JUMP MOVE: Street Fighter Hadouken / Galaga tractor leap whoosh
+    // 4. JUMP MOVE: Snappy mechanical whoosh-snap
     playJump() {
         if (this.muted) return;
         this.init();
@@ -623,58 +602,24 @@ export class SoundEngine {
 
         try {
             const now = this.ctx.currentTime;
-
-            // Pitch-bend saw sweep
             const osc = this.ctx.createOscillator();
-            const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(320, now);
+            osc.frequency.exponentialRampToValueAtTime(980, now + 0.04);
+            osc.frequency.exponentialRampToValueAtTime(260, now + 0.095);
 
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(180, now);
-            osc.frequency.exponentialRampToValueAtTime(1100, now + 0.12);
-            osc.frequency.exponentialRampToValueAtTime(320, now + 0.22);
+            gain.gain.setValueAtTime(0.30, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.105);
 
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(600, now);
-            filter.frequency.exponentialRampToValueAtTime(3200, now + 0.12);
-            filter.frequency.exponentialRampToValueAtTime(800, now + 0.22);
-            filter.Q.value = 4;
-
-            gain.gain.setValueAtTime(0.25, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
-
-            osc.connect(filter);
-            filter.connect(gain);
+            osc.connect(gain);
             gain.connect(this.sfxGain);
-
             osc.start(now);
-            osc.stop(now + 0.24);
-
-            // Background whoosh noise burst
-            if (this.noiseBuffer) {
-                const noise = this.ctx.createBufferSource();
-                noise.buffer = this.noiseBuffer;
-
-                const nFilter = this.ctx.createBiquadFilter();
-                nFilter.type = 'bandpass';
-                nFilter.frequency.setValueAtTime(1200, now);
-                nFilter.frequency.exponentialRampToValueAtTime(3800, now + 0.12);
-
-                const nGain = this.ctx.createGain();
-                nGain.gain.setValueAtTime(0.18, now);
-                nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-
-                noise.connect(nFilter);
-                nFilter.connect(nGain);
-                nGain.connect(this.sfxGain);
-
-                noise.start(now);
-                noise.stop(now + 0.19);
-            }
+            osc.stop(now + 0.11);
         } catch (e) { }
     }
 
-    // 4.5. QUANTUM WARP: Cosmic Teleport Frequency Sweep & Crystal Dispersal
+    // 4.5. QUANTUM WARP: Cosmic Teleport Frequency Sweep
     playWarp() {
         if (this.muted) return;
         this.init();
@@ -682,104 +627,81 @@ export class SoundEngine {
 
         try {
             const now = this.ctx.currentTime;
-
-            // 1. Ascending & Descending Frequency Rift Sweep
             const osc = this.ctx.createOscillator();
             const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
 
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(320, now);
-            osc.frequency.exponentialRampToValueAtTime(1840, now + 0.12);
-            osc.frequency.exponentialRampToValueAtTime(440, now + 0.28);
+            osc.frequency.exponentialRampToValueAtTime(1840, now + 0.08);
+            osc.frequency.exponentialRampToValueAtTime(440, now + 0.18);
 
             filter.type = 'bandpass';
             filter.frequency.setValueAtTime(800, now);
-            filter.frequency.exponentialRampToValueAtTime(3600, now + 0.12);
-            filter.frequency.exponentialRampToValueAtTime(900, now + 0.28);
-            filter.Q.value = 5.0;
+            filter.frequency.exponentialRampToValueAtTime(3600, now + 0.08);
+            filter.frequency.exponentialRampToValueAtTime(900, now + 0.18);
+            filter.Q.value = 4.0;
 
-            gain.gain.setValueAtTime(0.28, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.29);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
 
             osc.connect(filter);
             filter.connect(gain);
             gain.connect(this.sfxGain);
 
             osc.start(now);
-            osc.stop(now + 0.30);
-
-            // 2. Crystal Harmonic Chime Ring
-            const chime = this.ctx.createOscillator();
-            const chimeGain = this.ctx.createGain();
-            chime.type = 'triangle';
-            chime.frequency.setValueAtTime(1318.51, now + 0.08); // E6
-            chime.frequency.exponentialRampToValueAtTime(1760, now + 0.25);
-
-            chimeGain.gain.setValueAtTime(0.20, now + 0.08);
-            chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.30);
-
-            chime.connect(chimeGain);
-            chimeGain.connect(this.sfxGain);
-
-            chime.start(now + 0.08);
-            chime.stop(now + 0.31);
+            osc.stop(now + 0.20);
         } catch (e) { }
     }
 
-    // 5. CAPTURE / INFECTION: Authentic 8-Bit Explosion Sound Effects (Multi-Variation)
-    // Inspired by classic 8-Bit Explosions (Laser chirp, filtered noise crunch, sub thump & harmonic ringout)
+    // 5. CAPTURE / INFECTION: The Signature Hexxagon "Bubble Wrap" Cascade
     playCapture(count = 1) {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx || !this.sfxGain) return;
-
-        // Choose explosion style based on capture count (single pop, double boom, or mega explosion)
-        if (count === 1) {
-            this.play8BitExplosionPop(0);
-        } else if (count === 2) {
-            this.play8BitArcadeBoom(0);
-        } else {
-            this.play8BitMegaExplosion(count);
-        }
+        this.playCaptureStep(0, count);
     }
 
-    // Capture Chain Step Explosion (with crescendo harmonic pitch scaling)
+    // Capture Chain Step (Ascending Pentatonic Bubble Plop)
     playCaptureStep(stepIndex = 0, totalCaptures = 1) {
         if (this.muted) return;
         this.init();
         if (!this.ctx || !this.sfxGain) return;
 
-        // Ascending harmonic major scale: C4, E4, G4, C5, E5, G5, C6
-        const musicalScale = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
-        const pitchFreq = musicalScale[stepIndex % musicalScale.length] * Math.pow(1.25, Math.floor(stepIndex / musicalScale.length));
-
-        // Musical harmonic overtone chime
         try {
             const now = this.ctx.currentTime;
-            const harmonic = this.ctx.createOscillator();
-            const harmGain = this.ctx.createGain();
-            harmonic.type = 'triangle';
-            harmonic.frequency.setValueAtTime(pitchFreq, now);
-            harmonic.frequency.exponentialRampToValueAtTime(pitchFreq * 1.08, now + 0.14);
+            // Pentatonic pitch escalation: C5, D5, E5, G5, A5, C6, D6, E6
+            const pentatonicScale = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
+            const freq = pentatonicScale[stepIndex % pentatonicScale.length] * Math.pow(1.12, Math.floor(stepIndex / pentatonicScale.length));
 
-            harmGain.gain.setValueAtTime(0.20, now);
-            harmGain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+            // 1. Crisp bubble pop core
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq * 1.30, now);
+            osc.frequency.exponentialRampToValueAtTime(freq, now + 0.012);
+            osc.frequency.exponentialRampToValueAtTime(freq * 0.85, now + 0.042);
 
-            harmonic.connect(harmGain);
-            harmGain.connect(this.sfxGain);
-            harmonic.start(now);
-            harmonic.stop(now + 0.18);
+            gain.gain.setValueAtTime(0.34, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
+
+            osc.connect(gain);
+            gain.connect(this.sfxGain);
+            osc.start(now);
+            osc.stop(now + 0.052);
+
+            // 2. Glass marble click transient
+            const click = this.ctx.createOscillator();
+            const clickGain = this.ctx.createGain();
+            click.type = 'triangle';
+            click.frequency.setValueAtTime(freq * 2.2, now);
+            click.frequency.exponentialRampToValueAtTime(freq * 1.4, now + 0.016);
+
+            clickGain.gain.setValueAtTime(0.20, now);
+            clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.020);
+
+            click.connect(clickGain);
+            clickGain.connect(this.sfxGain);
+            click.start(now);
+            click.stop(now + 0.024);
         } catch (e) { }
-
-        if (totalCaptures >= 3 && stepIndex === totalCaptures - 1) {
-            // Climax explosion on final piece of a combo
-            this.play8BitMegaExplosion(totalCaptures, stepIndex);
-        } else if (stepIndex >= 1) {
-            this.play8BitArcadeBoom(stepIndex);
-        } else {
-            this.play8BitExplosionPop(stepIndex);
-        }
     }
 
     // Play Combo Announcement Power Chime (Double, Triple, Mega, Domination)

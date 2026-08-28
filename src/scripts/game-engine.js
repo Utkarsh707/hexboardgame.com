@@ -248,6 +248,10 @@ export class HexxagonGame {
         if (arenaContainer) {
             arenaContainer.setAttribute('data-theme', this.themeId);
         }
+        const stageBackdrop = document.getElementById('stage-backdrop');
+        if (stageBackdrop) {
+            stageBackdrop.setAttribute('data-theme', this.themeId);
+        }
 
         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
         let gradsHtml = '';
@@ -374,6 +378,7 @@ export class HexxagonGame {
 
         this.renderWarpPortals();
         this.updateHighlights();
+        this.updatePieceEmotions();
     }
 
     renderWarpPortals() {
@@ -595,25 +600,279 @@ export class HexxagonGame {
         glossCore.setAttribute('r', this.cellSize * 0.06);
         glossCore.setAttribute('fill', '#ffffff');
 
-        // 4. Subtle Theme Retro Icon Glyph
-        const iconText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        iconText.setAttribute('x', x);
-        iconText.setAttribute('y', y + this.cellSize * 0.05);
-        iconText.setAttribute('text-anchor', 'middle');
-        iconText.setAttribute('dominant-baseline', 'central');
-        iconText.setAttribute('alignment-baseline', 'central');
-        iconText.setAttribute('font-size', `${this.cellSize * 0.44}px`);
-        iconText.setAttribute('fill', '#ffffff');
-        iconText.setAttribute('class', 'piece-glyph-icon select-none pointer-events-none');
-        iconText.style.pointerEvents = 'none';
-        iconText.style.userSelect = 'none';
-        iconText.textContent = playerData?.icon || '';
+        // 4. Reactive Animated Cartoon Face System (Worms 2D Inspired)
+        const faceGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        faceGroup.setAttribute('class', 'orb-face-system select-none pointer-events-none');
+        faceGroup.style.pointerEvents = 'none';
+
+        // Staggered Asynchronous Delays so characters don't blink/fidget in unison
+        const blinkDelay = -(Math.random() * 5).toFixed(2);
+        const glanceDelay = -(Math.random() * 7).toFixed(2);
+        const fidgetDelay = -(Math.random() * 4.5).toFixed(2);
+
+        // Blushing Cheeks
+        const blushLeft = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        blushLeft.setAttribute('cx', x - this.cellSize * 0.26);
+        blushLeft.setAttribute('cy', y + this.cellSize * 0.10);
+        blushLeft.setAttribute('rx', this.cellSize * 0.09);
+        blushLeft.setAttribute('ry', this.cellSize * 0.06);
+        blushLeft.setAttribute('class', 'orb-blush');
+
+        const blushRight = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        blushRight.setAttribute('cx', x + this.cellSize * 0.26);
+        blushRight.setAttribute('cy', y + this.cellSize * 0.10);
+        blushRight.setAttribute('rx', this.cellSize * 0.09);
+        blushRight.setAttribute('ry', this.cellSize * 0.06);
+        blushRight.setAttribute('class', 'orb-blush');
+
+        // Eyes Group (with natural asynchronous blinking)
+        const eyesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        eyesGroup.setAttribute('class', 'orb-eyes-normal');
+        eyesGroup.style.transformOrigin = `${x}px ${y - this.cellSize * 0.06}px`;
+        eyesGroup.style.animationDelay = `${blinkDelay}s`;
+
+        // Eyebrows
+        const browLeft = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        browLeft.setAttribute('d', `M ${x - this.cellSize * 0.26} ${y - this.cellSize * 0.18} Q ${x - this.cellSize * 0.18} ${y - this.cellSize * 0.22} ${x - this.cellSize * 0.10} ${y - this.cellSize * 0.18}`);
+        browLeft.setAttribute('fill', 'none');
+        browLeft.setAttribute('stroke', '#10081c');
+        browLeft.setAttribute('stroke-width', '1.2');
+        browLeft.setAttribute('stroke-linecap', 'round');
+        browLeft.setAttribute('class', 'orb-eyebrow-left');
+
+        const browRight = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        browRight.setAttribute('d', `M ${x + this.cellSize * 0.10} ${y - this.cellSize * 0.18} Q ${x + this.cellSize * 0.18} ${y - this.cellSize * 0.22} ${x + this.cellSize * 0.26} ${y - this.cellSize * 0.18}`);
+        browRight.setAttribute('fill', 'none');
+        browRight.setAttribute('stroke', '#10081c');
+        browRight.setAttribute('stroke-width', '1.2');
+        browRight.setAttribute('stroke-linecap', 'round');
+        browRight.setAttribute('class', 'orb-eyebrow-right');
+
+        // Pupils Glance Group (Asynchronous Looking Left / Center / Right)
+        const pupilsGlanceGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        pupilsGlanceGroup.setAttribute('class', 'orb-pupils-glance');
+        pupilsGlanceGroup.style.animationDelay = `${glanceDelay}s`;
+
+        // Left Eye (Normal)
+        const leftEyeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const lPupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        lPupil.setAttribute('cx', x - this.cellSize * 0.18);
+        lPupil.setAttribute('cy', y - this.cellSize * 0.06);
+        lPupil.setAttribute('r', this.cellSize * 0.09);
+        lPupil.setAttribute('fill', '#10081c');
+
+        const lShine1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        lShine1.setAttribute('cx', x - this.cellSize * 0.21);
+        lShine1.setAttribute('cy', y - this.cellSize * 0.09);
+        lShine1.setAttribute('r', this.cellSize * 0.038);
+        lShine1.setAttribute('fill', '#ffffff');
+
+        const lShine2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        lShine2.setAttribute('cx', x - this.cellSize * 0.15);
+        lShine2.setAttribute('cy', y - this.cellSize * 0.03);
+        lShine2.setAttribute('r', this.cellSize * 0.02);
+        lShine2.setAttribute('fill', '#ffffff');
+
+        leftEyeGroup.appendChild(lPupil);
+        leftEyeGroup.appendChild(lShine1);
+        leftEyeGroup.appendChild(lShine2);
+
+        // Right Eye (Normal)
+        const rightEyeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const rPupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        rPupil.setAttribute('cx', x + this.cellSize * 0.18);
+        rPupil.setAttribute('cy', y - this.cellSize * 0.06);
+        rPupil.setAttribute('r', this.cellSize * 0.09);
+        rPupil.setAttribute('fill', '#10081c');
+
+        const rShine1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        rShine1.setAttribute('cx', x + this.cellSize * 0.15);
+        rShine1.setAttribute('cy', y - this.cellSize * 0.09);
+        rShine1.setAttribute('r', this.cellSize * 0.038);
+        rShine1.setAttribute('fill', '#ffffff');
+
+        const rShine2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        rShine2.setAttribute('cx', x + this.cellSize * 0.21);
+        rShine2.setAttribute('cy', y - this.cellSize * 0.03);
+        rShine2.setAttribute('r', this.cellSize * 0.02);
+        rShine2.setAttribute('fill', '#ffffff');
+
+        rightEyeGroup.appendChild(rPupil);
+        rightEyeGroup.appendChild(rShine1);
+        rightEyeGroup.appendChild(rShine2);
+
+        pupilsGlanceGroup.appendChild(leftEyeGroup);
+        pupilsGlanceGroup.appendChild(rightEyeGroup);
+
+        eyesGroup.appendChild(browLeft);
+        eyesGroup.appendChild(browRight);
+        eyesGroup.appendChild(pupilsGlanceGroup);
+
+        // Scared / Threatened Eyes (Quivering dots + sweat drop)
+        const scaredEyesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        scaredEyesGroup.setAttribute('class', 'orb-eyes-scared');
+
+        const sLeftWhite = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        sLeftWhite.setAttribute('cx', x - this.cellSize * 0.18);
+        sLeftWhite.setAttribute('cy', y - this.cellSize * 0.06);
+        sLeftWhite.setAttribute('r', this.cellSize * 0.11);
+        sLeftWhite.setAttribute('fill', '#ffffff');
+        sLeftWhite.setAttribute('stroke', '#10081c');
+        sLeftWhite.setAttribute('stroke-width', '1');
+
+        const sLeftPupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        sLeftPupil.setAttribute('cx', x - this.cellSize * 0.18);
+        sLeftPupil.setAttribute('cy', y - this.cellSize * 0.06);
+        sLeftPupil.setAttribute('r', this.cellSize * 0.04);
+        sLeftPupil.setAttribute('fill', '#10081c');
+
+        const sRightWhite = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        sRightWhite.setAttribute('cx', x + this.cellSize * 0.18);
+        sRightWhite.setAttribute('cy', y - this.cellSize * 0.06);
+        sRightWhite.setAttribute('r', this.cellSize * 0.11);
+        sRightWhite.setAttribute('fill', '#ffffff');
+        sRightWhite.setAttribute('stroke', '#10081c');
+        sRightWhite.setAttribute('stroke-width', '1');
+
+        const sRightPupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        sRightPupil.setAttribute('cx', x + this.cellSize * 0.18);
+        sRightPupil.setAttribute('cy', y - this.cellSize * 0.06);
+        sRightPupil.setAttribute('r', this.cellSize * 0.04);
+        sRightPupil.setAttribute('fill', '#10081c');
+
+        // Threat Sweatdrop
+        const sweat = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const swX = x + this.cellSize * 0.32;
+        const swY = y - this.cellSize * 0.22;
+        sweat.setAttribute('d', `M ${swX} ${swY - 5} C ${swX} ${swY - 5} ${swX + 3} ${swY} ${swX + 3} ${swY + 2} C ${swX + 3} ${swY + 4} ${swX + 1.5} ${swY + 5} ${swX} ${swY + 5} C ${swX - 1.5} ${swY + 5} ${swX - 3} ${swY + 4} ${swX - 3} ${swY + 2} C ${swX - 3} ${swY} ${swX} ${swY - 5} Z`);
+        sweat.setAttribute('fill', '#38bdf8');
+        sweat.setAttribute('class', 'orb-sweatdrop');
+
+        scaredEyesGroup.appendChild(sLeftWhite);
+        scaredEyesGroup.appendChild(sLeftPupil);
+        scaredEyesGroup.appendChild(sRightWhite);
+        scaredEyesGroup.appendChild(sRightPupil);
+        scaredEyesGroup.appendChild(sweat);
+
+        // Happy Triumphant Eyes (^ ^ shape)
+        const happyEyesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        happyEyesGroup.setAttribute('class', 'orb-eyes-happy');
+
+        const hLeft = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        hLeft.setAttribute('d', `M ${x - this.cellSize * 0.25} ${y - this.cellSize * 0.03} Q ${x - this.cellSize * 0.18} ${y - this.cellSize * 0.14} ${x - this.cellSize * 0.11} ${y - this.cellSize * 0.03}`);
+        hLeft.setAttribute('fill', 'none');
+        hLeft.setAttribute('stroke', '#10081c');
+        hLeft.setAttribute('stroke-width', '1.8');
+        hLeft.setAttribute('stroke-linecap', 'round');
+
+        const hRight = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        hRight.setAttribute('d', `M ${x + this.cellSize * 0.11} ${y - this.cellSize * 0.03} Q ${x + this.cellSize * 0.18} ${y - this.cellSize * 0.14} ${x + this.cellSize * 0.25} ${y - this.cellSize * 0.03}`);
+        hRight.setAttribute('fill', 'none');
+        hRight.setAttribute('stroke', '#10081c');
+        hRight.setAttribute('stroke-width', '1.8');
+        hRight.setAttribute('stroke-linecap', 'round');
+
+        happyEyesGroup.appendChild(hLeft);
+        happyEyesGroup.appendChild(hRight);
+
+        // Panic Nervous Sweat
+        const panicSweat = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const pswX = x - this.cellSize * 0.30;
+        const pswY = y - this.cellSize * 0.18;
+        panicSweat.setAttribute('d', `M ${pswX} ${pswY - 4} C ${pswX} ${pswY - 4} ${pswX + 2.5} ${pswY} ${pswX + 2.5} ${pswY + 1.8} C ${pswX + 2.5} ${pswY + 3.2} ${pswX + 1.2} ${pswY + 4} ${pswX} ${pswY + 4} C ${pswX - 1.2} ${pswY + 4} ${pswX - 2.5} ${pswY + 3.2} ${pswX - 2.5} ${pswY + 1.8} C ${pswX - 2.5} ${pswY} ${pswX} ${pswY - 4} Z`);
+        panicSweat.setAttribute('fill', '#38bdf8');
+        panicSweat.setAttribute('class', 'orb-sweat-nervous');
+
+        // Mouth Variants (Contextual Worms 2D Emotions)
+        // 1. Normal Happy Smile (Default / Balanced)
+        const mouthNormal = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        mouthNormal.setAttribute('d', `M ${x - this.cellSize * 0.11} ${y + this.cellSize * 0.13} Q ${x} ${y + this.cellSize * 0.23} ${x + this.cellSize * 0.11} ${y + this.cellSize * 0.13}`);
+        mouthNormal.setAttribute('fill', 'none');
+        mouthNormal.setAttribute('stroke', '#10081c');
+        mouthNormal.setAttribute('stroke-width', '1.6');
+        mouthNormal.setAttribute('stroke-linecap', 'round');
+        mouthNormal.setAttribute('class', 'orb-mouth-normal');
+
+        // 2. Smug Smirk (When in clear lead / dominant)
+        const mouthSmug = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        mouthSmug.setAttribute('d', `M ${x - this.cellSize * 0.12} ${y + this.cellSize * 0.15} Q ${x} ${y + this.cellSize * 0.22} ${x + this.cellSize * 0.14} ${y + this.cellSize * 0.08}`);
+        mouthSmug.setAttribute('fill', 'none');
+        mouthSmug.setAttribute('stroke', '#10081c');
+        mouthSmug.setAttribute('stroke-width', '1.7');
+        mouthSmug.setAttribute('stroke-linecap', 'round');
+        mouthSmug.setAttribute('class', 'orb-mouth-smug');
+
+        // 3. Nervous Wobbly Mouth (When trailing in score)
+        const mouthNervous = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        mouthNervous.setAttribute('d', `M ${x - this.cellSize * 0.14} ${y + this.cellSize * 0.15} Q ${x - this.cellSize * 0.07} ${y + this.cellSize * 0.10} ${x} ${y + this.cellSize * 0.15} Q ${x + this.cellSize * 0.07} ${y + this.cellSize * 0.20} ${x + this.cellSize * 0.14} ${y + this.cellSize * 0.15}`);
+        mouthNervous.setAttribute('fill', 'none');
+        mouthNervous.setAttribute('stroke', '#10081c');
+        mouthNervous.setAttribute('stroke-width', '1.5');
+        mouthNervous.setAttribute('stroke-linecap', 'round');
+        mouthNervous.setAttribute('class', 'orb-mouth-nervous');
+
+        // 4. Panic Biting Teeth Grimace (When down to 1-2 pieces)
+        const mouthPanic = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        mouthPanic.setAttribute('d', `M ${x - this.cellSize * 0.13} ${y + this.cellSize * 0.13} L ${x + this.cellSize * 0.13} ${y + this.cellSize * 0.13} L ${x + this.cellSize * 0.10} ${y + this.cellSize * 0.21} L ${x - this.cellSize * 0.10} ${y + this.cellSize * 0.21} Z`);
+        mouthPanic.setAttribute('fill', '#ffffff');
+        mouthPanic.setAttribute('stroke', '#10081c');
+        mouthPanic.setAttribute('stroke-width', '1.2');
+        mouthPanic.setAttribute('class', 'orb-mouth-panic');
+
+        // 5. Excited Big Smile (When Selected)
+        const mouthExcited = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        mouthExcited.setAttribute('d', `M ${x - this.cellSize * 0.13} ${y + this.cellSize * 0.11} Q ${x} ${y + this.cellSize * 0.27} ${x + this.cellSize * 0.13} ${y + this.cellSize * 0.11} Z`);
+        mouthExcited.setAttribute('fill', '#ff2d60');
+        mouthExcited.setAttribute('stroke', '#10081c');
+        mouthExcited.setAttribute('stroke-width', '1.3');
+        mouthExcited.setAttribute('class', 'orb-mouth-excited');
+
+        // 6. Scared Gasp Mouth (When Threatened)
+        const mouthScared = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        mouthScared.setAttribute('cx', x);
+        mouthScared.setAttribute('cy', y + this.cellSize * 0.16);
+        mouthScared.setAttribute('rx', this.cellSize * 0.08);
+        mouthScared.setAttribute('ry', this.cellSize * 0.10);
+        mouthScared.setAttribute('fill', '#10081c');
+        mouthScared.setAttribute('class', 'orb-mouth-scared');
+
+        // 7. Triumphant Cheering Mouth
+        const mouthTriumphant = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        mouthTriumphant.setAttribute('d', `M ${x - this.cellSize * 0.15} ${y + this.cellSize * 0.10} Q ${x} ${y + this.cellSize * 0.30} ${x + this.cellSize * 0.15} ${y + this.cellSize * 0.10} Z`);
+        mouthTriumphant.setAttribute('fill', '#fb7185');
+        mouthTriumphant.setAttribute('stroke', '#10081c');
+        mouthTriumphant.setAttribute('stroke-width', '1.4');
+        mouthTriumphant.setAttribute('class', 'orb-mouth-triumphant');
+
+        // 8. Dismayed Jaw Drop (When Opponent gets a high combo)
+        const mouthDismayed = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        mouthDismayed.setAttribute('cx', x);
+        mouthDismayed.setAttribute('cy', y + this.cellSize * 0.18);
+        mouthDismayed.setAttribute('rx', this.cellSize * 0.09);
+        mouthDismayed.setAttribute('ry', this.cellSize * 0.13);
+        mouthDismayed.setAttribute('fill', '#10081c');
+        mouthDismayed.setAttribute('class', 'orb-mouth-dismayed');
+
+        faceGroup.appendChild(blushLeft);
+        faceGroup.appendChild(blushRight);
+        faceGroup.appendChild(panicSweat);
+        faceGroup.appendChild(eyesGroup);
+        faceGroup.appendChild(scaredEyesGroup);
+        faceGroup.appendChild(happyEyesGroup);
+        faceGroup.appendChild(mouthNormal);
+        faceGroup.appendChild(mouthSmug);
+        faceGroup.appendChild(mouthNervous);
+        faceGroup.appendChild(mouthPanic);
+        faceGroup.appendChild(mouthExcited);
+        faceGroup.appendChild(mouthScared);
+        faceGroup.appendChild(mouthTriumphant);
+        faceGroup.appendChild(mouthDismayed);
 
         group.appendChild(shadow);
         group.appendChild(circle);
         group.appendChild(glossHighlight);
         group.appendChild(glossCore);
-        group.appendChild(iconText);
+        group.appendChild(faceGroup);
 
         group.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -933,7 +1192,7 @@ export class HexxagonGame {
                     const capKey = move.captures[i];
                     const pieceEl = this.pieceElements.get(capKey);
                     if (pieceEl) {
-                        pieceEl.classList.add('piece-capture-threat');
+                        pieceEl.classList.add('piece-capture-threat', 'orb-state-scared');
                         this.activeThreatPieceElements.push(pieceEl);
                     }
 
@@ -951,7 +1210,7 @@ export class HexxagonGame {
         this.currentHoveredKey = null;
         if (this.activeThreatPieceElements.length > 0) {
             for (let i = 0; i < this.activeThreatPieceElements.length; i++) {
-                this.activeThreatPieceElements[i].classList.remove('piece-capture-threat');
+                this.activeThreatPieceElements[i].classList.remove('piece-capture-threat', 'orb-state-scared');
             }
             this.activeThreatPieceElements.length = 0;
         }
@@ -1001,6 +1260,15 @@ export class HexxagonGame {
         const movesGroup = document.getElementById('hex-moves-group');
         if (!movesGroup) return;
         movesGroup.innerHTML = '';
+
+        // Update Piece active/selected facial states
+        this.pieceElements.forEach((pieceEl, key) => {
+            if (key === this.selectedCell) {
+                pieceEl.classList.add('orb-state-selected');
+            } else {
+                pieceEl.classList.remove('orb-state-selected');
+            }
+        });
 
         // Update Cell polygon highlights
         this.cellElements.forEach((poly, key) => {
@@ -1067,6 +1335,77 @@ export class HexxagonGame {
 
             movesGroup.appendChild(markerGroup);
         });
+    }
+
+    updatePieceEmotions() {
+        if (!this.state || !this.state.board) return;
+        const scores = this.calculateScores();
+        const totalPieces = Object.values(scores).reduce((a, b) => a + b, 0);
+
+        // Compute Worms-style leverage and emotional atmosphere per team
+        const playerMoods = {};
+        for (const p of this.state.players) {
+            const myScore = scores[p] || 0;
+            if (myScore === 0) {
+                playerMoods[p] = 'panic';
+                continue;
+            }
+
+            const otherScores = this.state.players.filter(op => op !== p).map(op => scores[op] || 0);
+            const maxOther = Math.max(0, ...otherScores);
+            const avgOther = otherScores.length > 0 ? (otherScores.reduce((a, b) => a + b, 0) / otherScores.length) : 0;
+            const diff = myScore - avgOther;
+
+            if (myScore <= 2 && totalPieces >= 10) {
+                // Last survivors hanging on for dear life -> Panic, shivering teeth
+                playerMoods[p] = 'panic';
+            } else if (diff >= 4 || (myScore >= 7 && myScore >= maxOther * 1.5)) {
+                // Clear lead / dominance -> Smug, cocky smirk
+                playerMoods[p] = 'smug';
+            } else if (diff <= -4 || (maxOther >= 7 && maxOther >= myScore * 1.5)) {
+                // Trailing significantly -> Nervous, uneasy sweating
+                playerMoods[p] = 'nervous';
+            } else {
+                // Balanced / close battle -> Focused, resolute alert smile
+                playerMoods[p] = 'focused';
+            }
+        }
+
+        // Apply moods to every piece element on the board
+        this.pieceElements.forEach((pieceEl, key) => {
+            const owner = this.state.board[key];
+            if (owner && pieceEl) {
+                const mood = playerMoods[owner] || 'focused';
+                pieceEl.setAttribute('data-mood', mood);
+            }
+        });
+    }
+
+    triggerComboReactions(capturingPlayer, captureCount) {
+        if (!this.pieceElements || captureCount < 2) return;
+        const duration = 500; // Snappy, non-distracting arcade feedback
+
+        this.pieceElements.forEach((pieceEl, key) => {
+            const owner = this.state.board[key];
+            if (owner === capturingPlayer) {
+                pieceEl.classList.remove('orb-mood-combo-dismayed');
+                pieceEl.classList.add('orb-mood-combo-cheering');
+            } else {
+                pieceEl.classList.remove('orb-mood-combo-cheering');
+                pieceEl.classList.add('orb-mood-combo-dismayed');
+            }
+        });
+
+        if (this._comboReactionTimer) {
+            clearTimeout(this._comboReactionTimer);
+        }
+
+        this._comboReactionTimer = setTimeout(() => {
+            this.pieceElements.forEach((pieceEl) => {
+                pieceEl.classList.remove('orb-mood-combo-cheering', 'orb-mood-combo-dismayed');
+            });
+            this.updatePieceEmotions();
+        }, duration);
     }
 
     async executeMove(move) {
@@ -1202,6 +1541,9 @@ export class HexxagonGame {
                         }, 120);
                     }
                 }
+
+                // Worms-style team celebration / shock combo reactions
+                this.triggerComboReactions(player, capCount);
             }
 
             move.captures.forEach((capKey, idx) => {
@@ -1228,10 +1570,10 @@ export class HexxagonGame {
                     // 3. Trigger 8-Bit Retro Explosion Sound & VFX
                     sound.playCaptureStep(idx, move.captures.length);
                     this.triggerCaptureVFX(landingCoords.x, landingCoords.y, capCoords.x, capCoords.y, playerColor);
-                }, idx * 60);
+                }, idx * 35);
             });
 
-            await new Promise(resolve => setTimeout(resolve, Math.min(500, move.captures.length * 60 + 180)));
+            await new Promise(resolve => setTimeout(resolve, Math.min(260, move.captures.length * 35 + 80)));
         }
 
         this.updateHighlights();
@@ -1358,8 +1700,8 @@ export class HexxagonGame {
                         }
                     }
 
-                    // Pacing window
-                    await new Promise(resolve => setTimeout(resolve, 400));
+                    // Snappy AI Pacing window (just enough to see AI move, zero sluggish delay)
+                    await new Promise(resolve => setTimeout(resolve, 220));
 
                     this.clearCapturePreviews();
                     this.isAiTurn = false;

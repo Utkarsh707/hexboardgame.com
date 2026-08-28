@@ -2,149 +2,73 @@
 ---
 
 <!-- ==========================================================================
-     4 DISTINCT MODERN POKI-STYLE STAGE BACKDROPS
-     1. Cosmic Arena (space_invaders) - Royal deep space, cyan/ruby nebulas & crystal stars
-     2. Sunset Horizon (kirby_mario)  - Warm dusk twilight, solar orb, rolling hills & star sparkles
-     3. Cyber Neon (cyberpunk)       - Midnight synthwave, neon horizon grid & electric skyline
-     4. Ocean Depths (tetris)        - Abyssal azure gradient, bioluminescent bubbles & sun rays
+     4 HIGH-FIDELITY ARTISTIC GAME WORLD BACKDROPS
+     1. Cosmic Odyssey (space_invaders) - Magical galaxy, ringed planet & cute retro UFO
+     2. Fantasy Star Hills (kirby_mario)  - Whimsical rolling hills, fluffy clouds & smiling sun
+     3. Cyber Metropolis (cyberpunk)       - Vibrant synthwave skyline & neon flying speeders
+     4. Coral Reef Kingdom (tetris)        - Glowing fairy-tale jellyfish & magical coral castle
      ========================================================================== -->
 
 <div id="stage-backdrop" class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none" data-theme="space_invaders">
   
   <!-- ========================================================================
-       STAGE 1: COSMIC ARENA (Royal Deep Space & Crystal Dust)
+       STAGE 1: COSMIC ODYSSEY (Magical Galaxy & UFO)
        ======================================================================== -->
-  <div class="theme-layer theme-layer-cosmic absolute inset-0 pointer-events-none bg-[#080d1a]">
-    <!-- Cosmic Deep Space Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#060a14] via-[#0c142b] to-[#060a14]"></div>
-
-    <!-- Vibrant Ambient Nebulas -->
-    <div class="absolute -top-24 -left-24 w-[32rem] h-[32rem] rounded-full bg-cyan-500/12 blur-3xl"></div>
-    <div class="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] rounded-full bg-rose-500/10 blur-3xl"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] rounded-full bg-indigo-500/8 blur-3xl"></div>
-
-    <!-- Geometric Constellations & Star Field -->
-    <svg class="absolute inset-0 w-full h-full opacity-35" xmlns="http://www.w3.org/2000/svg">
-      <!-- Star Constellation Top Left -->
-      <g stroke="#38bdf8" stroke-width="0.8" opacity="0.6">
-        <line x1="8%" y1="12%" x2="16%" y2="18%"/>
-        <line x1="16%" y1="18%" x2="22%" y2="10%"/>
-        <circle cx="8%" cy="12%" r="2.5" fill="#ffffff"/>
-        <circle cx="16%" cy="18%" r="3" fill="#38bdf8"/>
-        <circle cx="22%" cy="10%" r="2.5" fill="#ffffff"/>
-      </g>
-
-      <!-- Star Constellation Bottom Right -->
-      <g stroke="#f43f5e" stroke-width="0.8" opacity="0.5">
-        <line x1="82%" y1="78%" x2="90%" y2="84%"/>
-        <line x1="90%" y1="84%" x2="94%" y2="76%"/>
-        <circle cx="82%" cy="78%" r="2.5" fill="#ffffff"/>
-        <circle cx="90%" cy="84%" r="3" fill="#f43f5e"/>
-        <circle cx="94%" cy="76%" r="2" fill="#ffffff"/>
-      </g>
-
-      <!-- Shimmering Star Sparkles -->
-      <g fill="#ffffff" opacity="0.7">
-        <circle cx="28%" cy="24%" r="1.5"/>
-        <circle cx="75%" cy="15%" r="2"/>
-        <circle cx="88%" cy="32%" r="1.5"/>
-        <circle cx="12%" cy="65%" r="2"/>
-        <circle cx="25%" cy="85%" r="1.5"/>
-        <circle cx="68%" cy="82%" r="2"/>
-        <circle cx="45%" cy="8%" r="1.5"/>
-      </g>
-    </svg>
+  <div class="theme-layer theme-layer-cosmic absolute inset-0 pointer-events-none">
+    <!-- Studio Digital Artwork -->
+    <img
+      src="/backgrounds/bg_cosmic_arena.jpg"
+      alt="Cosmic Arena Galaxy Background"
+      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
+      loading="eager"
+    />
+    <!-- Center Board Contrast Vignette (Keeps the hex board crystal clear) -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(8,12,24,0.4)_0%,rgba(8,12,24,0.15)_45%,rgba(6,9,18,0.75)_100%)]"></div>
   </div>
 
   <!-- ========================================================================
-       STAGE 2: SUNSET HORIZON (Warm Twilight Glow & Pastel Rolling Hills)
+       STAGE 2: FANTASY SUNSET STAR HILLS (Nintendo Mario/Kirby Inspired)
        ======================================================================== -->
-  <div class="theme-layer theme-layer-sunset absolute inset-0 pointer-events-none bg-[#160b24]">
-    <!-- Warm Sunset Sky Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#1b0d30] via-[#3a1442] via-60% to-[#5a1c44]"></div>
-
-    <!-- Radiant Glowing Solar Sun Orb -->
-    <div class="absolute top-[8%] right-[10%] sm:right-[16%] w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-b from-[#ffea75] via-[#ff9a3c] to-[#ff4b72] shadow-[0_0_80px_rgba(255,154,60,0.6)] opacity-80"></div>
-
-    <!-- Floating Star Sparkles -->
-    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-      <!-- 4-point Diamond Star Sparkles -->
-      <g fill="#fde047" opacity="0.75">
-        <path d="M 60 80 L 64 88 L 72 92 L 64 96 L 60 104 L 56 96 L 48 92 L 56 88 Z" transform="scale(0.8) translate(80, 50)"/>
-        <path d="M 60 80 L 64 88 L 72 92 L 64 96 L 60 104 L 56 96 L 48 92 L 56 88 Z" transform="scale(0.6) translate(650, 180)"/>
-        <path d="M 60 80 L 64 88 L 72 92 L 64 96 L 60 104 L 56 96 L 48 92 L 56 88 Z" transform="scale(0.7) translate(140, 480)"/>
-      </g>
-
-      <!-- Soft Mountain Ridges in Foreground -->
-      <path d="M0 720 Q 200 620 450 670 T 900 640 T 1440 680 L 1440 900 L 0 900 Z" fill="#240e34" opacity="0.85"/>
-      <path d="M0 760 Q 300 680 650 730 T 1200 700 T 1440 740 L 1440 900 L 0 900 Z" fill="#150621" opacity="0.95"/>
-    </svg>
+  <div class="theme-layer theme-layer-sunset absolute inset-0 pointer-events-none">
+    <!-- Studio Digital Artwork -->
+    <img
+      src="/backgrounds/bg_sunset_horizon.jpg"
+      alt="Sunset Horizon Whimsical Hills Background"
+      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
+      loading="lazy"
+    />
+    <!-- Center Board Contrast Vignette -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(22,10,34,0.4)_0%,rgba(22,10,34,0.15)_45%,rgba(14,6,22,0.75)_100%)]"></div>
   </div>
 
   <!-- ========================================================================
-       STAGE 3: CYBER NEON (Synthwave Grid & Electric Lasers)
+       STAGE 3: CYBER METROPOLIS (Vibrant Neon Cityscape)
        ======================================================================== -->
-  <div class="theme-layer theme-layer-cyber absolute inset-0 pointer-events-none bg-[#090518]">
-    <!-- Midnight Cyber Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#060312] via-[#100626] to-[#1c0836]"></div>
-
-    <!-- Neon Horizon Glow Line -->
-    <div class="absolute top-[68%] inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#ff007f] via-50% to-transparent shadow-[0_0_24px_#ff007f]"></div>
-    <div class="absolute top-[68%] inset-x-0 h-32 bg-gradient-to-b from-[#ff007f]/15 to-transparent blur-xl"></div>
-
-    <!-- Perspective 3D Neon Horizon Grid -->
-    <div class="absolute top-[68%] inset-x-0 bottom-0 bg-cyber-grid opacity-60"></div>
-
-    <!-- Distant Neon Skyline Silhouettes -->
-    <svg class="absolute bottom-[31%] inset-x-0 w-full h-36 opacity-30" preserveAspectRatio="none" viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0 150 L0 100 L40 100 L40 80 L60 80 L60 100 L110 100 L110 60 L140 60 L140 150 L200 150 L200 70 L230 40 L260 70 L260 150 L340 150 L340 85 L390 85 L390 150 L460 150 L460 50 L490 50 L490 150 L580 150 L580 75 L620 75 L620 150 L700 150 L700 90 L760 90 L760 45 L790 45 L790 150 L880 150 L880 80 L920 80 L920 150 L1000 150 Z" fill="#00f0ff"/>
-    </svg>
-
-    <!-- Neon Cyan & Magenta Ambient Orbs -->
-    <div class="absolute top-10 left-[8%] w-64 h-64 rounded-full bg-[#00f0ff]/12 blur-3xl"></div>
-    <div class="absolute top-20 right-[10%] w-72 h-72 rounded-full bg-[#ff007f]/15 blur-3xl"></div>
+  <div class="theme-layer theme-layer-cyber absolute inset-0 pointer-events-none">
+    <!-- Studio Digital Artwork -->
+    <img
+      src="/backgrounds/bg_cyber_neon.jpg"
+      alt="Cyber Neon Metropolis Skyline Background"
+      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
+      loading="lazy"
+    />
+    <!-- Center Board Contrast Vignette -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,4,22,0.4)_0%,rgba(10,4,22,0.15)_45%,rgba(6,2,14,0.78)_100%)]"></div>
   </div>
 
   <!-- ========================================================================
-       STAGE 4: OCEAN DEPTHS (Abyssal Azure & Bioluminescent Coral)
+       STAGE 4: CORAL REEF KINGDOM (Fairy-tale Underwater Kingdom)
        ======================================================================== -->
-  <div class="theme-layer theme-layer-ocean absolute inset-0 pointer-events-none bg-[#040c1a]">
-    <!-- Deep Ocean Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#031326] via-[#062444] via-50% to-[#021020]"></div>
-
-    <!-- Diagonal Sun Caustic Light Rays from Surface -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(56,189,248,0.18)_0%,transparent_65%)] pointer-events-none"></div>
-
-    <!-- Bioluminescent Bubbles & Particles -->
-    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <!-- Bubble Glow Radial -->
-        <radialGradient id="bubble-glow" cx="35%" cy="35%" r="65%">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-          <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.6"/>
-          <stop offset="100%" stop-color="#0284c7" stop-opacity="0.1"/>
-        </radialGradient>
-      </defs>
-
-      <!-- Floating Water Bubbles -->
-      <g>
-        <circle cx="14%" cy="80%" r="9" fill="url(#bubble-glow)" opacity="0.6"/>
-        <circle cx="16%" cy="72%" r="5" fill="url(#bubble-glow)" opacity="0.5"/>
-        <circle cx="22%" cy="45%" r="12" fill="url(#bubble-glow)" opacity="0.7"/>
-        <circle cx="80%" cy="65%" r="14" fill="url(#bubble-glow)" opacity="0.65"/>
-        <circle cx="85%" cy="52%" r="8" fill="url(#bubble-glow)" opacity="0.5"/>
-        <circle cx="72%" cy="28%" r="10" fill="url(#bubble-glow)" opacity="0.7"/>
-        <circle cx="36%" cy="18%" r="6" fill="url(#bubble-glow)" opacity="0.5"/>
-      </g>
-
-      <!-- Ocean Wave Contours -->
-      <path d="M0 800 Q 300 740 700 780 T 1440 750 L 1440 900 L 0 900 Z" fill="#031a33" opacity="0.7"/>
-      <path d="M0 830 Q 400 790 850 820 T 1440 800 L 1440 900 L 0 900 Z" fill="#020f20" opacity="0.9"/>
-    </svg>
-
-    <!-- Deep Sea Glow Orbs -->
-    <div class="absolute bottom-10 left-[15%] w-80 h-80 rounded-full bg-[#06b6d4]/14 blur-3xl"></div>
-    <div class="absolute top-20 right-[15%] w-72 h-72 rounded-full bg-[#f43f5e]/10 blur-3xl"></div>
+  <div class="theme-layer theme-layer-ocean absolute inset-0 pointer-events-none">
+    <!-- Studio Digital Artwork -->
+    <img
+      src="/backgrounds/bg_ocean_depths.jpg"
+      alt="Coral Reef Kingdom Underwater Background"
+      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
+      loading="lazy"
+    />
+    <!-- Center Board Contrast Vignette -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(4,18,34,0.4)_0%,rgba(4,18,34,0.15)_45%,rgba(2,10,20,0.75)_100%)]"></div>
   </div>
 
 </div>
@@ -153,6 +77,7 @@
   /* Zero-cost stage switching: show ONLY the active theme layer */
   .theme-layer {
     display: none !important;
+    animation: fadeInBackdrop 0.4s ease-in-out forwards;
   }
 
   [data-theme="space_invaders"] .theme-layer-cosmic,
@@ -175,11 +100,12 @@
     display: block !important;
   }
 
-  /* Theme 3 Cyberpunk Grid Texture */
-  .bg-cyber-grid {
-    background-image: 
-      linear-gradient(to right, rgba(0, 240, 255, 0.18) 1px, transparent 1px),
-      linear-gradient(to top, rgba(255, 0, 85, 0.22) 1px, transparent 1px);
-    background-size: 40px 40px;
+  @keyframes fadeInBackdrop {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 </style>
