@@ -2,110 +2,198 @@
 ---
 
 <!-- ==========================================================================
-     4 HIGH-FIDELITY ARTISTIC GAME WORLD BACKDROPS
-     1. Cosmic Odyssey (space_invaders) - Magical galaxy, ringed planet & cute retro UFO
-     2. Fantasy Star Hills (kirby_mario)  - Whimsical rolling hills, fluffy clouds & smiling sun
-     3. Cyber Metropolis (cyberpunk)       - Vibrant synthwave skyline & neon flying speeders
-     4. Coral Reef Kingdom (tetris)        - Glowing fairy-tale jellyfish & magical coral castle
+     ANIMATED HIGH-PERFORMANCE STARFIELD BACKGROUND
+     - 60 FPS Multi-Layered Twinkling Cosmic Stars
+     - Subtle Parallax Star Drift & Rare Radiant Shooting Stars
+     - Deep Cosmic Gradient Foundation with Zero External Image Dependencies
      ========================================================================== -->
 
-<div id="stage-backdrop" class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none" data-theme="space_invaders">
-  
-  <!-- ========================================================================
-       STAGE 1: COSMIC ODYSSEY (Magical Galaxy & UFO)
-       ======================================================================== -->
-  <div class="theme-layer theme-layer-cosmic absolute inset-0 pointer-events-none">
-    <!-- Studio Digital Artwork -->
-    <img
-      src="/backgrounds/bg_cosmic_arena.jpg"
-      alt="Cosmic Arena Galaxy Background"
-      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
-      loading="eager"
-    />
-    <!-- Center Board Contrast Vignette (Keeps the hex board crystal clear) -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(8,12,24,0.4)_0%,rgba(8,12,24,0.15)_45%,rgba(6,9,18,0.75)_100%)]"></div>
-  </div>
+<div id="stage-backdrop" class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none bg-[#030611]">
+  <!-- Deep Cosmic Atmospheric Gradient -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(14,24,56,0.5)_0%,_rgba(3,6,17,0.95)_75%,_#02040a_100%)] pointer-events-none"></div>
 
-  <!-- ========================================================================
-       STAGE 2: FANTASY SUNSET STAR HILLS (Nintendo Mario/Kirby Inspired)
-       ======================================================================== -->
-  <div class="theme-layer theme-layer-sunset absolute inset-0 pointer-events-none">
-    <!-- Studio Digital Artwork -->
-    <img
-      src="/backgrounds/bg_sunset_horizon.jpg"
-      alt="Sunset Horizon Whimsical Hills Background"
-      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
-      loading="lazy"
-    />
-    <!-- Center Board Contrast Vignette -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(22,10,34,0.4)_0%,rgba(22,10,34,0.15)_45%,rgba(14,6,22,0.75)_100%)]"></div>
-  </div>
-
-  <!-- ========================================================================
-       STAGE 3: CYBER METROPOLIS (Vibrant Neon Cityscape)
-       ======================================================================== -->
-  <div class="theme-layer theme-layer-cyber absolute inset-0 pointer-events-none">
-    <!-- Studio Digital Artwork -->
-    <img
-      src="/backgrounds/bg_cyber_neon.jpg"
-      alt="Cyber Neon Metropolis Skyline Background"
-      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
-      loading="lazy"
-    />
-    <!-- Center Board Contrast Vignette -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,4,22,0.4)_0%,rgba(10,4,22,0.15)_45%,rgba(6,2,14,0.78)_100%)]"></div>
-  </div>
-
-  <!-- ========================================================================
-       STAGE 4: CORAL REEF KINGDOM (Fairy-tale Underwater Kingdom)
-       ======================================================================== -->
-  <div class="theme-layer theme-layer-ocean absolute inset-0 pointer-events-none">
-    <!-- Studio Digital Artwork -->
-    <img
-      src="/backgrounds/bg_ocean_depths.jpg"
-      alt="Coral Reef Kingdom Underwater Background"
-      class="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.02] filter brightness-90 contrast-105"
-      loading="lazy"
-    />
-    <!-- Center Board Contrast Vignette -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(4,18,34,0.4)_0%,rgba(4,18,34,0.15)_45%,rgba(2,10,20,0.75)_100%)]"></div>
-  </div>
-
+  <!-- Dynamic Starfield Canvas -->
+  <canvas id="starfield-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
 </div>
 
-<style>
-  /* Zero-cost stage switching: show ONLY the active theme layer */
-  .theme-layer {
-    display: none !important;
-    animation: fadeInBackdrop 0.4s ease-in-out forwards;
-  }
+<script>
+  function initStarfield() {
+    const canvas = document.getElementById('starfield-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
 
-  [data-theme="space_invaders"] .theme-layer-cosmic,
-  #stage-backdrop[data-theme="space_invaders"] .theme-layer-cosmic {
-    display: block !important;
-  }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  [data-theme="kirby_mario"] .theme-layer-sunset,
-  #stage-backdrop[data-theme="kirby_mario"] .theme-layer-sunset {
-    display: block !important;
-  }
+    let width = 0;
+    let height = 0;
+    let animationFrameId: number;
 
-  [data-theme="cyberpunk"] .theme-layer-cyber,
-  #stage-backdrop[data-theme="cyberpunk"] .theme-layer-cyber {
-    display: block !important;
-  }
-
-  [data-theme="tetris"] .theme-layer-ocean,
-  #stage-backdrop[data-theme="tetris"] .theme-layer-ocean {
-    display: block !important;
-  }
-
-  @keyframes fadeInBackdrop {
-    from {
-      opacity: 0;
+    interface Star {
+      x: number;
+      y: number;
+      size: number;
+      baseAlpha: number;
+      twinkleSpeed: number;
+      phase: number;
+      speedX: number;
+      speedY: number;
+      hue: number;
     }
-    to {
-      opacity: 1;
+
+    interface ShootingStar {
+      x: number;
+      y: number;
+      length: number;
+      speed: number;
+      angle: number;
+      alpha: number;
+      decay: number;
+      thickness: number;
     }
+
+    let stars: Star[] = [];
+    let shootingStars: ShootingStar[] = [];
+    let lastShootingStarTime = Date.now();
+
+    function resize() {
+      if (!canvas) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx?.scale(dpr, dpr);
+      createStars();
+    }
+
+    function createStars() {
+      const count = Math.floor((width * height) / 3800);
+      stars = [];
+      for (let i = 0; i < count; i++) {
+        const isBright = Math.random() < 0.08;
+        const isColored = Math.random() < 0.15;
+        // Random slight color tint (cyan, ruby pink, blue, gold)
+        const hues = [190, 340, 210, 45, 0];
+        const hue = isColored ? hues[Math.floor(Math.random() * hues.length)] : 210;
+
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: isBright ? Math.random() * 1.5 + 1.2 : Math.random() * 1.1 + 0.4,
+          baseAlpha: Math.random() * 0.5 + 0.3,
+          twinkleSpeed: Math.random() * 0.03 + 0.01,
+          phase: Math.random() * Math.PI * 2,
+          speedX: (Math.random() - 0.5) * 0.08,
+          speedY: (Math.random() - 0.5) * 0.08,
+          hue
+        });
+      }
+    }
+
+    function spawnShootingStar() {
+      const startX = Math.random() * width * 0.8 + width * 0.1;
+      const startY = Math.random() * height * 0.4;
+      const angle = (Math.PI / 4) + (Math.random() - 0.5) * 0.3; // ~45 degrees diagonal
+
+      shootingStars.push({
+        x: startX,
+        y: startY,
+        length: Math.random() * 100 + 60,
+        speed: Math.random() * 9 + 11,
+        angle,
+        alpha: 1,
+        decay: Math.random() * 0.015 + 0.012,
+        thickness: Math.random() * 1.2 + 1
+      });
+    }
+
+    function animate() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+
+      // Render Static & Twinkling Stars
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
+        star.phase += star.twinkleSpeed;
+        star.x += star.speedX;
+        star.y += star.speedY;
+
+        // Wrap around screen boundaries
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
+        if (star.y < 0) star.y = height;
+        if (star.y > height) star.y = 0;
+
+        const alpha = Math.max(0.1, star.baseAlpha + Math.sin(star.phase) * 0.35);
+
+        ctx.fillStyle = `hsla(${star.hue}, 80%, 90%, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Subtle glowing halo for larger stars
+        if (star.size > 1.4) {
+          ctx.fillStyle = `hsla(${star.hue}, 90%, 75%, ${alpha * 0.25})`;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size * 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Randomly spawn shooting stars every ~4-7 seconds
+      const now = Date.now();
+      if (now - lastShootingStarTime > 4000 && Math.random() < 0.015) {
+        spawnShootingStar();
+        lastShootingStarTime = now;
+      }
+
+      // Render Shooting Stars
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const s = shootingStars[i];
+        s.x += Math.cos(s.angle) * s.speed;
+        s.y += Math.sin(s.angle) * s.speed;
+        s.alpha -= s.decay;
+
+        if (s.alpha <= 0 || s.x > width + 100 || s.y > height + 100) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
+
+        const tailX = s.x - Math.cos(s.angle) * s.length;
+        const tailY = s.y - Math.sin(s.angle) * s.length;
+
+        const grad = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
+        grad.addColorStop(0, `rgba(0, 229, 255, 0)`);
+        grad.addColorStop(0.7, `rgba(180, 240, 255, ${s.alpha * 0.5})`);
+        grad.addColorStop(1, `rgba(255, 255, 255, ${s.alpha})`);
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = s.thickness;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(s.x, s.y);
+        ctx.stroke();
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationFrameId);
+    };
   }
-</style>
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStarfield);
+  } else {
+    initStarfield();
+  }
+</script>

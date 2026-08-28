@@ -1,61 +1,99 @@
 ---
 ---
 
+<!-- ==========================================================================
+     FREE-FLOATING GAME OVER OVERLAY (Zero Boxed Containers / Pure Floating Cosmos)
+     - Multi-layered cosmic glow aura
+     - Floating winner celebration typography
+     - Free-floating score duel tally
+     - Juicy glowing action buttons
+     ========================================================================== -->
+
 <dialog
   id="dialog-game-over"
-  class="fixed inset-0 z-50 p-3 sm:p-4 m-auto bg-transparent backdrop:bg-black/85 max-w-md w-[calc(100vw-1.5rem)]"
+  class="fixed inset-0 z-50 p-4 m-auto bg-transparent backdrop:bg-black/80 backdrop:backdrop-blur-md max-w-lg w-full border-none outline-none overflow-hidden select-none"
   aria-labelledby="game-over-title"
 >
-  <div class="poki-card rounded-3xl p-6 sm:p-7 border-2 border-cyan-400/40 text-slate-100 flex flex-col items-center text-center gap-4 sm:gap-5 relative overflow-hidden shadow-2xl">
+  <div class="w-full flex flex-col items-center text-center gap-5 sm:gap-6 py-4 relative">
     
-    <!-- Trophy / Badge Icon -->
-    <div id="game-over-icon" class="w-16 h-16 sm:w-18 sm:h-18 rounded-3xl bg-[#0b1021] border-2 border-cyan-400/40 flex items-center justify-center text-3xl sm:text-4xl shadow-md">
-      🏆
+    <!-- Multi-Color Floating Ambient Halo -->
+    <div id="game-over-halo" class="absolute -top-10 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-gradient-to-tr from-[#ff2d60]/30 to-[#00e5ff]/30 blur-3xl pointer-events-none animate-pulse"></div>
+
+    <!-- Free-Floating 3D Trophy / Emblem -->
+    <div class="relative">
+      <div id="game-over-icon" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/5 border border-white/20 shadow-[0_0_35px_rgba(0,229,255,0.4)] backdrop-blur-xl flex items-center justify-center text-4xl sm:text-5xl animate-bounce">
+        🏆
+      </div>
     </div>
 
-    <!-- Title & Subtitle -->
-    <div class="flex flex-col gap-1">
-      <h2 id="game-over-title" class="text-xl sm:text-2xl font-black tracking-tight text-white font-['Outfit']">
-        Match Concluded
+    <!-- Free-Floating Winner Header -->
+    <div class="flex flex-col items-center gap-1.5">
+      <h2 id="game-over-title" class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-white font-['Outfit'] drop-shadow-[0_0_24px_rgba(255,255,255,0.5)]">
+        VICTORY!
       </h2>
-      <p id="game-over-subtitle" class="text-xs text-slate-300 font-medium">
-        All playable territory claimed.
+      <p id="game-over-subtitle" class="text-xs sm:text-sm font-mono text-cyan-300/90 font-medium max-w-sm">
+        Dominant control of the hexagonal cosmos.
       </p>
     </div>
 
-    <!-- Final Score Display -->
-    <div class="w-full grid grid-cols-2 gap-3 p-4 rounded-2xl bg-[#0b1021] border-2 border-slate-700/80">
-      <div class="flex flex-col items-center">
-        <span class="text-xs font-black uppercase text-[#ff2d60] font-['Outfit'] tracking-wider">RUBIES</span>
-        <span id="final-score-ruby" class="text-3xl sm:text-4xl font-black font-mono text-[#ff2d60] tabular-nums mt-1">0</span>
+    <!-- Free-Floating Score Duel (No Box Borders) -->
+    <div class="flex items-center justify-center gap-6 sm:gap-10 py-2">
+      <!-- Ruby Score -->
+      <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-black uppercase text-[#ff4b72] font-['Outfit'] tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-[#ff2d60] shadow-[0_0_8px_#ff2d60]"></span>
+          <span>RUBIES</span>
+        </div>
+        <span id="final-score-ruby" class="text-4xl sm:text-6xl font-black font-mono text-white drop-shadow-[0_0_16px_rgba(255,45,96,0.8)]">0</span>
       </div>
-      <div class="flex flex-col items-center border-l-2 border-slate-700/80">
-        <span class="text-xs font-black uppercase text-[#00e5ff] font-['Outfit'] tracking-wider">PEARLS</span>
-        <span id="final-score-pearl" class="text-3xl sm:text-4xl font-black font-mono text-[#00e5ff] tabular-nums mt-1">0</span>
+
+      <!-- Center Divider -->
+      <div class="text-xs sm:text-sm font-mono font-bold text-slate-500 uppercase tracking-widest px-1">
+        VS
+      </div>
+
+      <!-- Pearl Score -->
+      <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-black uppercase text-cyan-300 font-['Outfit'] tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_8px_#00e5ff]"></span>
+          <span>PEARLS</span>
+        </div>
+        <span id="final-score-pearl" class="text-4xl sm:text-6xl font-black font-mono text-white drop-shadow-[0_0_16px_rgba(0,229,255,0.8)]">0</span>
       </div>
     </div>
 
-    <!-- Play Again & Review Action Buttons -->
-    <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+    <!-- Free-Floating Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-sm pt-2">
+      <!-- Play Again -->
       <button
         id="btn-game-over-rematch"
         type="button"
-        class="poki-btn poki-btn-primary py-3 px-4 rounded-xl text-xs font-black font-mono uppercase flex items-center justify-center gap-1.5"
+        class="bouncy-play-btn group w-full sm:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-[#ff2d60] via-[#e11d48] to-[#00e5ff] text-white font-black text-xs sm:text-sm font-mono uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(255,45,96,0.4)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
       >
-        <svg class="w-4 h-4 text-black shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <svg class="w-4 h-4 text-white shrink-0 fill-current" viewBox="0 0 24 24">
+          <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>
         <span>PLAY AGAIN</span>
       </button>
 
+      <!-- Change Mode -->
       <button
-        id="btn-game-over-close"
+        id="btn-game-over-mode"
         type="button"
-        class="poki-btn poki-btn-secondary py-3 px-4 rounded-xl text-xs font-bold font-mono text-slate-200 uppercase flex items-center justify-center gap-1.5"
+        class="w-full sm:w-auto px-5 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 hover:border-cyan-400 text-white font-bold text-xs sm:text-sm font-mono uppercase tracking-wider flex items-center justify-center gap-2 backdrop-blur-md transition-all active:scale-95 cursor-pointer"
       >
-        <span>REVIEW BOARD</span>
+        <span>⚙️ MODE</span>
       </button>
     </div>
+
+    <!-- Subtle Review Board Link -->
+    <button
+      id="btn-game-over-close"
+      type="button"
+      class="text-[11px] sm:text-xs font-mono font-medium text-slate-400 hover:text-white underline underline-offset-4 transition-colors pt-1 cursor-pointer"
+    >
+      Review Board
+    </button>
 
   </div>
 </dialog>

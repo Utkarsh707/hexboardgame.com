@@ -1,49 +1,57 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SplashScreen from '../components/SplashScreen.astro';
-import Header from '../components/Header.astro';
-import HowToPlayModal from '../components/HowToPlayModal.astro';
-import StrategyModal from '../components/StrategyModal.astro';
-import SettingsModal from '../components/SettingsModal.astro';
-import StatsModal from '../components/StatsModal.astro';
-import KeyboardShortcutsModal from '../components/KeyboardShortcutsModal.astro';
-import AboutModal from '../components/AboutModal.astro';
 import GameOverModal from '../components/GameOverModal.astro';
-import TutorialOverlay from '../components/TutorialOverlay.astro';
 import '../styles/global.css';
 ---
 
 <Layout>
   
-  <!-- 1. SPLASH / TITLE SCREEN (Active by default on initial visit) -->
+  <!-- 1. MINIMAL BOUNCY PLAY SPLASH SCREEN (Initial view) -->
   <SplashScreen />
 
-  <!-- 2. ACTIVE GAME ARENA SCREEN (Zero-Scroll Viewport Container) -->
-  <div id="screen-game" class="screen-view hidden-screen w-full h-full flex flex-col items-center justify-between overflow-hidden">
+  <!-- 2. ACTIVE GAME ARENA (Board dominates screen, zero HUD, vertical score tally at bottom-right) -->
+  <div id="screen-game" class="screen-view hidden-screen w-full h-full relative flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden select-none">
     
-    <!-- Arena Header Navigation -->
-    <Header />
-
-    <!-- MAIN GAME ARENA (Centered, Responsive, Zero-Scroll) -->
-    <main id="game-main" class="flex-1 w-full max-w-4xl mx-auto px-2 sm:px-4 flex flex-col items-center justify-between py-1 sm:py-2 min-h-0 overflow-hidden">
+    <!-- MAIN HERO HEXAGONAL BOARD (Maximizes viewport size) -->
+    <main id="game-main" class="relative w-full h-full max-w-[min(94vw,94vh,760px)] max-h-[min(94vw,94vh,760px)] aspect-square flex items-center justify-center my-auto">
       
-      <!-- Interactive Tutorial HUD Overlay -->
-      <TutorialOverlay />
+      <!-- 1:1 Frameless Board Viewport -->
+      <div id="board-viewport" class="relative w-full h-full aspect-square flex items-center justify-center">
+        <!-- SVG Hexagon Board Grid -->
+        <svg
+          id="board-svg"
+          viewBox="0 0 700 700"
+          class="absolute inset-0 w-full h-full select-none touch-manipulation z-10"
+          aria-label="Hex Board Game Grid"
+        ></svg>
 
-      <!-- TOP SCOREBOARD & TURN HEADER -->
-      <div id="card-top-scoreboard" class="w-full max-w-xl flex items-center justify-between gap-1.5 sm:gap-3 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-2xl poki-card border border-slate-700/60 shadow-lg shrink-0">
+        <!-- Dynamic Particle Canvas -->
+        <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
+
+        <!-- Combo Floating Floating Overlay -->
+        <div id="combo-callout-overlay" class="absolute inset-0 pointer-events-none z-40 overflow-hidden"></div>
+      </div>
+
+    </main>
+
+    <!-- BOTTOM RIGHT: VERTICAL SCORE TALLY STACK & AUDIO CONTROLS -->
+    <aside class="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2 pointer-events-auto">
+      
+      <!-- Vertical Score Stack Card -->
+      <div id="card-vertical-scoreboard" class="flex flex-col gap-1.5 p-2 sm:p-2.5 rounded-2xl bg-[#090e1f]/85 border border-slate-700/80 shadow-2xl backdrop-blur-md">
         
         <!-- Player 1: Rubies -->
-        <div id="card-player-ruby" class="flex items-center gap-1.5 sm:gap-3 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-xl border border-transparent transition-all">
-          <!-- 3D Ruby Sphere Icon -->
-          <div class="relative w-6 h-6 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0">
+        <div id="card-player-ruby" class="flex items-center gap-2 px-2 py-1 rounded-xl transition-all border border-transparent">
+          <div class="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0">
+            <!-- 3D Ruby Sphere SVG -->
             <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-md">
               <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.4)"></ellipse>
-              <circle cx="50" cy="48" r="44" fill="url(#grad-ruby-hud)" stroke="rgba(255,255,255,0.4)" stroke-width="2"></circle>
+              <circle cx="50" cy="48" r="44" fill="url(#v-grad-ruby)" stroke="rgba(255,255,255,0.4)" stroke-width="2"></circle>
               <ellipse cx="36" cy="34" rx="18" ry="10" transform="rotate(-28 36 34)" fill="rgba(255,255,255,0.8)"></ellipse>
               <circle cx="30" cy="28" r="5" fill="#ffffff"></circle>
               <defs>
-                <radialGradient id="grad-ruby-hud" cx="30%" cy="26%" r="72%">
+                <radialGradient id="v-grad-ruby" cx="30%" cy="26%" r="72%">
                   <stop offset="0%" stop-color="#ff7b96"/>
                   <stop offset="22%" stop-color="#ff0844"/>
                   <stop offset="60%" stop-color="#ba002c"/>
@@ -51,51 +59,26 @@ import '../styles/global.css';
                 </radialGradient>
               </defs>
             </svg>
-            <span id="turn-dot-ruby" class="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#ff0844] ring-2 ring-black animate-ping"></span>
-            <span id="turn-dot-ruby-solid" class="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#ff0844] ring-2 ring-black"></span>
+            <span id="turn-dot-ruby" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#ff0844] ring-2 ring-black animate-ping"></span>
+            <span id="turn-dot-ruby-solid" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#ff0844] ring-2 ring-black"></span>
           </div>
-          <div class="flex flex-col">
-            <span class="text-[9px] sm:text-xs font-black uppercase tracking-wider text-[#ff4b72] font-['Outfit'] leading-tight">Rubies</span>
-            <span id="score-ruby" class="score-number text-base sm:text-2xl md:text-3xl font-black font-mono text-white leading-none tracking-tight">3</span>
-          </div>
+          <span id="score-ruby" class="score-number text-lg sm:text-2xl font-black font-mono text-white leading-none min-w-[1.4rem] text-right">3</span>
         </div>
 
-        <!-- Center Status & Turn Pill -->
-        <div class="flex flex-col items-center gap-0.5 sm:gap-1 shrink-0">
-          <div id="turn-status-badge" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-full text-xs font-mono font-bold bg-[#0b1021] border border-slate-700 text-cyan-200 shadow-inner">
-            <span id="turn-status-indicator" class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#ff0844] shadow-[0_0_8px_#ff0844]"></span>
-            <span id="turn-status-text" class="uppercase tracking-wider text-[9px] sm:text-xs font-['Outfit'] font-extrabold">Your Turn</span>
-          </div>
-          
-          <button
-            id="btn-hud-undo"
-            type="button"
-            class="opacity-0 pointer-events-none scale-95 invisible transition-all duration-150 poki-btn poki-btn-secondary text-[9px] sm:text-xs px-2 sm:px-2.5 py-0.5 rounded-lg border-b-2"
-            title="Undo Last Move"
-            disabled
-          >
-            <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-            </svg>
-            <span>Undo</span>
-          </button>
-        </div>
+        <!-- Subtle Divider -->
+        <div class="h-px w-full bg-slate-700/60"></div>
 
         <!-- Player 2 / AI: Pearls -->
-        <div id="card-player-pearl" class="flex items-center gap-1.5 sm:gap-3 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-xl border border-transparent transition-all text-right">
-          <div class="flex flex-col items-end">
-            <span id="label-player-pearl" class="text-[9px] sm:text-xs font-black uppercase tracking-wider text-cyan-300 font-['Outfit'] leading-tight">Pearls</span>
-            <span id="score-pearl" class="score-number text-base sm:text-2xl md:text-3xl font-black font-mono text-white leading-none tracking-tight">3</span>
-          </div>
-          <!-- 3D Pearl Sphere Icon -->
-          <div class="relative w-6 h-6 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0">
+        <div id="card-player-pearl" class="flex items-center gap-2 px-2 py-1 rounded-xl transition-all border border-transparent">
+          <div class="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0">
+            <!-- 3D Pearl Sphere SVG -->
             <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-md">
               <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.4)"></ellipse>
-              <circle cx="50" cy="48" r="44" fill="url(#grad-pearl-hud)" stroke="rgba(255,255,255,0.5)" stroke-width="2"></circle>
+              <circle cx="50" cy="48" r="44" fill="url(#v-grad-pearl)" stroke="rgba(255,255,255,0.5)" stroke-width="2"></circle>
               <ellipse cx="36" cy="34" rx="18" ry="10" transform="rotate(-28 36 34)" fill="rgba(255,255,255,0.9)"></ellipse>
               <circle cx="30" cy="28" r="5" fill="#ffffff"></circle>
               <defs>
-                <radialGradient id="grad-pearl-hud" cx="30%" cy="26%" r="72%">
+                <radialGradient id="v-grad-pearl" cx="30%" cy="26%" r="72%">
                   <stop offset="0%" stop-color="#ffffff"/>
                   <stop offset="25%" stop-color="#e0f2fe"/>
                   <stop offset="60%" stop-color="#7dd3fc"/>
@@ -104,74 +87,44 @@ import '../styles/global.css';
                 </radialGradient>
               </defs>
             </svg>
-            <span id="turn-dot-pearl" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#00e5ff] ring-2 ring-black animate-ping"></span>
-            <span id="turn-dot-pearl-solid" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#00e5ff] ring-2 ring-black"></span>
+            <span id="turn-dot-pearl" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00e5ff] ring-2 ring-black animate-ping"></span>
+            <span id="turn-dot-pearl-solid" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00e5ff] ring-2 ring-black"></span>
           </div>
+          <span id="score-pearl" class="score-number text-lg sm:text-2xl font-black font-mono text-white leading-none min-w-[1.4rem] text-right">3</span>
         </div>
 
       </div>
 
-      <!-- 3-PLAYER (EMERALD) SCORE CARD (Hidden in 2P, Shown in 3P) -->
-      <div id="card-player-emerald" class="hidden w-full max-w-xl items-center justify-between px-3 py-1 rounded-xl poki-card border border-emerald-500/40 shrink-0">
-        <div class="flex items-center gap-2">
-          <span class="text-sm sm:text-base">🟢</span>
-          <span class="text-xs font-bold text-emerald-400 font-['Outfit']">Emeralds (Player 3)</span>
-        </div>
-        <span id="score-emerald" class="text-sm sm:text-lg font-black font-mono text-emerald-400">2</span>
+      <!-- In-Game Quick Action Pill (Sound Mute + Restart) -->
+      <div class="flex items-center gap-1.5">
+        <button
+          id="btn-restart-game"
+          type="button"
+          class="w-9 h-9 rounded-full bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-cyan-400 text-slate-300 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center text-sm transition-all active:scale-95 cursor-pointer"
+          title="Restart Game"
+          aria-label="Restart Match"
+        >
+          <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+
+        <button
+          id="btn-game-sound"
+          type="button"
+          class="w-9 h-9 rounded-full bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-cyan-400 text-cyan-300 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center text-sm transition-all active:scale-95 cursor-pointer"
+          title="Toggle Audio"
+          aria-label="Toggle Sound"
+        >
+          <span id="game-sound-icon">🔊</span>
+        </button>
       </div>
 
-      <!-- THE HERO FLOATING HEXAGONAL ARENA (Responsive Adaptive Scaling, Zero-Scroll) -->
-      <div class="board-arena-container relative w-full aspect-square max-h-[min(540px,calc(100dvh-175px))] flex items-center justify-center min-h-0 my-auto">
-        
-        <!-- Ambient Arena Energy Aura -->
-        <div id="arena-ambient-aura" class="absolute inset-0 rounded-full pointer-events-none transition-all duration-500"></div>
-
-        <!-- 1:1 Frameless Board Viewport -->
-        <div id="board-viewport" class="relative w-full h-full aspect-square flex items-center justify-center">
-          <!-- SVG Hexagon Board -->
-          <svg
-            id="board-svg"
-            viewBox="0 0 700 700"
-            class="absolute inset-0 w-full h-full select-none touch-manipulation z-10"
-            aria-label="Hexxagon Board Game Grid"
-          ></svg>
-
-          <!-- Dynamic Particle Canvas -->
-          <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
-
-          <!-- Combo Floating Badge Overlay -->
-          <div id="combo-callout-overlay" class="absolute inset-0 pointer-events-none z-40 overflow-hidden"></div>
-        </div>
-
-      </div>
-
-      <!-- ACTION LEGEND BAR (Clone vs Jump vs Touch) -->
-      <div class="action-legend-container w-full max-w-md flex items-center justify-between gap-1 sm:gap-2 px-3 py-1.5 sm:py-2 rounded-2xl poki-card border border-slate-700/60 text-[10px] sm:text-xs font-['Outfit'] text-slate-200 shadow-md shrink-0">
-        <div class="flex items-center gap-1 sm:gap-1.5">
-          <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.8)] shrink-0"></span>
-          <span><strong class="text-emerald-400 font-bold">1-Step:</strong> Clone</span>
-        </div>
-        <div class="flex items-center gap-1 sm:gap-1.5 border-x border-slate-700/80 px-2 sm:px-3">
-          <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.8)] shrink-0"></span>
-          <span><strong class="text-amber-400 font-bold">2-Step:</strong> Jump</span>
-        </div>
-        <div class="flex items-center gap-1 sm:gap-1.5">
-          <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#ff2d60] shadow-[0_0_8px_rgba(255,45,96,0.8)] shrink-0"></span>
-          <span><strong class="text-rose-400 font-bold">Touch:</strong> Convert</span>
-        </div>
-      </div>
-
-    </main>
+    </aside>
 
   </div>
 
-  <!-- POP-UP MODAL SCREENS (Accessible Dialogs) -->
-  <HowToPlayModal />
-  <StrategyModal />
-  <SettingsModal />
-  <StatsModal />
-  <KeyboardShortcutsModal />
-  <AboutModal />
+  <!-- GAME OVER MODAL (Clean rematch prompt) -->
   <GameOverModal />
 
 </Layout>
