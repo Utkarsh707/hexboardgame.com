@@ -654,55 +654,173 @@ export class SoundEngine {
         } catch (e) { }
     }
 
-    // 5. CAPTURE / INFECTION: The Signature Hexxagon "Bubble Wrap" Cascade
-    playCapture(count = 1) {
-        this.playCaptureStep(0, count);
+    // 5. CAPTURE / INFECTION: Distinct Authentic Audio for Ruby vs Pearl
+    playCapture(count = 1, player = 'ruby') {
+        this.playCaptureStep(0, count, player);
     }
 
-    // Capture Chain Step (Ascending Pentatonic Bubble Plop)
-    playCaptureStep(stepIndex = 0, totalCaptures = 1) {
+    // Capture Chain Step Dispatcher
+    playCaptureStep(stepIndex = 0, totalCaptures = 1, player = 'ruby') {
         if (this.muted) return;
         this.init();
         if (!this.ctx || !this.sfxGain) return;
 
+        if (player === 'pearl') {
+            this.playPearlCapture(stepIndex, totalCaptures);
+        } else {
+            this.playRubyCapture(stepIndex, totalCaptures);
+        }
+    }
+
+    // RUBY CAPTURE SOUND: Organic Crystal Fracture & Resonant Plasma Spike
+    playRubyCapture(stepIndex = 0, totalCaptures = 1) {
         try {
             const now = this.ctx.currentTime;
-            // Pentatonic pitch escalation: C5, D5, E5, G5, A5, C6, D6, E6
-            const pentatonicScale = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
-            const freq = pentatonicScale[stepIndex % pentatonicScale.length] * Math.pow(1.12, Math.floor(stepIndex / pentatonicScale.length));
+            const pitchMult = Math.pow(1.10, stepIndex);
 
-            // 1. Crisp bubble pop core
+            // 1. Visceral Crystal Snap / FM Plasma Swoop
             const osc = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq * 1.30, now);
-            osc.frequency.exponentialRampToValueAtTime(freq, now + 0.012);
-            osc.frequency.exponentialRampToValueAtTime(freq * 0.85, now + 0.042);
 
-            gain.gain.setValueAtTime(0.34, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(920 * pitchMult, now);
+            osc.frequency.exponentialRampToValueAtTime(140 * pitchMult, now + 0.08);
 
-            osc.connect(gain);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(3600 * pitchMult, now);
+            filter.frequency.exponentialRampToValueAtTime(450, now + 0.09);
+            filter.Q.value = 3.5;
+
+            gain.gain.setValueAtTime(0.32, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.10);
+
+            osc.connect(filter);
+            filter.connect(gain);
             gain.connect(this.sfxGain);
+
             osc.start(now);
-            osc.stop(now + 0.052);
+            osc.stop(now + 0.11);
 
-            // 2. Glass marble click transient
-            const click = this.ctx.createOscillator();
-            const clickGain = this.ctx.createGain();
-            click.type = 'triangle';
-            click.frequency.setValueAtTime(freq * 2.2, now);
-            click.frequency.exponentialRampToValueAtTime(freq * 1.4, now + 0.016);
+            // 2. Crystalline Glass Crunch
+            if (this.noiseBuffer) {
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = this.noiseBuffer;
 
-            clickGain.gain.setValueAtTime(0.20, now);
-            clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.020);
+                const nFilter = this.ctx.createBiquadFilter();
+                nFilter.type = 'bandpass';
+                nFilter.frequency.setValueAtTime(2200 * pitchMult, now);
+                nFilter.frequency.exponentialRampToValueAtTime(400, now + 0.07);
+                nFilter.Q.value = 2.8;
 
-            click.connect(clickGain);
-            clickGain.connect(this.sfxGain);
-            click.start(now);
-            click.stop(now + 0.024);
+                const nGain = this.ctx.createGain();
+                nGain.gain.setValueAtTime(0.25, now);
+                nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+                noise.connect(nFilter);
+                nFilter.connect(nGain);
+                nGain.connect(this.sfxGain);
+
+                noise.start(now);
+                noise.stop(now + 0.09);
+            }
+
+            // 3. Resonant Sub Impact Body
+            const sub = this.ctx.createOscillator();
+            const subGain = this.ctx.createGain();
+            sub.type = 'triangle';
+            sub.frequency.setValueAtTime(140 * pitchMult, now);
+            sub.frequency.exponentialRampToValueAtTime(38, now + 0.06);
+
+            subGain.gain.setValueAtTime(0.28, now);
+            subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+            sub.connect(subGain);
+            subGain.connect(this.sfxGain);
+
+            sub.start(now);
+            sub.stop(now + 0.08);
         } catch (e) { }
     }
+
+    // PEARL CAPTURE SOUND: Authentic 1993 High-Voltage Electric Zap (BZZZZT-ZAP!)
+    playPearlCapture(stepIndex = 0, totalCaptures = 1) {
+        try {
+            const now = this.ctx.currentTime;
+            const pitchMult = Math.pow(1.12, stepIndex);
+
+            // 1. High-Voltage Electric Arc Buzzer (Dual-modulated 120Hz Sawtooth)
+            const osc = this.ctx.createOscillator();
+            const osc2 = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(1450 * pitchMult, now);
+            osc.frequency.exponentialRampToValueAtTime(320 * pitchMult, now + 0.09);
+
+            osc2.type = 'square';
+            osc2.frequency.setValueAtTime(120, now); // 120Hz electrical arc hum
+            osc2.frequency.linearRampToValueAtTime(80, now + 0.09);
+
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(4200 * pitchMult, now);
+            filter.frequency.exponentialRampToValueAtTime(800 * pitchMult, now + 0.09);
+            filter.Q.value = 4.2;
+
+            gain.gain.setValueAtTime(0.38, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.10);
+
+            osc.connect(filter);
+            osc2.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.sfxGain);
+
+            osc.start(now);
+            osc2.start(now);
+            osc.stop(now + 0.11);
+            osc2.stop(now + 0.11);
+
+            // 2. High-Frequency Electric Spark Static Crackle
+            if (this.noiseBuffer) {
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = this.noiseBuffer;
+
+                const nFilter = this.ctx.createBiquadFilter();
+                nFilter.type = 'highpass';
+                nFilter.frequency.setValueAtTime(3200 * pitchMult, now);
+                nFilter.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+
+                const nGain = this.ctx.createGain();
+                nGain.gain.setValueAtTime(0.32, now);
+                nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+                noise.connect(nFilter);
+                nFilter.connect(nGain);
+                nGain.connect(this.sfxGain);
+
+                noise.start(now);
+                noise.stop(now + 0.10);
+            }
+
+            // 3. Pure Cyan Electric Laser Zap Ping
+            const ping = this.ctx.createOscillator();
+            const pingGain = this.ctx.createGain();
+            ping.type = 'sine';
+            ping.frequency.setValueAtTime(2400 * pitchMult, now);
+            ping.frequency.exponentialRampToValueAtTime(700 * pitchMult, now + 0.05);
+
+            pingGain.gain.setValueAtTime(0.22, now);
+            pingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+
+            ping.connect(pingGain);
+            pingGain.connect(this.sfxGain);
+
+            ping.start(now);
+            ping.stop(now + 0.07);
+        } catch (e) { }
+    }
+
 
     // Play Combo Announcement Power Chime (Double, Triple, Mega, Domination)
     playComboCallout(comboCount = 2) {

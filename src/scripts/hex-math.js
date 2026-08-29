@@ -108,9 +108,12 @@ export class HexMath {
         return results;
     }
 
+    // Authentic Hexxagon 1993 Widescreen Stretch Factor
+    static STRETCH_X = 1.28;
+
     static hexToPixel(q, r, size, originX = 0, originY = 0) {
         return {
-            x: size * (SQRT_3 * q + SQRT_3_DIV_2 * r) + originX,
+            x: size * (SQRT_3 * q + SQRT_3_DIV_2 * r) * HexMath.STRETCH_X + originX,
             y: size * (1.5 * r) + originY
         };
     }
@@ -119,7 +122,7 @@ export class HexMath {
         const points = new Array(6);
         for (let i = 0; i < 6; i++) {
             points[i] = {
-                x: centerX + size * HEX_CORNER_COS[i],
+                x: centerX + size * HEX_CORNER_COS[i] * HexMath.STRETCH_X,
                 y: centerY + size * HEX_CORNER_SIN[i]
             };
         }
@@ -129,11 +132,12 @@ export class HexMath {
     static getHexPolygonPoints(centerX, centerY, size) {
         let pts = '';
         for (let i = 0; i < 6; i++) {
-            const px = (centerX + size * HEX_CORNER_COS[i]).toFixed(1);
+            const px = (centerX + size * HEX_CORNER_COS[i] * HexMath.STRETCH_X).toFixed(1);
             const py = (centerY + size * HEX_CORNER_SIN[i]).toFixed(1);
             pts += (i > 0 ? ' ' : '') + px + ',' + py;
         }
         return pts;
     }
 }
+
 

@@ -87,48 +87,104 @@ export class ParticleEngine {
         this.startLoop();
     }
 
-    createCaptureBurst(x, y, color = '#ff3366') {
-        // 1. Expanding conversion shockwave ring
-        this.shockwaves.push({
-            x, y,
-            radius: 6,
-            maxRadius: 36,
-            color,
-            alpha: 1.0,
-            speed: 2.8,
-            lineWidth: 3.0
-        });
+    createCaptureBurst(x, y, color = '#ff3366', player = 'ruby') {
+        if (player === 'ruby') {
+            // === RUBY: Crimson Crystal Fracture & Fire Embers ===
+            // 1. Expanding ruby shockwave
+            this.shockwaves.push({
+                x, y,
+                radius: 6,
+                maxRadius: 38,
+                color: '#ff2d60',
+                alpha: 1.0,
+                speed: 3.2,
+                lineWidth: 3.2
+            });
 
-        // 2. Radiating conversion gem sparks
-        for (let i = 0; i < 10; i++) {
-            const angle = (i / 10) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
-            const speed = Math.random() * 2.5 + 2.0;
+            // 2. High-speed ruby crystal and gold ember sparks
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.35;
+                const speed = Math.random() * 3.4 + 2.0;
+                const isGold = i % 3 === 0;
+                this.particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    color: isGold ? '#fbbf24' : '#ff2d60',
+                    alpha: 1.0,
+                    size: Math.random() * 2.8 + 2.0,
+                    decay: 0.045,
+                    drag: 0.92
+                });
+            }
+
+            // 3. Central hot crimson flash core
             this.particles.push({
                 x, y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                color,
+                vx: 0,
+                vy: 0,
+                color: '#ffffff',
                 alpha: 1.0,
-                size: Math.random() * 2.5 + 2.0,
-                decay: 0.04,
-                drag: 0.93
+                size: 7,
+                decay: 0.10,
+                drag: 1.0
+            });
+
+        } else {
+            // === PEARL: Electric Cyan Lightning & Starlight Glints ===
+            // 1. Dual expanding electric cyan ripple rings
+            this.shockwaves.push({
+                x, y,
+                radius: 4,
+                maxRadius: 42,
+                color: '#00e5ff',
+                alpha: 1.0,
+                speed: 2.8,
+                lineWidth: 2.6
+            });
+            this.shockwaves.push({
+                x, y,
+                radius: 2,
+                maxRadius: 26,
+                color: '#ffffff',
+                alpha: 0.9,
+                speed: 1.8,
+                lineWidth: 1.8
+            });
+
+            // 2. Electric cyan & pure white starlight sparks
+            for (let i = 0; i < 10; i++) {
+                const angle = (i / 10) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
+                const speed = Math.random() * 2.6 + 1.8;
+                const isWhite = i % 2 === 0;
+                this.particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    color: isWhite ? '#ffffff' : '#38bdf8',
+                    alpha: 1.0,
+                    size: Math.random() * 2.2 + 1.8,
+                    decay: 0.038,
+                    drag: 0.94
+                });
+            }
+
+            // 3. Diamond white flash core
+            this.particles.push({
+                x, y,
+                vx: 0,
+                vy: 0,
+                color: '#00e5ff',
+                alpha: 1.0,
+                size: 8,
+                decay: 0.09,
+                drag: 1.0
             });
         }
 
-        // 3. Central bright flash sparkle
-        this.particles.push({
-            x, y,
-            vx: 0,
-            vy: 0,
-            color: '#ffffff',
-            alpha: 0.9,
-            size: 6,
-            decay: 0.08,
-            drag: 1.0
-        });
-
         this.startLoop();
     }
+
 
     createSparks(x, y, color = '#ff3366', count = 8, speedMult = 1) {
         for (let i = 0; i < count; i++) {
@@ -225,9 +281,28 @@ export class ParticleEngine {
         });
     }
 
+    clearCanvas() {
+        if (!this.ctx || !this.canvas) return;
+        this.ctx.save();
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.restore();
+    }
+
+    clearAll() {
+        this.particles.length = 0;
+        this.shockwaves.length = 0;
+        this.clearCanvas();
+        if (this.animId) {
+            cancelAnimationFrame(this.animId);
+            this.animId = null;
+        }
+        this.isRunning = false;
+    }
+
     loop() {
         if (!this.ctx) return;
-        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.clearCanvas();
 
         // 1. Render Shockwaves
         let activeShockwaves = 0;
@@ -263,7 +338,7 @@ export class ParticleEngine {
             if (p.gravity) p.vy += p.gravity;
             p.alpha -= p.decay;
 
-            if (p.alpha > 0) {
+            if (p.alpha > 0.01) {
                 this.ctx.save();
                 this.ctx.beginPath();
                 this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -279,7 +354,7 @@ export class ParticleEngine {
 
         // Stop loop when all effects have settled
         if (this.shockwaves.length === 0 && this.particles.length === 0) {
-            this.ctx.clearRect(0, 0, this.width, this.height);
+            this.clearCanvas();
             this.isRunning = false;
             this.animId = null;
             return;
@@ -289,13 +364,13 @@ export class ParticleEngine {
     }
 
     destroy() {
-        if (this.animId) cancelAnimationFrame(this.animId);
+        this.clearAll();
         if (typeof window !== 'undefined') {
             window.removeEventListener('resize', this.onResize);
         }
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
         }
-        this.isRunning = false;
     }
 }
+

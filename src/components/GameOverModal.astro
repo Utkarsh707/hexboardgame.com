@@ -2,97 +2,88 @@
 ---
 
 <!-- ==========================================================================
-     FREE-FLOATING GAME OVER OVERLAY (Zero Boxed Containers / Pure Floating Cosmos)
-     - Multi-layered cosmic glow aura
-     - Floating winner celebration typography
-     - Free-floating score duel tally
-     - Juicy glowing action buttons
+     CRISP 8-BIT RETRO GAME OVER SCREEN
+     - Zero blurry halos or translucent glassmorphic effects
+     - High-contrast, sharp arcade typography & solid pixel aesthetics
      ========================================================================== -->
 
 <dialog
   id="dialog-game-over"
-  class="fixed inset-0 z-50 p-4 m-auto bg-transparent backdrop:bg-black/80 backdrop:backdrop-blur-md max-w-lg w-full border-none outline-none overflow-hidden select-none"
+  class="fixed inset-0 z-50 p-4 m-auto bg-transparent backdrop:bg-black/85 max-w-lg w-full border-none outline-none overflow-hidden select-none"
   aria-labelledby="game-over-title"
 >
-  <div class="w-full flex flex-col items-center text-center gap-5 sm:gap-6 py-4 relative">
+  <div class="w-full flex flex-col items-center text-center gap-6 py-6 font-['Press_Start_2P']">
     
-    <!-- Multi-Color Floating Ambient Halo -->
-    <div id="game-over-halo" class="absolute -top-10 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-gradient-to-tr from-[#ff2d60]/30 to-[#00e5ff]/30 blur-3xl pointer-events-none animate-pulse"></div>
-
-    <!-- Free-Floating 3D Trophy / Emblem -->
-    <div class="relative">
-      <div id="game-over-icon" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/5 border border-white/20 shadow-[0_0_35px_rgba(0,229,255,0.4)] backdrop-blur-xl flex items-center justify-center text-4xl sm:text-5xl animate-bounce">
-        🏆
-      </div>
+    <!-- Sharp Retro Winner Icon -->
+    <div id="game-over-icon" class="text-4xl sm:text-5xl animate-bounce">
+      🏆
     </div>
 
-    <!-- Free-Floating Winner Header -->
-    <div class="flex flex-col items-center gap-1.5">
-      <h2 id="game-over-title" class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-white font-['Outfit'] drop-shadow-[0_0_24px_rgba(255,255,255,0.5)]">
+    <!-- Crisp Winner Header -->
+    <div class="flex flex-col items-center gap-3">
+      <h2 id="game-over-title" class="text-xl sm:text-3xl text-white uppercase tracking-wider leading-tight">
         VICTORY!
       </h2>
-      <p id="game-over-subtitle" class="text-xs sm:text-sm font-mono text-cyan-300/90 font-medium max-w-sm">
-        Dominant control of the hexagonal cosmos.
+      <p id="game-over-subtitle" class="text-[9px] sm:text-[10px] text-cyan-300 uppercase tracking-wide">
+        HEX TERRITORY CLAIMED
       </p>
     </div>
 
-    <!-- Free-Floating Score Duel (No Box Borders) -->
-    <div class="flex items-center justify-center gap-6 sm:gap-10 py-2">
+    <!-- Sharp 8-Bit Score Duel -->
+    <div class="flex items-center justify-center gap-8 sm:gap-12 py-3">
       <!-- Ruby Score -->
-      <div class="flex flex-col items-center gap-1">
-        <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-black uppercase text-[#ff4b72] font-['Outfit'] tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-[#ff2d60] shadow-[0_0_8px_#ff2d60]"></span>
-          <span>RUBIES</span>
-        </div>
-        <span id="final-score-ruby" class="text-4xl sm:text-6xl font-black font-mono text-white drop-shadow-[0_0_16px_rgba(255,45,96,0.8)]">0</span>
+      <div class="flex flex-col items-center gap-2">
+        <span class="text-[9px] sm:text-[10px] uppercase text-[#ff2d60] tracking-wider font-bold">
+          RUBY
+        </span>
+        <span id="final-score-ruby" class="text-3xl sm:text-5xl font-black text-white">0</span>
       </div>
 
       <!-- Center Divider -->
-      <div class="text-xs sm:text-sm font-mono font-bold text-slate-500 uppercase tracking-widest px-1">
+      <div class="text-xs text-slate-500 uppercase tracking-widest px-2">
         VS
       </div>
 
       <!-- Pearl Score -->
-      <div class="flex flex-col items-center gap-1">
-        <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-black uppercase text-cyan-300 font-['Outfit'] tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_8px_#00e5ff]"></span>
-          <span>PEARLS</span>
-        </div>
-        <span id="final-score-pearl" class="text-4xl sm:text-6xl font-black font-mono text-white drop-shadow-[0_0_16px_rgba(0,229,255,0.8)]">0</span>
+      <div class="flex flex-col items-center gap-2">
+        <span class="text-[9px] sm:text-[10px] uppercase text-[#00e5ff] tracking-wider font-bold">
+          PEARL
+        </span>
+        <span id="final-score-pearl" class="text-3xl sm:text-5xl font-black text-white">0</span>
       </div>
     </div>
 
-    <!-- Free-Floating Action Buttons -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-sm pt-2">
-      <!-- Play Again -->
+    <!-- Sharp Solid Retro Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full max-w-sm pt-2">
+      <!-- Replay Button -->
       <button
         id="btn-game-over-rematch"
         type="button"
-        class="bouncy-play-btn group w-full sm:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-[#ff2d60] via-[#e11d48] to-[#00e5ff] text-white font-black text-xs sm:text-sm font-mono uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(255,45,96,0.4)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+        class="bouncy-play-btn w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#ff2d60] hover:bg-[#ff4b76] border-2 border-white text-white text-[10px] sm:text-xs uppercase flex items-center justify-center gap-2 shadow-[0_4px_0_#9f1239] transition-transform active:translate-y-1 active:shadow-none cursor-pointer font-['Press_Start_2P']"
       >
-        <svg class="w-4 h-4 text-white shrink-0 fill-current" viewBox="0 0 24 24">
+        <svg class="w-3.5 h-3.5 text-white shrink-0 fill-current" viewBox="0 0 24 24">
           <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>
-        <span>PLAY AGAIN</span>
+        <span>REPLAY</span>
       </button>
 
-      <!-- Change Mode -->
+      <!-- Change Mode Button -->
       <button
         id="btn-game-over-mode"
         type="button"
-        class="w-full sm:w-auto px-5 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 hover:border-cyan-400 text-white font-bold text-xs sm:text-sm font-mono uppercase tracking-wider flex items-center justify-center gap-2 backdrop-blur-md transition-all active:scale-95 cursor-pointer"
+        class="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-[#141f3d] hover:bg-[#1e2d56] border-2 border-cyan-400 text-cyan-300 hover:text-white text-[10px] sm:text-xs uppercase flex items-center justify-center gap-2 shadow-[0_4px_0_#090e1f] transition-transform active:translate-y-1 active:shadow-none cursor-pointer font-['Press_Start_2P']"
       >
-        <span>⚙️ MODE</span>
+        <span>MODE</span>
       </button>
     </div>
 
-    <!-- Subtle Review Board Link -->
+    <!-- Review Board Link -->
     <button
       id="btn-game-over-close"
       type="button"
-      class="text-[11px] sm:text-xs font-mono font-medium text-slate-400 hover:text-white underline underline-offset-4 transition-colors pt-1 cursor-pointer"
+      class="text-[9px] text-slate-400 hover:text-cyan-300 uppercase tracking-wider underline underline-offset-4 transition-colors pt-2 cursor-pointer font-['Press_Start_2P']"
     >
-      Review Board
+      REVIEW BOARD
     </button>
 
   </div>

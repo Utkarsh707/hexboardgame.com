@@ -7,22 +7,22 @@ import '../styles/global.css';
 
 <Layout>
   
-  <!-- 1. MINIMAL BOUNCY PLAY SPLASH SCREEN (Initial view) -->
+  <!-- 1. MINIMAL 8-BIT BOUNCY PLAY & SETUP SCREENS -->
   <SplashScreen />
 
   <!-- 2. ACTIVE GAME ARENA (Board dominates screen, zero HUD, vertical score tally at bottom-right) -->
   <div id="screen-game" class="screen-view hidden-screen w-full h-full relative flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden select-none">
     
-    <!-- MAIN HERO HEXAGONAL BOARD (Maximizes viewport size) -->
-    <main id="game-main" class="relative w-full h-full max-w-[min(94vw,94vh,760px)] max-h-[min(94vw,94vh,760px)] aspect-square flex items-center justify-center my-auto">
+    <!-- MAIN HERO HEXAGONAL BOARD (Stretched across the screen like original Hexxagon) -->
+    <main id="game-main" class="relative w-full h-full max-w-[98vw] max-h-[calc(100dvh-12px)] flex items-center justify-center my-auto p-1 sm:p-2">
       
-      <!-- 1:1 Frameless Board Viewport -->
-      <div id="board-viewport" class="relative w-full h-full aspect-square flex items-center justify-center">
+      <!-- Stretched Widescreen Board Viewport -->
+      <div id="board-viewport" class="relative w-full h-full max-w-7xl max-h-[96vh] flex items-center justify-center">
         <!-- SVG Hexagon Board Grid -->
         <svg
           id="board-svg"
-          viewBox="0 0 700 700"
-          class="absolute inset-0 w-full h-full select-none touch-manipulation z-10"
+          viewBox="0 0 900 600"
+          class="w-full h-full select-none touch-manipulation z-10"
           aria-label="Hex Board Game Grid"
         ></svg>
 
@@ -36,14 +36,14 @@ import '../styles/global.css';
     </main>
 
     <!-- BOTTOM RIGHT: VERTICAL SCORE TALLY STACK & AUDIO CONTROLS -->
-    <aside class="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2 pointer-events-auto">
+    <aside class="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2 pointer-events-auto font-['Press_Start_2P']">
       
       <!-- Vertical Score Stack Card -->
       <div id="card-vertical-scoreboard" class="flex flex-col gap-1.5 p-2 sm:p-2.5 rounded-2xl bg-[#090e1f]/85 border border-slate-700/80 shadow-2xl backdrop-blur-md">
         
         <!-- Player 1: Rubies -->
         <div id="card-player-ruby" class="flex items-center gap-2 px-2 py-1 rounded-xl transition-all border border-transparent">
-          <div class="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0">
+          <div class="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0">
             <!-- 3D Ruby Sphere SVG -->
             <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-md">
               <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.4)"></ellipse>
@@ -62,7 +62,7 @@ import '../styles/global.css';
             <span id="turn-dot-ruby" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#ff0844] ring-2 ring-black animate-ping"></span>
             <span id="turn-dot-ruby-solid" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#ff0844] ring-2 ring-black"></span>
           </div>
-          <span id="score-ruby" class="score-number text-lg sm:text-2xl font-black font-mono text-white leading-none min-w-[1.4rem] text-right">3</span>
+          <span id="score-ruby" class="score-number text-xs sm:text-sm font-black text-white leading-none min-w-[1.4rem] text-right">3</span>
         </div>
 
         <!-- Subtle Divider -->
@@ -70,7 +70,7 @@ import '../styles/global.css';
 
         <!-- Player 2 / AI: Pearls -->
         <div id="card-player-pearl" class="flex items-center gap-2 px-2 py-1 rounded-xl transition-all border border-transparent">
-          <div class="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0">
+          <div class="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0">
             <!-- 3D Pearl Sphere SVG -->
             <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-md">
               <ellipse cx="50" cy="85" rx="40" ry="12" fill="rgba(0,0,0,0.4)"></ellipse>
@@ -90,7 +90,7 @@ import '../styles/global.css';
             <span id="turn-dot-pearl" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00e5ff] ring-2 ring-black animate-ping"></span>
             <span id="turn-dot-pearl-solid" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00e5ff] ring-2 ring-black"></span>
           </div>
-          <span id="score-pearl" class="score-number text-lg sm:text-2xl font-black font-mono text-white leading-none min-w-[1.4rem] text-right">3</span>
+          <span id="score-pearl" class="score-number text-xs sm:text-sm font-black text-white leading-none min-w-[1.4rem] text-right">3</span>
         </div>
 
       </div>
@@ -124,7 +124,7 @@ import '../styles/global.css';
 
   </div>
 
-  <!-- GAME OVER MODAL (Clean rematch prompt) -->
+  <!-- GAME OVER MODAL (8-Bit Free-Floating Overlay) -->
   <GameOverModal />
 
 </Layout>

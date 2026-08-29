@@ -69,6 +69,16 @@ export class HexxagonGame {
 
     initGame(presetId = this.presetId) {
         this.clearCapturePreviews();
+        if (this.particleEngine) {
+            this.particleEngine.clearAll();
+        }
+        const effectsGroup = document.getElementById('hex-effects-group');
+        if (effectsGroup) effectsGroup.innerHTML = '';
+        const comboOverlay = document.getElementById('combo-callout-overlay');
+        if (comboOverlay) comboOverlay.innerHTML = '';
+        const movesGroup = document.getElementById('hex-moves-group');
+        if (movesGroup) movesGroup.innerHTML = '';
+
         this.presetId = presetId;
         const preset = BOARD_PRESETS[presetId] || BOARD_PRESETS.classic;
         this.cellSize = preset.cellSize || 38;
@@ -254,7 +264,33 @@ export class HexxagonGame {
         }
 
         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        let gradsHtml = '';
+        let gradsHtml = `
+            <!-- 3D Hexagon Tile Plate Shading & Lighting Gradients -->
+            <linearGradient id="grad-hex-plate" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#2d4170"/>
+                <stop offset="28%" stop-color="#1c2a4c"/>
+                <stop offset="72%" stop-color="#101a33"/>
+                <stop offset="100%" stop-color="#080e20"/>
+            </linearGradient>
+
+            <linearGradient id="grad-hex-stroke" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#7dd3fc"/>
+                <stop offset="35%" stop-color="#38bdf8"/>
+                <stop offset="70%" stop-color="#0f2244"/>
+                <stop offset="100%" stop-color="#040814"/>
+            </linearGradient>
+
+            <radialGradient id="grad-hex-bed" cx="50%" cy="35%" r="68%">
+                <stop offset="0%" stop-color="#0e1b38"/>
+                <stop offset="55%" stop-color="#060c1c"/>
+                <stop offset="100%" stop-color="#02040b"/>
+            </radialGradient>
+
+            <linearGradient id="grad-hex-base" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#091024"/>
+                <stop offset="100%" stop-color="#020409"/>
+            </linearGradient>
+        `;
         for (const [pId, pData] of Object.entries(theme.players)) {
             gradsHtml += `
                 <!-- 3D ${pData.name} Radial Gradient -->
@@ -299,19 +335,26 @@ export class HexxagonGame {
             minY = Math.min(minY, y - this.cellSize);
             maxY = Math.max(maxY, y + this.cellSize);
 
+            const basePoints = HexMath.getHexPolygonPoints(x, y + 3.6, this.cellSize - 0.8);
             const points = HexMath.getHexPolygonPoints(x, y, this.cellSize - 1.2);
-            const innerPoints = HexMath.getHexPolygonPoints(x, y, this.cellSize * 0.72);
+            const innerPoints = HexMath.getHexPolygonPoints(x, y, this.cellSize * 0.70);
 
             const cellGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             cellGroup.setAttribute('class', 'hex-cell-socket-group');
 
-            // 1. Outer Beveled Socket Facet Rim
+            // 0. 3D Extruded Depth Wall / Base Shadow
+            const socketBase = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            socketBase.setAttribute('points', basePoints);
+            socketBase.setAttribute('class', 'hex-cell-3d-base');
+            cellGroup.appendChild(socketBase);
+
+            // 1. Outer Beveled Socket Facet Rim (Top-lit 3D Plate)
             const socketRim = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
             socketRim.setAttribute('points', points);
             socketRim.setAttribute('class', 'hex-cell-rim');
             cellGroup.appendChild(socketRim);
 
-            // 2. Inner Recessed Jewel Bed
+            // 2. Inner Recessed Jewel Bed (Dark socket cavity)
             const innerBed = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
             innerBed.setAttribute('points', innerPoints);
             innerBed.setAttribute('class', 'hex-cell-bed');
@@ -353,21 +396,18 @@ export class HexxagonGame {
             }
         }
 
-        // Tight-fit Dynamic ViewBox: Eliminates dead black margin borders, expands hex cells by ~25%-55% on mobile screens
+        // Tight-fit Dynamic ViewBox: Stretches cleanly across widescreen viewports like original Hexxagon
         const pad = 16;
-        const boxWidth = (maxX - minX) + pad * 2;
-        const boxHeight = (maxY - minY) + pad * 2;
-        const squareSize = Math.max(boxWidth, boxHeight);
-        const centerX = (minX + maxX) / 2;
-        const centerY = (minY + maxY) / 2;
-        const viewBoxX = Math.round(centerX - squareSize / 2);
-        const viewBoxY = Math.round(centerY - squareSize / 2);
-        const viewBoxSize = Math.round(squareSize);
+        const boxWidth = Math.round((maxX - minX) + pad * 2);
+        const boxHeight = Math.round((maxY - minY) + pad * 2);
+        const viewBoxX = Math.round(minX - pad);
+        const viewBoxY = Math.round(minY - pad);
 
-        this.svgContainer.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxSize} ${viewBoxSize}`);
+        this.svgContainer.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${boxWidth} ${boxHeight}`);
+        this.svgContainer.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
         if (this.particleEngine) {
-            this.particleEngine.setViewBox(viewBoxX, viewBoxY, viewBoxSize, viewBoxSize);
+            this.particleEngine.setViewBox(viewBoxX, viewBoxY, boxWidth, boxHeight);
         }
 
         this.svgContainer.appendChild(cellsGroup);
@@ -998,68 +1038,223 @@ export class HexxagonGame {
         }, 520);
     }
 
-    triggerCaptureVFX(fromX, fromY, toX, toY, color) {
+    triggerCaptureVFX(fromX, fromY, toX, toY, color, player = 'ruby') {
         const effectsGroup = document.getElementById('hex-effects-group');
         if (!effectsGroup) return;
 
-        // 1. Infection Arc Energy Beam from Landing Piece to Converted Piece
-        const beam = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        beam.setAttribute('x1', fromX);
-        beam.setAttribute('y1', fromY);
-        beam.setAttribute('x2', toX);
-        beam.setAttribute('y2', toY);
-        beam.setAttribute('stroke', color);
-        beam.setAttribute('stroke-linecap', 'round');
-        beam.setAttribute('class', 'svg-infection-beam');
-        effectsGroup.appendChild(beam);
+        const isRuby = (player === 'ruby');
 
-        // 2. Vector Shockwave Expanding Ring at Converted Piece
-        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        ring.setAttribute('cx', toX);
-        ring.setAttribute('cy', toY);
-        ring.setAttribute('r', '24');
-        ring.setAttribute('fill', 'none');
-        ring.setAttribute('stroke', color);
-        ring.setAttribute('class', 'svg-capture-ring');
-        effectsGroup.appendChild(ring);
-
-        // 3. Symmetrical Diamond Gem Sparks Bursting Outward
-        for (let i = 0; i < 6; i++) {
-            const angle = (i * 60 + (Math.random() - 0.5) * 20) * Math.PI / 180;
-            const dist = 24 + Math.random() * 8;
-            const tx = Math.cos(angle) * dist;
-            const ty = Math.sin(angle) * dist;
-
-            const spark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-            const s = 3.2;
-            spark.setAttribute('points', `${toX},${toY - s} ${toX + s},${toY} ${toX},${toY + s} ${toX - s},${toY}`);
-            spark.setAttribute('fill', color);
-            spark.setAttribute('class', 'svg-gem-spark');
-            spark.style.setProperty('--tx', `${tx}px`);
-            spark.style.setProperty('--ty', `${ty}px`);
-            effectsGroup.appendChild(spark);
-
-            setTimeout(() => spark.remove(), 450);
+        // Trigger Canvas Particle Burst tailored to player
+        if (this.particleEngine) {
+            this.particleEngine.createCaptureBurst(toX, toY, color, player);
         }
 
-        // 4. Floating +1 Score Pop
-        const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        scoreText.setAttribute('x', toX);
-        scoreText.setAttribute('y', toY - 6);
-        scoreText.setAttribute('text-anchor', 'middle');
-        scoreText.setAttribute('fill', color);
-        scoreText.setAttribute('font-size', '13');
-        scoreText.setAttribute('class', 'svg-score-pop');
-        scoreText.textContent = '+1';
-        effectsGroup.appendChild(scoreText);
+        if (isRuby) {
+            // =================================================================
+            // RUBY: Crimson Bio-Magma Whip, Crystal Blades & Shatter Detonation
+            // =================================================================
+            // Helper function to generate coiling S-curve bio-plasma tendril
+            const generateTendrilPath = (x1, y1, x2, y2, amplitude = 18, flip = 1) => {
+                const mx = (x1 + x2) / 2;
+                const my = (y1 + y2) / 2;
+                const nx = -(y2 - y1);
+                const ny = (x2 - x1);
+                const len = Math.hypot(nx, ny) || 1;
+                const ux = (nx / len) * amplitude * flip;
+                const uy = (ny / len) * amplitude * flip;
 
-        // Clean up DOM after animations complete
-        setTimeout(() => {
-            beam.remove();
-            ring.remove();
-            scoreText.remove();
-        }, 580);
+                const c1x = (x1 + mx) / 2 + ux;
+                const c1y = (y1 + my) / 2 + uy;
+                const c2x = (mx + x2) / 2 - ux;
+                const c2y = (my + y2) / 2 - uy;
+
+                return `M ${x1} ${y1} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${x2} ${y2}`;
+            };
+
+            // 1. Primary Burning Crimson Bio-Plasma Tendril
+            const tendrilMain = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            tendrilMain.setAttribute('d', generateTendrilPath(fromX, fromY, toX, toY, 20, 1));
+            tendrilMain.setAttribute('stroke', '#ff2d60');
+            tendrilMain.setAttribute('fill', 'none');
+            tendrilMain.setAttribute('stroke-linecap', 'round');
+            tendrilMain.setAttribute('class', 'svg-ruby-tendril-main');
+            effectsGroup.appendChild(tendrilMain);
+
+            // 2. Secondary Glowing Golden-Amber Core Tendril (Counter-coiled)
+            const tendrilCore = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            tendrilCore.setAttribute('d', generateTendrilPath(fromX, fromY, toX, toY, 14, -1));
+            tendrilCore.setAttribute('stroke', '#fbbf24');
+            tendrilCore.setAttribute('fill', 'none');
+            tendrilCore.setAttribute('stroke-linecap', 'round');
+            tendrilCore.setAttribute('class', 'svg-ruby-tendril-core');
+            effectsGroup.appendChild(tendrilCore);
+
+            // 3. Expanding Crimson Magma Shockwave Ring
+            const magmaShockwave = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            magmaShockwave.setAttribute('cx', toX);
+            magmaShockwave.setAttribute('cy', toY);
+            magmaShockwave.setAttribute('r', '14');
+            magmaShockwave.setAttribute('fill', 'none');
+            magmaShockwave.setAttribute('stroke', '#ff2d60');
+            magmaShockwave.setAttribute('class', 'svg-ruby-magma-shockwave');
+            effectsGroup.appendChild(magmaShockwave);
+
+            // 4. Hexagonal Crystal Shatter Core Ring
+            const crystalRing = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            crystalRing.setAttribute('points', HexMath.getHexPolygonPoints(toX, toY, 26));
+            crystalRing.setAttribute('fill', 'rgba(255, 45, 96, 0.22)');
+            crystalRing.setAttribute('stroke', '#ff2d60');
+            crystalRing.setAttribute('class', 'svg-capture-ruby-crystal');
+            effectsGroup.appendChild(crystalRing);
+
+            // 5. 6 Directional Crystal Spike Blades
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * 60) * Math.PI / 180;
+                const dist = 32;
+                const tx = Math.cos(angle) * dist;
+                const ty = Math.sin(angle) * dist;
+
+                const blade = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                const s = 4.5;
+                blade.setAttribute('points', `${toX},${toY - s * 1.8} ${toX + s},${toY} ${toX},${toY + s * 1.8} ${toX - s},${toY}`);
+                blade.setAttribute('fill', i % 2 === 0 ? '#ff2d60' : '#ffd000');
+                blade.setAttribute('class', 'svg-ruby-crystal-blade');
+                blade.style.setProperty('--tx', `${tx}px`);
+                blade.style.setProperty('--ty', `${ty}px`);
+                effectsGroup.appendChild(blade);
+                setTimeout(() => blade.remove(), 480);
+            }
+
+            // 6. 8 Radiating Diamond Ruby Shards & Amber Embers
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * 45 + (Math.random() - 0.5) * 20) * Math.PI / 180;
+                const dist = 24 + Math.random() * 12;
+                const tx = Math.cos(angle) * dist;
+                const ty = Math.sin(angle) * dist;
+
+                const spark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                const s = 3.2;
+                spark.setAttribute('points', `${toX},${toY - s * 1.2} ${toX + s},${toY} ${toX},${toY + s * 1.2} ${toX - s},${toY}`);
+                spark.setAttribute('fill', i % 2 === 0 ? '#ff2d60' : '#fbbf24');
+                spark.setAttribute('class', 'svg-gem-spark-ruby');
+                spark.style.setProperty('--tx', `${tx}px`);
+                spark.style.setProperty('--ty', `${ty}px`);
+                effectsGroup.appendChild(spark);
+                setTimeout(() => spark.remove(), 450);
+            }
+
+            // 7. Floating +1 Score Pop
+            const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            scoreText.setAttribute('x', toX);
+            scoreText.setAttribute('y', toY - 6);
+            scoreText.setAttribute('text-anchor', 'middle');
+            scoreText.setAttribute('fill', '#ff2d60');
+            scoreText.setAttribute('font-size', '13');
+            scoreText.setAttribute('class', 'svg-score-pop');
+            scoreText.textContent = '+1';
+            effectsGroup.appendChild(scoreText);
+
+            setTimeout(() => {
+                tendrilMain.remove();
+                tendrilCore.remove();
+                magmaShockwave.remove();
+                crystalRing.remove();
+                scoreText.remove();
+            }, 550);
+
+        } else {
+            // =================================================================
+            // PEARL: Authentic 1993 High-Voltage Electric Zap (Zigzag Lightning)
+            // =================================================================
+            // Helper function to generate jagged zigzag lightning bolt geometry
+            const generateLightningPath = (x1, y1, x2, y2, segments = 5, offset = 14) => {
+                let d = `M ${x1} ${y1}`;
+                const dx = (x2 - x1) / segments;
+                const dy = (y2 - y1) / segments;
+                const nx = -(y2 - y1);
+                const ny = (x2 - x1);
+                const len = Math.hypot(nx, ny) || 1;
+                const ux = nx / len;
+                const uy = ny / len;
+
+                for (let i = 1; i < segments; i++) {
+                    const jitter = (Math.random() - 0.5) * offset * 2;
+                    const px = (x1 + dx * i + ux * jitter).toFixed(1);
+                    const py = (y1 + dy * i + uy * jitter).toFixed(1);
+                    d += ` L ${px} ${py}`;
+                }
+                d += ` L ${x2} ${y2}`;
+                return d;
+            };
+
+            // 1. Primary Jagged Cyan Electric Lightning Bolt
+            const boltMain = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            boltMain.setAttribute('d', generateLightningPath(fromX, fromY, toX, toY, 6, 12));
+            boltMain.setAttribute('stroke', '#00e5ff');
+            boltMain.setAttribute('fill', 'none');
+            boltMain.setAttribute('stroke-linecap', 'round');
+            boltMain.setAttribute('stroke-linejoin', 'bevel');
+            boltMain.setAttribute('class', 'svg-electric-bolt-main');
+            effectsGroup.appendChild(boltMain);
+
+            // 2. Secondary High-Voltage White Core Lightning Arc
+            const boltCore = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            boltCore.setAttribute('d', generateLightningPath(fromX, fromY, toX, toY, 5, 8));
+            boltCore.setAttribute('stroke', '#ffffff');
+            boltCore.setAttribute('fill', 'none');
+            boltCore.setAttribute('stroke-linecap', 'round');
+            boltCore.setAttribute('stroke-linejoin', 'bevel');
+            boltCore.setAttribute('class', 'svg-electric-bolt-core');
+            effectsGroup.appendChild(boltCore);
+
+            // 3. Crackling Electric Cage Rings around Converted Pearl
+            const zapCage = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            zapCage.setAttribute('cx', toX);
+            zapCage.setAttribute('cy', toY);
+            zapCage.setAttribute('r', '20');
+            zapCage.setAttribute('fill', 'none');
+            zapCage.setAttribute('stroke', '#00e5ff');
+            zapCage.setAttribute('class', 'svg-electric-zap-cage');
+            effectsGroup.appendChild(zapCage);
+
+            // 4. Radiating Electric Zap Sparks (8 branching spark needles)
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * 45 + (Math.random() - 0.5) * 20) * Math.PI / 180;
+                const dist = 24 + Math.random() * 8;
+                const tx = Math.cos(angle) * dist;
+                const ty = Math.sin(angle) * dist;
+
+                const spark = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                spark.setAttribute('x1', toX);
+                spark.setAttribute('y1', toY);
+                spark.setAttribute('x2', toX + tx);
+                spark.setAttribute('y2', toY + ty);
+                spark.setAttribute('stroke', i % 2 === 0 ? '#00e5ff' : '#ffffff');
+                spark.setAttribute('class', 'svg-electric-zap-spark');
+                effectsGroup.appendChild(spark);
+                setTimeout(() => spark.remove(), 420);
+            }
+
+            // 5. Floating +1 Score Pop
+            const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            scoreText.setAttribute('x', toX);
+            scoreText.setAttribute('y', toY - 6);
+            scoreText.setAttribute('text-anchor', 'middle');
+            scoreText.setAttribute('fill', '#00e5ff');
+            scoreText.setAttribute('font-size', '13');
+            scoreText.setAttribute('class', 'svg-score-pop');
+            scoreText.textContent = '+1';
+            effectsGroup.appendChild(scoreText);
+
+            setTimeout(() => {
+                boltMain.remove();
+                boltCore.remove();
+                zapCage.remove();
+                scoreText.remove();
+            }, 520);
+        }
     }
+
 
     triggerWarpBeam(fromX, fromY, toX, toY, color = '#a855f7') {
         const effectsGroup = document.getElementById('hex-effects-group');
@@ -1559,7 +1754,7 @@ export class HexxagonGame {
 
                     // 2. Re-create completely fresh piece element for the new owner (guarantees 100% theme glyph, gradient, and stroke update)
                     const newPiece = this.createPieceElement(capKey, player, capCoords.x, capCoords.y);
-                    newPiece.classList.add('piece-converting');
+                    newPiece.classList.add('piece-converting', player === 'ruby' ? 'piece-converting-ruby' : 'piece-converting-pearl');
                     this.pieceElements.set(capKey, newPiece);
 
                     const piecesGroup = document.getElementById('hex-pieces-group');
@@ -1568,8 +1763,8 @@ export class HexxagonGame {
                     }
 
                     // 3. Trigger 8-Bit Retro Explosion Sound & VFX
-                    sound.playCaptureStep(idx, move.captures.length);
-                    this.triggerCaptureVFX(landingCoords.x, landingCoords.y, capCoords.x, capCoords.y, playerColor);
+                    sound.playCaptureStep(idx, move.captures.length, player);
+                    this.triggerCaptureVFX(landingCoords.x, landingCoords.y, capCoords.x, capCoords.y, playerColor, player);
                 }, idx * 35);
             });
 

@@ -2,9 +2,10 @@
 ---
 
 <!-- ==========================================================================
-     FREE-FLOATING LANDING & MATCH SETUP SYSTEM
-     1. Screen 1 (Title): Pure minimal bouncy play (▶) button + bottom-right mute
-     2. Screen 2 (Setup): Free-floating mode & difficulty selector (No boxed container)
+     8-BIT RETRO FREE-FLOATING LANDING & MATCH SETUP SYSTEM
+     - Authentic 8-bit arcade typography (Press Start 2P)
+     - Screen 1: Minimal bouncy play button + bottom-right mute
+     - Screen 2: Free-floating 1P vs 2P & difficulty selector
      ========================================================================== -->
 
 <!-- SCREEN 1: MINIMAL BOUNCY PLAY LANDING -->
@@ -55,7 +56,7 @@
 </div>
 
 
-<!-- SCREEN 2: FREE-FLOATING MATCH CONFIGURATION (Zero AI-slop box) -->
+<!-- SCREEN 2: FREE-FLOATING 8-BIT MATCH CONFIGURATION -->
 <div id="screen-setup" class="screen-view hidden-screen w-full h-full flex flex-col items-center justify-between p-4 sm:p-8 select-none z-30 relative overflow-hidden">
   
   <!-- Top Bar: Floating Back Button -->
@@ -63,27 +64,27 @@
     <button
       id="btn-setup-back"
       type="button"
-      class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 hover:border-cyan-400 text-xs sm:text-sm font-mono font-bold text-slate-300 hover:text-white backdrop-blur-md transition-all active:scale-95 cursor-pointer"
+      class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-cyan-400 text-[9px] sm:text-[10px] text-slate-300 hover:text-white backdrop-blur-md transition-all active:scale-95 cursor-pointer font-['Press_Start_2P']"
     >
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
       </svg>
       <span>BACK</span>
     </button>
 
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono font-bold text-cyan-400 backdrop-blur-md">
-      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-      <span>MATCH SETUP</span>
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-[9px] sm:text-[10px] text-cyan-400 backdrop-blur-md font-['Press_Start_2P']">
+      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+      <span>SETUP</span>
     </div>
   </div>
 
   <!-- Center: Free-Floating Interactive Setup Cluster -->
-  <div class="flex flex-col items-center justify-center gap-6 sm:gap-8 my-auto max-w-lg w-full text-center">
+  <div class="flex flex-col items-center justify-center gap-5 sm:gap-7 my-auto max-w-lg w-full text-center">
     
     <!-- Floating Mode Selection -->
-    <div class="flex flex-col items-center gap-3 w-full">
-      <span class="text-[11px] sm:text-xs font-bold tracking-widest text-cyan-300/80 font-mono uppercase">
-        SELECT GAME MODE
+    <div class="flex flex-col items-center gap-2.5 w-full">
+      <span class="text-[9px] sm:text-[10px] text-cyan-300/80 uppercase font-['Press_Start_2P'] leading-relaxed">
+        SELECT MODE
       </span>
 
       <div class="grid grid-cols-2 gap-3 sm:gap-4 w-full">
@@ -92,11 +93,11 @@
           id="btn-mode-pve"
           type="button"
           data-mode="pve"
-          class="mode-pill active group relative px-4 py-3.5 sm:py-4 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 shadow-[0_0_20px_rgba(0,229,255,0.25)] flex flex-col items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+          class="mode-pill active group relative px-3 py-3 sm:py-4 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 shadow-[0_0_20px_rgba(0,229,255,0.25)] flex flex-col items-center gap-2 transition-all active:scale-95 cursor-pointer font-['Press_Start_2P']"
         >
           <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">🤖</span>
-          <span class="text-xs sm:text-sm font-black font-['Outfit'] tracking-wide text-white uppercase">1 Player</span>
-          <span class="text-[10px] font-mono text-cyan-300/90 font-semibold">vs AI Bot</span>
+          <span class="text-[10px] sm:text-xs text-white uppercase leading-snug">1 PLAYER</span>
+          <span class="text-[8px] sm:text-[9px] text-cyan-300/90 leading-tight">VS BOT</span>
         </button>
 
         <!-- 2 Players Option -->
@@ -104,59 +105,59 @@
           id="btn-mode-pvp"
           type="button"
           data-mode="pvp"
-          class="mode-pill group relative px-4 py-3.5 sm:py-4 rounded-2xl border-2 border-white/15 bg-white/5 hover:border-pink-400/80 hover:bg-pink-500/10 flex flex-col items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+          class="mode-pill group relative px-3 py-3 sm:py-4 rounded-2xl border-2 border-white/15 bg-white/5 hover:border-pink-400/80 hover:bg-pink-500/10 flex flex-col items-center gap-2 transition-all active:scale-95 cursor-pointer font-['Press_Start_2P']"
         >
           <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">👥</span>
-          <span class="text-xs sm:text-sm font-black font-['Outfit'] tracking-wide text-white uppercase">2 Players</span>
-          <span class="text-[10px] font-mono text-slate-400 font-semibold">Pass & Play</span>
+          <span class="text-[10px] sm:text-xs text-white uppercase leading-snug">2 PLAYER</span>
+          <span class="text-[8px] sm:text-[9px] text-slate-400 leading-tight">HOTSEAT</span>
         </button>
       </div>
     </div>
 
     <!-- Floating Difficulty Selection (Visible in 1P mode) -->
-    <div id="setup-difficulty-group" class="flex flex-col items-center gap-2.5 w-full transition-all duration-300">
-      <span class="text-[11px] sm:text-xs font-bold tracking-widest text-slate-400 font-mono uppercase">
-        AI DIFFICULTY
+    <div id="setup-difficulty-group" class="flex flex-col items-center gap-2 w-full transition-all duration-300">
+      <span class="text-[9px] sm:text-[10px] text-slate-400 uppercase font-['Press_Start_2P'] leading-relaxed">
+        BOT DIFFICULTY
       </span>
 
       <div class="grid grid-cols-3 gap-2 sm:gap-2.5 w-full max-w-sm">
         <button
           type="button"
           data-diff="easy"
-          class="btn-floating-diff px-3 py-2 rounded-xl border border-white/10 bg-white/5 hover:border-emerald-400 hover:text-emerald-300 text-xs font-mono font-bold text-slate-400 transition-all active:scale-95 cursor-pointer"
+          class="btn-floating-diff px-2.5 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:border-emerald-400 hover:text-emerald-300 text-[9px] sm:text-[10px] text-slate-400 transition-all active:scale-95 cursor-pointer font-['Press_Start_2P']"
         >
-          Easy
+          EASY
         </button>
 
         <button
           type="button"
           data-diff="medium"
-          class="btn-floating-diff active px-3 py-2 rounded-xl border-2 border-cyan-400 bg-cyan-500/20 text-cyan-200 shadow-[0_0_12px_rgba(0,229,255,0.3)] text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer"
+          class="btn-floating-diff active px-2.5 py-2.5 rounded-xl border-2 border-cyan-400 bg-cyan-500/20 text-cyan-200 shadow-[0_0_12px_rgba(0,229,255,0.3)] text-[9px] sm:text-[10px] transition-all active:scale-95 cursor-pointer font-['Press_Start_2P']"
         >
-          Medium
+          MED
         </button>
 
         <button
           type="button"
           data-diff="master"
-          class="btn-floating-diff px-3 py-2 rounded-xl border border-white/10 bg-white/5 hover:border-rose-400 hover:text-rose-300 text-xs font-mono font-bold text-slate-400 transition-all active:scale-95 cursor-pointer"
+          class="btn-floating-diff px-2.5 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:border-rose-400 hover:text-rose-300 text-[9px] sm:text-[10px] text-slate-400 transition-all active:scale-95 cursor-pointer font-['Press_Start_2P']"
         >
-          Master
+          HARD
         </button>
       </div>
     </div>
 
-    <!-- Free-Floating Big Juicy Launch Button -->
-    <div class="pt-2 sm:pt-4 w-full flex justify-center">
+    <!-- Free-Floating 8-Bit Start Button -->
+    <div class="pt-2 sm:pt-3 w-full flex justify-center">
       <button
         id="btn-setup-start-game"
         type="button"
-        class="bouncy-play-btn group relative px-8 sm:px-12 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-[#ff2d60] via-[#e11d48] to-[#00e5ff] text-white font-black text-sm sm:text-base font-['Outfit'] uppercase tracking-wider flex items-center justify-center gap-3 shadow-[0_8px_32px_rgba(255,45,96,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+        class="bouncy-play-btn group relative px-7 sm:px-10 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-[#ff2d60] via-[#e11d48] to-[#00e5ff] text-white text-[11px] sm:text-xs font-['Press_Start_2P'] uppercase flex items-center justify-center gap-2.5 shadow-[0_8px_32px_rgba(255,45,96,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
       >
-        <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
         </svg>
-        <span>START BATTLE</span>
+        <span>START</span>
       </button>
     </div>
 
