@@ -103,7 +103,7 @@ export class HexxagonAI {
     }
 
     /**
-     * Ultra-fast Static Board Evaluation O(N) with fast axial distance
+     * Ultra-fast Static Board Evaluation with edge control and mobility weighting
      */
     static evaluate(state, maximizingPlayer, opponent) {
         const board = state.board;
@@ -134,7 +134,7 @@ export class HexxagonAI {
         return myScore - oppScore;
     }
 
-    static minimax(state, depth, alpha, beta, isMaximizing, player, opponent, allPlayers) {
+    static minimax(state, depth, alpha, beta, isMaximizing, player, opponent, allPlayers, beamWidth = 10) {
         const moves = HexxagonAI.getLegalMoves(state, isMaximizing ? player : opponent);
 
         if (depth === 0 || moves.length === 0) {
@@ -151,8 +151,8 @@ export class HexxagonAI {
             return valB - valA;
         });
 
-        // Beam Search Pruning: evaluate top 8 candidate moves per ply for instant < 4ms execution
-        const candidateMoves = (moves.length > 8) ? moves.slice(0, 8) : moves;
+        // Beam Search Pruning: evaluate top N candidate moves per ply
+        const candidateMoves = (moves.length > beamWidth) ? moves.slice(0, beamWidth) : moves;
 
         if (isMaximizing) {
             let maxEval = -Infinity;
@@ -161,7 +161,7 @@ export class HexxagonAI {
             for (let i = 0; i < candidateMoves.length; i++) {
                 const move = candidateMoves[i];
                 const nextState = HexxagonAI.applyMove(state, move, player);
-                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, false, player, opponent, allPlayers).score;
+                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, false, player, opponent, allPlayers, beamWidth).score;
 
                 if (evaluation > maxEval) {
                     maxEval = evaluation;
@@ -178,7 +178,7 @@ export class HexxagonAI {
             for (let i = 0; i < candidateMoves.length; i++) {
                 const move = candidateMoves[i];
                 const nextState = HexxagonAI.applyMove(state, move, opponent);
-                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, true, player, opponent, allPlayers).score;
+                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, true, player, opponent, allPlayers, beamWidth).score;
 
                 if (evaluation < minEval) {
                     minEval = evaluation;
@@ -205,6 +205,10 @@ export class HexxagonAI {
         // Non-blocking natural micro-delay for realistic pacing
         await new Promise(resolve => setTimeout(resolve, 180 + Math.random() * 60));
 
+        // -------------------------------------------------------------
+        // EASY DIFFICULTY: Casual / Beginner
+        // 1-ply greedy heuristic with 35% blunder/randomness rate
+        // -------------------------------------------------------------
         if (this.difficulty === 'easy') {
             if (Math.random() < 0.35) {
                 return moves[Math.floor(Math.random() * moves.length)];
@@ -217,13 +221,51 @@ export class HexxagonAI {
             return moves[0];
         }
 
+        // -------------------------------------------------------------
+        // MEDIUM DIFFICULTY: Balanced & Fun
+        // Smart 1-ply tactical evaluation with positional weighting
+        // and human-like choice variance (doesn't ruthlessly lookahead 2 turns)
+        // -------------------------------------------------------------
         if (this.difficulty === 'medium') {
-            const result = HexxagonAI.minimax(state, 2, -Infinity, Infinity, true, player, opponent, allPlayers);
-            return result.move || moves[0];
+            const scoredMoves = moves.map(move => {
+                let score = 0;
+                // Clone bonus (keeps pieces on board)
+                if (move.type === 'clone') score += 3.5;
+                // Capture value
+                score += move.captures.length * 6.0;
+
+                // Positional edge preference (defense)
+                const q = move.to.q;
+                const r = move.to.r;
+                const s = -q - r;
+                const distCenter = Math.max(Math.abs(q), Math.abs(r), Math.abs(s));
+                if (distCenter >= 3) score += 1.5;
+
+                // Penalize empty jumps that capture nothing
+                if (move.type === 'jump' && move.captures.length === 0) {
+                    score -= 2.5;
+                }
+
+                // Add small human-like variance
+                score += (Math.random() * 0.9);
+
+                return { move, score };
+            });
+
+            scoredMoves.sort((a, b) => b.score - a.score);
+
+            // 85% pick top move, 15% pick 2nd best move if available
+            if (scoredMoves.length > 1 && Math.random() < 0.15) {
+                return scoredMoves[1].move;
+            }
+            return scoredMoves[0].move;
         }
 
-        // Master AI: Fast lookahead with depth 2 and beam search
-        const result = HexxagonAI.minimax(state, 2, -Infinity, Infinity, true, player, opponent, allPlayers);
+        // -------------------------------------------------------------
+        // HARD / MASTER DIFFICULTY: Ruthless & Tactical
+        // Deep Depth-3 Minimax search with Alpha-Beta pruning
+        // -------------------------------------------------------------
+        const result = HexxagonAI.minimax(state, 3, -Infinity, Infinity, true, player, opponent, allPlayers, 10);
         return result.move || moves[0];
     }
 }
