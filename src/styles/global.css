@@ -1268,42 +1268,62 @@
    WORMS 2D INSPIRED LIVING ORB EMOTIONS & LEVERAGE ENGINE
    ========================================================================== */
 
+/* Subtle Idle Breathing on Face System */
+@keyframes orb-face-breathe {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.5px);
+  }
+}
+
+.orb-face-system {
+  pointer-events: none;
+  animation: orb-face-breathe 3.4s infinite ease-in-out;
+}
+
 /* 1. Asynchronous Pupil Glancing (Looking Left / Center / Right on Board) */
 @keyframes orb-pupils-glance-anim {
-  0%, 35%, 100% {
+  0%, 38%, 100% {
     transform: translate(0, 0);
   }
-  42%, 62% {
-    transform: translate(-1.8px, 0.4px);
+  44%, 64% {
+    transform: translate(-1.6px, 0.2px);
   }
-  70%, 90% {
-    transform: translate(1.8px, 0.4px);
+  72%, 92% {
+    transform: translate(1.6px, 0.2px);
   }
 }
 
 .orb-pupils-glance {
   animation: orb-pupils-glance-anim 5.8s infinite ease-in-out;
-  transform-box: fill-box;
-  transform-origin: center;
 }
 
-/* 2. Natural Asynchronous Blinking */
-@keyframes orb-natural-blink {
+/* 2. Natural Asynchronous Eyelid Blinking */
+@keyframes orb-eyelids-blink-anim {
   0%, 46%, 50%, 96%, 100% {
     transform: scaleY(1);
   }
   48%, 98% {
-    transform: scaleY(0.1);
+    transform: scaleY(0.06);
   }
 }
 
-.orb-eyes-normal {
-  animation: orb-natural-blink 4.2s infinite ease-in-out;
-  transform-box: fill-box;
-  transform-origin: center;
+.orb-eyelids-blink {
+  animation: orb-eyelids-blink-anim 4.4s infinite ease-in-out;
 }
 
-/* Default Face Visibility: Normal smile shown, others hidden */
+/* Eyebrows Stay Expressive and Steady */
+.orb-eyebrows {
+  transform-box: view-box;
+}
+
+/* Default Face Visibility: Normal eyes and normal mouth shown, special variants hidden */
+.orb-eyes-normal {
+  display: block;
+}
+
 .orb-eyes-scared,
 .orb-eyes-happy,
 .orb-mouth-smug,
@@ -1313,7 +1333,8 @@
 .orb-mouth-scared,
 .orb-mouth-triumphant,
 .orb-mouth-dismayed,
-.orb-sweat-nervous {
+.orb-sweat-nervous,
+.orb-sweatdrop {
   display: none;
 }
 
@@ -1463,10 +1484,20 @@
   display: block !important;
 }
 
+.piece-capture-threat .orb-sweatdrop,
+.orb-state-scared .orb-sweatdrop {
+  display: block !important;
+}
+
 /* Team-Specific Cheeks Blush */
-.hex-piece-ruby .orb-blush { fill: rgba(255, 100, 160, 0.55); }
-.hex-piece-pearl .orb-blush { fill: rgba(56, 189, 248, 0.55); }
-.hex-piece-emerald .orb-blush { fill: rgba(52, 211, 153, 0.55); }
+.hex-piece-ruby .orb-blush,
+.hex-piece[data-owner="ruby"] .orb-blush { fill: rgba(255, 100, 160, 0.55); }
+
+.hex-piece-pearl .orb-blush,
+.hex-piece[data-owner="pearl"] .orb-blush { fill: rgba(56, 189, 248, 0.55); }
+
+.hex-piece-emerald .orb-blush,
+.hex-piece[data-owner="emerald"] .orb-blush { fill: rgba(52, 211, 153, 0.55); }
 
 .hex-cell-capture-threat {
   stroke: #ff2d60 !important;

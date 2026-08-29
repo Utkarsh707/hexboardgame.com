@@ -601,7 +601,7 @@ export class HexxagonGame {
         const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         group.setAttribute('data-piece-key', key);
         group.setAttribute('data-owner', owner);
-        group.setAttribute('class', 'hex-piece');
+        group.setAttribute('class', `hex-piece hex-piece-${owner}`);
         group.style.cursor = (owner === this.getCurrentPlayer() && !this.isAiTurn) ? 'pointer' : 'default';
         group.style.transformOrigin = `${x}px ${y}px`;
         group.style.transformBox = 'view-box';
@@ -645,10 +645,9 @@ export class HexxagonGame {
         faceGroup.setAttribute('class', 'orb-face-system select-none pointer-events-none');
         faceGroup.style.pointerEvents = 'none';
 
-        // Staggered Asynchronous Delays so characters don't blink/fidget in unison
+        // Staggered Asynchronous Delays so characters don't blink/glance in unison
         const blinkDelay = -(Math.random() * 5).toFixed(2);
         const glanceDelay = -(Math.random() * 7).toFixed(2);
-        const fidgetDelay = -(Math.random() * 4.5).toFixed(2);
 
         // Blushing Cheeks
         const blushLeft = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
@@ -665,28 +664,28 @@ export class HexxagonGame {
         blushRight.setAttribute('ry', this.cellSize * 0.06);
         blushRight.setAttribute('class', 'orb-blush');
 
-        // Eyes Group (with natural asynchronous blinking)
-        const eyesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        eyesGroup.setAttribute('class', 'orb-eyes-normal');
-        eyesGroup.style.transformOrigin = `${x}px ${y - this.cellSize * 0.06}px`;
-        eyesGroup.style.animationDelay = `${blinkDelay}s`;
+        // Eyebrows Group (Stays steady and expressive during eyelid blinking)
+        const eyebrowsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        eyebrowsGroup.setAttribute('class', 'orb-eyebrows');
 
-        // Eyebrows
         const browLeft = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        browLeft.setAttribute('d', `M ${x - this.cellSize * 0.26} ${y - this.cellSize * 0.18} Q ${x - this.cellSize * 0.18} ${y - this.cellSize * 0.22} ${x - this.cellSize * 0.10} ${y - this.cellSize * 0.18}`);
+        browLeft.setAttribute('d', `M ${(x - this.cellSize * 0.26).toFixed(1)} ${(y - this.cellSize * 0.18).toFixed(1)} Q ${(x - this.cellSize * 0.18).toFixed(1)} ${(y - this.cellSize * 0.23).toFixed(1)} ${(x - this.cellSize * 0.10).toFixed(1)} ${(y - this.cellSize * 0.18).toFixed(1)}`);
         browLeft.setAttribute('fill', 'none');
         browLeft.setAttribute('stroke', '#10081c');
-        browLeft.setAttribute('stroke-width', '1.2');
+        browLeft.setAttribute('stroke-width', '1.4');
         browLeft.setAttribute('stroke-linecap', 'round');
         browLeft.setAttribute('class', 'orb-eyebrow-left');
 
         const browRight = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        browRight.setAttribute('d', `M ${x + this.cellSize * 0.10} ${y - this.cellSize * 0.18} Q ${x + this.cellSize * 0.18} ${y - this.cellSize * 0.22} ${x + this.cellSize * 0.26} ${y - this.cellSize * 0.18}`);
+        browRight.setAttribute('d', `M ${(x + this.cellSize * 0.10).toFixed(1)} ${(y - this.cellSize * 0.18).toFixed(1)} Q ${(x + this.cellSize * 0.18).toFixed(1)} ${(y - this.cellSize * 0.23).toFixed(1)} ${(x + this.cellSize * 0.26).toFixed(1)} ${(y - this.cellSize * 0.18).toFixed(1)}`);
         browRight.setAttribute('fill', 'none');
         browRight.setAttribute('stroke', '#10081c');
-        browRight.setAttribute('stroke-width', '1.2');
+        browRight.setAttribute('stroke-width', '1.4');
         browRight.setAttribute('stroke-linecap', 'round');
         browRight.setAttribute('class', 'orb-eyebrow-right');
+
+        eyebrowsGroup.appendChild(browLeft);
+        eyebrowsGroup.appendChild(browRight);
 
         // Pupils Glance Group (Asynchronous Looking Left / Center / Right)
         const pupilsGlanceGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -696,21 +695,21 @@ export class HexxagonGame {
         // Left Eye (Normal)
         const leftEyeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         const lPupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        lPupil.setAttribute('cx', x - this.cellSize * 0.18);
-        lPupil.setAttribute('cy', y - this.cellSize * 0.06);
-        lPupil.setAttribute('r', this.cellSize * 0.09);
+        lPupil.setAttribute('cx', (x - this.cellSize * 0.18).toFixed(1));
+        lPupil.setAttribute('cy', (y - this.cellSize * 0.06).toFixed(1));
+        lPupil.setAttribute('r', (this.cellSize * 0.09).toFixed(1));
         lPupil.setAttribute('fill', '#10081c');
 
         const lShine1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        lShine1.setAttribute('cx', x - this.cellSize * 0.21);
-        lShine1.setAttribute('cy', y - this.cellSize * 0.09);
-        lShine1.setAttribute('r', this.cellSize * 0.038);
+        lShine1.setAttribute('cx', (x - this.cellSize * 0.21).toFixed(1));
+        lShine1.setAttribute('cy', (y - this.cellSize * 0.09).toFixed(1));
+        lShine1.setAttribute('r', (this.cellSize * 0.038).toFixed(1));
         lShine1.setAttribute('fill', '#ffffff');
 
         const lShine2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        lShine2.setAttribute('cx', x - this.cellSize * 0.15);
-        lShine2.setAttribute('cy', y - this.cellSize * 0.03);
-        lShine2.setAttribute('r', this.cellSize * 0.02);
+        lShine2.setAttribute('cx', (x - this.cellSize * 0.15).toFixed(1));
+        lShine2.setAttribute('cy', (y - this.cellSize * 0.03).toFixed(1));
+        lShine2.setAttribute('r', (this.cellSize * 0.02).toFixed(1));
         lShine2.setAttribute('fill', '#ffffff');
 
         leftEyeGroup.appendChild(lPupil);
@@ -720,21 +719,21 @@ export class HexxagonGame {
         // Right Eye (Normal)
         const rightEyeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         const rPupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        rPupil.setAttribute('cx', x + this.cellSize * 0.18);
-        rPupil.setAttribute('cy', y - this.cellSize * 0.06);
-        rPupil.setAttribute('r', this.cellSize * 0.09);
+        rPupil.setAttribute('cx', (x + this.cellSize * 0.18).toFixed(1));
+        rPupil.setAttribute('cy', (y - this.cellSize * 0.06).toFixed(1));
+        rPupil.setAttribute('r', (this.cellSize * 0.09).toFixed(1));
         rPupil.setAttribute('fill', '#10081c');
 
         const rShine1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        rShine1.setAttribute('cx', x + this.cellSize * 0.15);
-        rShine1.setAttribute('cy', y - this.cellSize * 0.09);
-        rShine1.setAttribute('r', this.cellSize * 0.038);
+        rShine1.setAttribute('cx', (x + this.cellSize * 0.15).toFixed(1));
+        rShine1.setAttribute('cy', (y - this.cellSize * 0.09).toFixed(1));
+        rShine1.setAttribute('r', (this.cellSize * 0.038).toFixed(1));
         rShine1.setAttribute('fill', '#ffffff');
 
         const rShine2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        rShine2.setAttribute('cx', x + this.cellSize * 0.21);
-        rShine2.setAttribute('cy', y - this.cellSize * 0.03);
-        rShine2.setAttribute('r', this.cellSize * 0.02);
+        rShine2.setAttribute('cx', (x + this.cellSize * 0.21).toFixed(1));
+        rShine2.setAttribute('cy', (y - this.cellSize * 0.03).toFixed(1));
+        rShine2.setAttribute('r', (this.cellSize * 0.02).toFixed(1));
         rShine2.setAttribute('fill', '#ffffff');
 
         rightEyeGroup.appendChild(rPupil);
@@ -744,9 +743,18 @@ export class HexxagonGame {
         pupilsGlanceGroup.appendChild(leftEyeGroup);
         pupilsGlanceGroup.appendChild(rightEyeGroup);
 
-        eyesGroup.appendChild(browLeft);
-        eyesGroup.appendChild(browRight);
-        eyesGroup.appendChild(pupilsGlanceGroup);
+        // Eyelids Blink Group (Blinds the pupils cleanly without compressing brows)
+        const blinkGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        blinkGroup.setAttribute('class', 'orb-eyelids-blink');
+        blinkGroup.style.transformOrigin = `${x}px ${(y - this.cellSize * 0.06).toFixed(1)}px`;
+        blinkGroup.style.animationDelay = `${blinkDelay}s`;
+        blinkGroup.appendChild(pupilsGlanceGroup);
+
+        // Combined Normal Eyes Group
+        const eyesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        eyesGroup.setAttribute('class', 'orb-eyes-normal');
+        eyesGroup.appendChild(eyebrowsGroup);
+        eyesGroup.appendChild(blinkGroup);
 
         // Scared / Threatened Eyes (Quivering dots + sweat drop)
         const scaredEyesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
