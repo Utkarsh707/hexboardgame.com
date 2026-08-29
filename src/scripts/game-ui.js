@@ -34,6 +34,18 @@ export function initGameUI() {
     const btnGameSound = document.getElementById('btn-game-sound');
     const gameSoundIcon = document.getElementById('game-sound-icon');
     const btnRestartGame = document.getElementById('btn-restart-game');
+    const btnGameBack = document.getElementById('btn-game-back');
+    const btnGameUndo = document.getElementById('btn-game-undo');
+
+    // Live Turn Banner
+    const turnBanner = document.getElementById('turn-banner');
+    const turnBannerDot = document.getElementById('turn-banner-dot');
+    const turnBannerText = document.getElementById('turn-banner-text');
+
+    // Duel Score Bar Elements
+    const duelBarRuby = document.getElementById('duel-bar-ruby');
+    const duelBarPearl = document.getElementById('duel-bar-pearl');
+    const duelScoreSummary = document.getElementById('duel-score-summary');
 
     // Vertical Score & Turn Telemetry DOM Elements
     const scoreRuby = document.getElementById('score-ruby');
@@ -195,14 +207,24 @@ export function initGameUI() {
 
     // Attach Game State & Telemetry Events
     function attachGameEvents(gameInstance) {
-        // Event: Score Change
-        gameInstance.on('scoreChange', ({ scores }) => {
-            if (scoreRuby) scoreRuby.textContent = scores.ruby ?? 0;
-            if (scorePearl) scorePearl.textContent = scores.pearl ?? 0;
+        // Event: Score Change & Duel Progress Bar
+        gameInstance.on('scoreChange', ({ scores, totalCells }) => {
+            const r = scores.ruby ?? 0;
+            const p = scores.pearl ?? 0;
+            if (scoreRuby) scoreRuby.textContent = r;
+            if (scorePearl) scorePearl.textContent = p;
+
+            const total = r + p || 1;
+            const rubyPct = Math.round((r / total) * 100);
+            const pearlPct = 100 - rubyPct;
+
+            if (duelBarRuby) duelBarRuby.style.width = `${rubyPct}%`;
+            if (duelBarPearl) duelBarPearl.style.width = `${pearlPct}%`;
+            if (duelScoreSummary) duelScoreSummary.textContent = `${r} : ${p}`;
         });
 
-        // Event: Turn Change
-        gameInstance.on('turnChange', ({ currentPlayer }) => {
+        // Event: Turn Change & Turn Banner
+        gameInstance.on('turnChange', ({ currentPlayer, isAi }) => {
             turnDotRuby?.classList.add('hidden');
             turnDotRubySolid?.classList.add('hidden');
             turnDotPearl?.classList.add('hidden');
@@ -215,10 +237,37 @@ export function initGameUI() {
                 turnDotRuby?.classList.remove('hidden');
                 turnDotRubySolid?.classList.remove('hidden');
                 cardRuby?.classList.add('border-[#ff2d60]', 'bg-white/10');
+
+                if (turnBanner) {
+                    turnBanner.className = "flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-[#090e1f]/90 border border-pink-500/50 text-pink-300 shadow-[0_0_15px_rgba(255,45,96,0.25)] backdrop-blur-md text-[9px] sm:text-[11px] transition-all";
+                }
+                if (turnBannerDot) {
+                    turnBannerDot.className = "w-2 h-2 rounded-full bg-[#ff0844] animate-ping";
+                }
+                if (turnBannerText) {
+                    turnBannerText.textContent = selectedMode === 'pvp' ? 'P1 TURN (RUBY)' : 'YOUR TURN';
+                }
             } else if (currentPlayer === 'pearl') {
                 turnDotPearl?.classList.remove('hidden');
                 turnDotPearlSolid?.classList.remove('hidden');
                 cardPearl?.classList.add('border-[#00e5ff]', 'bg-white/10');
+
+                if (turnBanner) {
+                    turnBanner.className = "flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-[#090e1f]/90 border border-cyan-500/50 text-cyan-300 shadow-[0_0_15px_rgba(0,229,255,0.25)] backdrop-blur-md text-[9px] sm:text-[11px] transition-all";
+                }
+                if (turnBannerDot) {
+                    turnBannerDot.className = "w-2 h-2 rounded-full bg-[#00e5ff] animate-ping";
+                }
+                if (turnBannerText) {
+                    turnBannerText.textContent = selectedMode === 'pvp' ? 'P2 TURN (PEARL)' : (isAi ? 'BOT THINKING...' : 'PEARL TURN');
+                }
+            }
+        });
+
+        // Event: AI Thinking State Indicator
+        gameInstance.on('aiThinking', (isThinking) => {
+            if (isThinking && turnBannerText && selectedMode === 'pve') {
+                turnBannerText.textContent = 'BOT THINKING...';
             }
         });
 
@@ -251,12 +300,44 @@ export function initGameUI() {
         });
     }
 
+    // In-game Exit / Back Button
+    btnGameBack?.addEventListener('click', () => {
+        sound.playDeselect();
+        showSetupScreen();
+    });
+
+    // In-game Undo Button
+    btnGameUndo?.addEventListener('click', () => {
+        if (game && !screenGame?.classList.contains('hidden-screen')) {
+            game.undo();
+        }
+    });
+
     // In-game Restart Button
     btnRestartGame?.addEventListener('click', () => {
         if (game) {
             game.initGame();
             sound.playSelect();
         }
+    });
+
+    // Responsive Window Resize & Orientation Change Handling
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (game && screenGame && !screenGame.classList.contains('hidden-screen')) {
+                game.renderBoard();
+            }
+        }, 150);
+    });
+
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            if (game && screenGame && !screenGame.classList.contains('hidden-screen')) {
+                game.renderBoard();
+            }
+        }, 200);
     });
 
     // Game Over Actions

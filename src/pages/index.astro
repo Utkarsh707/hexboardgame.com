@@ -10,19 +10,81 @@ import '../styles/global.css';
   <!-- 1. MINIMAL 8-BIT BOUNCY PLAY & SETUP SCREENS -->
   <SplashScreen />
 
-  <!-- 2. ACTIVE GAME ARENA (Board dominates screen, zero HUD, vertical score tally at bottom-right) -->
-  <div id="screen-game" class="screen-view hidden-screen w-full h-full relative flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden select-none">
+  <!-- 2. ACTIVE GAME ARENA (Responsive layout: Top HUD Bar, Full-screen Center Board, Duel Score Bar) -->
+  <div id="screen-game" class="screen-view hidden-screen w-full h-full relative flex flex-col justify-between items-center p-1 sm:p-3 md:p-6 overflow-hidden select-none">
     
-    <!-- MAIN HERO HEXAGONAL BOARD (Stretched across the screen like original Hexxagon) -->
-    <main id="game-main" class="relative w-full h-full max-w-[98vw] max-h-[calc(100dvh-12px)] flex items-center justify-center my-auto p-1 sm:p-2">
+    <!-- TOP BAR: NAVIGATION, LIVE TURN BANNER & QUICK ACTIONS -->
+    <header class="w-full max-w-5xl flex items-center justify-between gap-2 px-2 pt-1 sm:px-4 sm:pt-2 shrink-0 z-40 font-['Press_Start_2P']">
       
-      <!-- Stretched Widescreen Board Viewport -->
-      <div id="board-viewport" class="relative w-full h-full max-w-7xl max-h-[96vh] flex items-center justify-center">
+      <!-- Back / Exit Match Button -->
+      <button
+        id="btn-game-back"
+        type="button"
+        class="inline-flex items-center gap-1.5 px-2.5 py-2 sm:px-3 sm:py-2 rounded-xl bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-cyan-400 text-slate-300 hover:text-white shadow-lg backdrop-blur-md text-[9px] sm:text-[10px] transition-all active:scale-95 cursor-pointer"
+        title="Exit to Setup"
+        aria-label="Exit Game"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="hidden sm:inline">EXIT</span>
+      </button>
+
+      <!-- Central Turn Status Banner -->
+      <div id="turn-banner" class="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-[#090e1f]/90 border border-pink-500/50 text-pink-300 shadow-[0_0_15px_rgba(255,45,96,0.25)] backdrop-blur-md text-[9px] sm:text-[11px] transition-all">
+        <span id="turn-banner-dot" class="w-2 h-2 rounded-full bg-[#ff0844] animate-ping"></span>
+        <span id="turn-banner-text" class="tracking-wide">YOUR TURN</span>
+      </div>
+
+      <!-- Quick Action Controls (Undo + Restart + Audio Mute) -->
+      <div class="flex items-center gap-1.5">
+        <button
+          id="btn-game-undo"
+          type="button"
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-amber-400 text-slate-300 hover:text-amber-300 shadow-lg backdrop-blur-md flex items-center justify-center text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+          title="Undo Move (U)"
+          aria-label="Undo Move"
+        >
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 10h10a5 5 0 015 5v2m-15-7l4-4m-4 4l4 4" />
+          </svg>
+        </button>
+
+        <button
+          id="btn-restart-game"
+          type="button"
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-cyan-400 text-slate-300 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+          title="Restart Game (R)"
+          aria-label="Restart Match"
+        >
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+
+        <button
+          id="btn-game-sound"
+          type="button"
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-cyan-400 text-cyan-300 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+          title="Toggle Audio (M)"
+          aria-label="Toggle Sound"
+        >
+          <span id="game-sound-icon">🔊</span>
+        </button>
+      </div>
+
+    </header>
+    
+    <!-- MAIN HERO HEXAGONAL BOARD (Maximized viewport that fills available space) -->
+    <main id="game-main" class="relative w-full flex-1 min-h-0 flex items-center justify-center p-0.5 sm:p-2 my-auto">
+      
+      <!-- Board Viewport -->
+      <div id="board-viewport" class="relative w-full h-full max-w-full md:max-w-7xl flex items-center justify-center">
         <!-- SVG Hexagon Board Grid -->
         <svg
           id="board-svg"
           viewBox="0 0 900 600"
-          class="w-full h-full select-none touch-manipulation z-10"
+          class="w-full h-full max-h-full select-none touch-manipulation z-10 filter drop-shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
           aria-label="Hex Board Game Grid"
         ></svg>
 
@@ -35,11 +97,11 @@ import '../styles/global.css';
 
     </main>
 
-    <!-- BOTTOM RIGHT: VERTICAL SCORE TALLY STACK & AUDIO CONTROLS -->
-    <aside class="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2 pointer-events-auto font-['Press_Start_2P']">
+    <!-- BOTTOM: RESPONSIVE DUEL SCORECARD (Horizontal on mobile, vertical stack on desktop) -->
+    <aside class="w-full max-w-md md:max-w-none md:w-auto md:absolute md:bottom-6 md:right-6 z-40 flex flex-col items-center md:items-end gap-2 pointer-events-auto font-['Press_Start_2P'] px-2 pb-1 sm:pb-2 md:p-0 shrink-0">
       
-      <!-- Vertical Score Stack Card -->
-      <div id="card-vertical-scoreboard" class="flex flex-col gap-1.5 p-2 sm:p-2.5 rounded-2xl bg-[#090e1f]/85 border border-slate-700/80 shadow-2xl backdrop-blur-md">
+      <!-- Duel Score Card -->
+      <div id="card-vertical-scoreboard" class="flex flex-row md:flex-col items-center justify-between md:justify-start gap-2 sm:gap-3 md:gap-1.5 p-2 sm:p-2.5 rounded-2xl bg-[#090e1f]/90 border border-slate-700/80 shadow-2xl backdrop-blur-md w-full md:w-auto">
         
         <!-- Player 1: Rubies -->
         <div id="card-player-ruby" class="flex items-center gap-2 px-2 py-1 rounded-xl transition-all border border-transparent">
@@ -62,14 +124,28 @@ import '../styles/global.css';
             <span id="turn-dot-ruby" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#ff0844] ring-2 ring-black animate-ping"></span>
             <span id="turn-dot-ruby-solid" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#ff0844] ring-2 ring-black"></span>
           </div>
-          <span id="score-ruby" class="score-number text-xs sm:text-sm font-black text-white leading-none min-w-[1.4rem] text-right">3</span>
+          <div class="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-2">
+            <span class="text-[7px] sm:text-[8px] text-pink-300 md:hidden">RUBY</span>
+            <span id="score-ruby" class="score-number text-xs sm:text-sm font-black text-white leading-none min-w-[1.4rem] text-left md:text-right">3</span>
+          </div>
         </div>
 
-        <!-- Subtle Divider -->
-        <div class="h-px w-full bg-slate-700/60"></div>
+        <!-- Duel Tug-of-War Bar (Mobile Visible) / Subtle Divider (Desktop) -->
+        <div class="flex-1 md:hidden flex flex-col items-center gap-1 px-1">
+          <div class="w-full h-2 rounded-full bg-slate-800 border border-slate-700 overflow-hidden flex">
+            <div id="duel-bar-ruby" class="h-full bg-gradient-to-r from-[#ff0844] to-[#ff2d60] transition-all duration-300" style="width: 50%;"></div>
+            <div id="duel-bar-pearl" class="h-full bg-gradient-to-r from-[#00e5ff] to-[#38bdf8] transition-all duration-300" style="width: 50%;"></div>
+          </div>
+          <span id="duel-score-summary" class="text-[7px] text-slate-400 font-mono tracking-tighter">50% - 50%</span>
+        </div>
+        <div class="hidden md:block h-px w-full bg-slate-700/60"></div>
 
         <!-- Player 2 / AI: Pearls -->
         <div id="card-player-pearl" class="flex items-center gap-2 px-2 py-1 rounded-xl transition-all border border-transparent">
+          <div class="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-2 text-right">
+            <span class="text-[7px] sm:text-[8px] text-cyan-300 md:hidden">PEARL</span>
+            <span id="score-pearl" class="score-number text-xs sm:text-sm font-black text-white leading-none min-w-[1.4rem] text-right">3</span>
+          </div>
           <div class="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0">
             <!-- 3D Pearl Sphere SVG -->
             <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-md">
@@ -90,34 +166,8 @@ import '../styles/global.css';
             <span id="turn-dot-pearl" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00e5ff] ring-2 ring-black animate-ping"></span>
             <span id="turn-dot-pearl-solid" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00e5ff] ring-2 ring-black"></span>
           </div>
-          <span id="score-pearl" class="score-number text-xs sm:text-sm font-black text-white leading-none min-w-[1.4rem] text-right">3</span>
         </div>
 
-      </div>
-
-      <!-- In-Game Quick Action Pill (Sound Mute + Restart) -->
-      <div class="flex items-center gap-1.5">
-        <button
-          id="btn-restart-game"
-          type="button"
-          class="w-9 h-9 rounded-full bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-cyan-400 text-slate-300 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center text-sm transition-all active:scale-95 cursor-pointer"
-          title="Restart Game"
-          aria-label="Restart Match"
-        >
-          <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-        </button>
-
-        <button
-          id="btn-game-sound"
-          type="button"
-          class="w-9 h-9 rounded-full bg-[#090e1f]/85 hover:bg-[#141f3d] border border-slate-700/80 hover:border-cyan-400 text-cyan-300 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center text-sm transition-all active:scale-95 cursor-pointer"
-          title="Toggle Audio"
-          aria-label="Toggle Sound"
-        >
-          <span id="game-sound-icon">🔊</span>
-        </button>
       </div>
 
     </aside>

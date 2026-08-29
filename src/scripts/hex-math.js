@@ -108,21 +108,37 @@ export class HexMath {
         return results;
     }
 
-    // Authentic Hexxagon 1993 Widescreen Stretch Factor
+    // Authentic Hexxagon 1993 Widescreen Stretch Factor (Adaptive for mobile portrait)
     static STRETCH_X = 1.28;
 
+    static getStretchX() {
+        if (typeof window !== 'undefined') {
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const isMobile = window.innerWidth < 768;
+            if (isMobile && isPortrait) {
+                return 1.0; // Perfect isotropic regular hexes for mobile portrait
+            }
+            if (isPortrait) {
+                return 1.04;
+            }
+        }
+        return HexMath.STRETCH_X;
+    }
+
     static hexToPixel(q, r, size, originX = 0, originY = 0) {
+        const stretch = HexMath.getStretchX();
         return {
-            x: size * (SQRT_3 * q + SQRT_3_DIV_2 * r) * HexMath.STRETCH_X + originX,
+            x: size * (SQRT_3 * q + SQRT_3_DIV_2 * r) * stretch + originX,
             y: size * (1.5 * r) + originY
         };
     }
 
     static getHexCorners(centerX, centerY, size) {
+        const stretch = HexMath.getStretchX();
         const points = new Array(6);
         for (let i = 0; i < 6; i++) {
             points[i] = {
-                x: centerX + size * HEX_CORNER_COS[i] * HexMath.STRETCH_X,
+                x: centerX + size * HEX_CORNER_COS[i] * stretch,
                 y: centerY + size * HEX_CORNER_SIN[i]
             };
         }
@@ -130,9 +146,10 @@ export class HexMath {
     }
 
     static getHexPolygonPoints(centerX, centerY, size) {
+        const stretch = HexMath.getStretchX();
         let pts = '';
         for (let i = 0; i < 6; i++) {
-            const px = (centerX + size * HEX_CORNER_COS[i] * HexMath.STRETCH_X).toFixed(1);
+            const px = (centerX + size * HEX_CORNER_COS[i] * stretch).toFixed(1);
             const py = (centerY + size * HEX_CORNER_SIN[i]).toFixed(1);
             pts += (i > 0 ? ' ' : '') + px + ',' + py;
         }

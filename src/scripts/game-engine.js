@@ -396,8 +396,9 @@ export class HexxagonGame {
             }
         }
 
-        // Tight-fit Dynamic ViewBox: Stretches cleanly across widescreen viewports like original Hexxagon
-        const pad = 16;
+        // Tight-fit Dynamic ViewBox: Stretches cleanly with tight padding on mobile to maximize board size
+        const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || window.innerHeight > window.innerWidth);
+        const pad = isMobile ? 6 : 16;
         const boxWidth = Math.round((maxX - minX) + pad * 2);
         const boxHeight = Math.round((maxY - minY) + pad * 2);
         const viewBoxX = Math.round(minX - pad);
