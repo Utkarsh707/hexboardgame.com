@@ -1,13 +1,13 @@
 /**
  * Hexxagon High-Performance Artificial Intelligence Engine
- * Optimized Alpha-Beta Minimax with Tactical Beam Pruning & Fast Evaluation
+ * Multi-Tier Tactical Engine with Alpha-Beta Pruning & Positional Heuristics
  */
 
 import { HexMath } from './hex-math.js';
 
 export class HexxagonAI {
     constructor(difficulty = 'medium') {
-        this.difficulty = difficulty; // 'easy', 'medium', 'master'
+        this.difficulty = difficulty; // 'easy', 'medium', 'master' | 'hard'
     }
 
     setDifficulty(diff) {
@@ -103,12 +103,14 @@ export class HexxagonAI {
     }
 
     /**
-     * Ultra-fast Static Board Evaluation with edge control and mobility weighting
+     * Strategic Board Evaluation with edge control, material differential, and cluster cohesion
      */
-    static evaluate(state, maximizingPlayer, opponent) {
+    static evaluate(state, maximizingPlayer, opponent, isHard = false) {
         const board = state.board;
         let myScore = 0;
         let oppScore = 0;
+        let myCount = 0;
+        let oppCount = 0;
 
         for (const key in board) {
             const owner = board[key];
@@ -119,39 +121,65 @@ export class HexxagonAI {
             const r = parseInt(key.substring(commaIdx + 1), 10);
             const s = -q - r;
             const distCenter = Math.max(Math.abs(q), Math.abs(r), Math.abs(s));
-            const weight = distCenter >= 3 ? 14 : 10;
+
+            // Edge / Perimeter safety: outer hexes are less exposed to multi-side surround
+            const edgeBonus = distCenter >= 3 ? 2.5 : (distCenter >= 2 ? 1.2 : 0.4);
 
             if (owner === maximizingPlayer) {
-                myScore += weight;
+                myCount++;
+                myScore += 10.0 + edgeBonus;
             } else if (owner === opponent) {
-                oppScore += weight;
+                oppCount++;
+                oppScore += 10.0 + edgeBonus;
             }
         }
 
-        if (oppScore === 0 && myScore > 0) return 99999;
-        if (myScore === 0 && oppScore > 0) return -99999;
+        if (oppCount === 0 && myCount > 0) return 99999;
+        if (myCount === 0 && oppCount > 0) return -99999;
+
+        // Hard difficulty adds cluster cohesion (adjacent friendly units protect each other)
+        if (isHard) {
+            let myClusters = 0;
+            let oppClusters = 0;
+            for (const key in board) {
+                const owner = board[key];
+                if (owner === 'obstacle') continue;
+                const pos = HexMath.parseKey(key);
+                const neighbors = HexMath.getNeighbors(pos);
+                for (let i = 0; i < 6; i++) {
+                    const nKey = HexMath.key(neighbors[i].q, neighbors[i].r);
+                    if (board[nKey] === owner) {
+                        if (owner === maximizingPlayer) myClusters += 0.35;
+                        else if (owner === opponent) oppClusters += 0.35;
+                    }
+                }
+            }
+            myScore += myClusters;
+            oppScore += oppClusters;
+        }
 
         return myScore - oppScore;
     }
 
-    static minimax(state, depth, alpha, beta, isMaximizing, player, opponent, allPlayers, beamWidth = 10) {
-        const moves = HexxagonAI.getLegalMoves(state, isMaximizing ? player : opponent);
+    static minimax(state, depth, alpha, beta, isMaximizing, player, opponent, allPlayers, beamWidth = 10, isHard = false) {
+        const activePlayer = isMaximizing ? player : opponent;
+        const moves = HexxagonAI.getLegalMoves(state, activePlayer);
 
         if (depth === 0 || moves.length === 0) {
             return {
-                score: HexxagonAI.evaluate(state, player, opponent),
+                score: HexxagonAI.evaluate(state, player, opponent, isHard),
                 move: null
             };
         }
 
-        // Heuristic Move Ordering: evaluate captures & clones first
+        // Heuristic Move Ordering: evaluate clones and high captures first
         moves.sort((a, b) => {
-            const valA = (a.type === 'clone' ? 3 : 0) + a.captures.length * 6;
-            const valB = (b.type === 'clone' ? 3 : 0) + b.captures.length * 6;
+            const valA = (a.type === 'clone' ? 3 : 0) + a.captures.length * 5;
+            const valB = (b.type === 'clone' ? 3 : 0) + b.captures.length * 5;
             return valB - valA;
         });
 
-        // Beam Search Pruning: evaluate top N candidate moves per ply
+        // Tactical Beam Pruning
         const candidateMoves = (moves.length > beamWidth) ? moves.slice(0, beamWidth) : moves;
 
         if (isMaximizing) {
@@ -161,7 +189,7 @@ export class HexxagonAI {
             for (let i = 0; i < candidateMoves.length; i++) {
                 const move = candidateMoves[i];
                 const nextState = HexxagonAI.applyMove(state, move, player);
-                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, false, player, opponent, allPlayers, beamWidth).score;
+                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, false, player, opponent, allPlayers, beamWidth, isHard).score;
 
                 if (evaluation > maxEval) {
                     maxEval = evaluation;
@@ -178,7 +206,7 @@ export class HexxagonAI {
             for (let i = 0; i < candidateMoves.length; i++) {
                 const move = candidateMoves[i];
                 const nextState = HexxagonAI.applyMove(state, move, opponent);
-                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, true, player, opponent, allPlayers, beamWidth).score;
+                const evaluation = HexxagonAI.minimax(nextState, depth - 1, alpha, beta, true, player, opponent, allPlayers, beamWidth, isHard).score;
 
                 if (evaluation < minEval) {
                     minEval = evaluation;
@@ -202,51 +230,35 @@ export class HexxagonAI {
 
         const opponent = allPlayers.find(p => p !== player) || 'ruby';
 
-        // Non-blocking natural micro-delay for realistic pacing
-        await new Promise(resolve => setTimeout(resolve, 180 + Math.random() * 60));
+        // Non-blocking natural micro-delay for realistic pacing and arcade feel
+        await new Promise(resolve => setTimeout(resolve, 160 + Math.random() * 70));
 
         // -------------------------------------------------------------
-        // EASY DIFFICULTY: Casual / Beginner
-        // 1-ply greedy heuristic with 35% blunder/randomness rate
+        // EASY DIFFICULTY: Fun, Engaging & Approachable
+        // 1-ply tactical heuristic. Active territory expansion and captures
+        // with soft stochastic choice among top moves (no random blunders).
         // -------------------------------------------------------------
         if (this.difficulty === 'easy') {
-            if (Math.random() < 0.35) {
-                return moves[Math.floor(Math.random() * moves.length)];
-            }
-            moves.sort((a, b) => {
-                const scoreA = (a.type === 'clone' ? 1 : 0) + a.captures.length * 2 + (Math.random() * 0.8);
-                const scoreB = (b.type === 'clone' ? 1 : 0) + b.captures.length * 2 + (Math.random() * 0.8);
-                return scoreB - scoreA;
-            });
-            return moves[0];
-        }
-
-        // -------------------------------------------------------------
-        // MEDIUM DIFFICULTY: Balanced & Fun
-        // Smart 1-ply tactical evaluation with positional weighting
-        // and human-like choice variance (doesn't ruthlessly lookahead 2 turns)
-        // -------------------------------------------------------------
-        if (this.difficulty === 'medium') {
             const scoredMoves = moves.map(move => {
                 let score = 0;
-                // Clone bonus (keeps pieces on board)
-                if (move.type === 'clone') score += 3.5;
-                // Capture value
-                score += move.captures.length * 6.0;
+                // Clone bonus (+3.0) keeps pieces on board
+                if (move.type === 'clone') score += 3.0;
+                // Capture reward (+4.5 each)
+                score += move.captures.length * 4.5;
 
-                // Positional edge preference (defense)
+                // Outer perimeter preference (+1.0)
                 const q = move.to.q;
                 const r = move.to.r;
                 const s = -q - r;
                 const distCenter = Math.max(Math.abs(q), Math.abs(r), Math.abs(s));
-                if (distCenter >= 3) score += 1.5;
+                if (distCenter >= 3) score += 1.0;
 
-                // Penalize empty jumps that capture nothing
+                // Penalize jumping into empty space with no captures
                 if (move.type === 'jump' && move.captures.length === 0) {
-                    score -= 2.5;
+                    score -= 1.8;
                 }
 
-                // Add small human-like variance
+                // Natural human variance
                 score += (Math.random() * 0.9);
 
                 return { move, score };
@@ -254,18 +266,33 @@ export class HexxagonAI {
 
             scoredMoves.sort((a, b) => b.score - a.score);
 
-            // 85% pick top move, 15% pick 2nd best move if available
-            if (scoredMoves.length > 1 && Math.random() < 0.15) {
+            // Weighted distribution: 65% #1 best move, 25% #2 move, 10% #3 move
+            const roll = Math.random();
+            if (roll < 0.65 || scoredMoves.length === 1) {
+                return scoredMoves[0].move;
+            } else if (roll < 0.90 || scoredMoves.length === 2) {
                 return scoredMoves[1].move;
+            } else {
+                return scoredMoves[2].move;
             }
-            return scoredMoves[0].move;
         }
 
         // -------------------------------------------------------------
-        // HARD / MASTER DIFFICULTY: Ruthless & Tactical
-        // Deep Depth-3 Minimax search with Alpha-Beta pruning
+        // MEDIUM DIFFICULTY: Dynamic, Engaging & Balanced Flow-State
+        // 2-ply Minimax Lookahead (1 full round). Avoids 1-turn counter-traps,
+        // values defensive edges and steady piece cloning.
         // -------------------------------------------------------------
-        const result = HexxagonAI.minimax(state, 3, -Infinity, Infinity, true, player, opponent, allPlayers, 10);
+        if (this.difficulty === 'medium') {
+            const result = HexxagonAI.minimax(state, 2, -Infinity, Infinity, true, player, opponent, allPlayers, 10, false);
+            return result.move || moves[0];
+        }
+
+        // -------------------------------------------------------------
+        // HARD / MASTER DIFFICULTY: Strategic, Assertive & Rewarding
+        // 2-ply Minimax with Cluster Cohesion & Dominant Edge Control.
+        // Formidable tactical gameplay without punishing 3-ply lockouts.
+        // -------------------------------------------------------------
+        const result = HexxagonAI.minimax(state, 2, -Infinity, Infinity, true, player, opponent, allPlayers, 14, true);
         return result.move || moves[0];
     }
 }

@@ -284,11 +284,11 @@ export function initGameUI() {
                 if (gameOverIcon) gameOverIcon.textContent = '🤝';
             } else if (winner === 'ruby') {
                 if (gameOverTitle) gameOverTitle.textContent = selectedMode === 'pvp' ? 'PLAYER 1 WINS!' : 'VICTORY!';
-                if (gameOverSubtitle) gameOverSubtitle.textContent = `Rubies claimed victory with ${scores.ruby} gems over Pearls (${scores.pearl}).`;
+                if (gameOverSubtitle) gameOverSubtitle.textContent = `Rubies claimed victory with ${scores.ruby} gems over Pearls ${scores.pearl}.`;
                 if (gameOverIcon) gameOverIcon.textContent = '🏆';
             } else if (winner === 'pearl') {
                 if (gameOverTitle) gameOverTitle.textContent = selectedMode === 'pvp' ? 'PLAYER 2 WINS!' : 'AI WINS!';
-                if (gameOverSubtitle) gameOverSubtitle.textContent = `Pearls dominated with ${scores.pearl} gems vs Rubies (${scores.ruby}).`;
+                if (gameOverSubtitle) gameOverSubtitle.textContent = `Pearls dominated with ${scores.pearl} gems vs Rubies ${scores.ruby}.`;
                 if (gameOverIcon) gameOverIcon.textContent = selectedMode === 'pvp' ? '🏆' : '💀';
             }
 

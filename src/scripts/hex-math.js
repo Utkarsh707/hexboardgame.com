@@ -6,11 +6,11 @@
 const SQRT_3 = Math.sqrt(3);
 const SQRT_3_DIV_2 = SQRT_3 / 2;
 
-// Precomputed unit hex corner angles (pointy-topped: 60 * i - 30 deg)
+// Precomputed unit hex corner angles (flat-topped / rotated 90 deg clockwise: 60 * i + 60 deg)
 const HEX_CORNER_COS = new Float64Array(6);
 const HEX_CORNER_SIN = new Float64Array(6);
 for (let i = 0; i < 6; i++) {
-    const rad = ((60 * i - 30) * Math.PI) / 180;
+    const rad = ((60 * i + 60) * Math.PI) / 180;
     HEX_CORNER_COS[i] = Math.cos(rad);
     HEX_CORNER_SIN[i] = Math.sin(rad);
 }
@@ -108,28 +108,33 @@ export class HexMath {
         return results;
     }
 
-    // Authentic Hexxagon 1993 Widescreen Stretch Factor (Adaptive for mobile portrait)
-    static STRETCH_X = 1.28;
+    // Widescreen Horizontal Stretch Factor (Widens board across display)
+    static STRETCH_X = 1.34;
 
     static getStretchX() {
         if (typeof window !== 'undefined') {
             const isPortrait = window.innerHeight > window.innerWidth;
             const isMobile = window.innerWidth < 768;
             if (isMobile && isPortrait) {
-                return 1.0; // Perfect isotropic regular hexes for mobile portrait
+                return 1.12;
             }
             if (isPortrait) {
-                return 1.04;
+                return 1.18;
             }
         }
         return HexMath.STRETCH_X;
     }
 
+    /**
+     * Converts axial hex coordinates (q, r) to 2D pixel coordinates rotated 90 degrees clockwise & stretched horizontally
+     * x' = -size * 1.5 * r * stretchX
+     * y' = size * (sqrt(3) * q + sqrt(3)/2 * r)
+     */
     static hexToPixel(q, r, size, originX = 0, originY = 0) {
         const stretch = HexMath.getStretchX();
         return {
-            x: size * (SQRT_3 * q + SQRT_3_DIV_2 * r) * stretch + originX,
-            y: size * (1.5 * r) + originY
+            x: -size * (1.5 * r) * stretch + originX,
+            y: size * (SQRT_3 * q + SQRT_3_DIV_2 * r) + originY
         };
     }
 
